@@ -1,0 +1,8 @@
+{
+  "description": "The spec format comes up on the spec set, and the specs are linked and checked when the agent stops.",
+  "cases": [
+    { "do": { "touchFile": "specs/spec-core.md" }, "expect": { "activate": "sdd-spec-format" } },
+    { "do": { "touchFile": "docs/specs/plan.json" }, "expect": { "activate": "sdd-spec-format" } },
+    { "when": "Stop", "expect": { "run": "sdd-specs-on-stop" } }
+  ]
+}
