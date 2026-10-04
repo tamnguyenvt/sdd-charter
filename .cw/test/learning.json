@@ -1,0 +1,6 @@
+{
+  "description": "Where learnings go comes up every turn, whatever file is touched.",
+  "cases": [
+    { "do": { "touchFile": "learning/inbox/2026-10-04-example.md" }, "expect": { "activate": "sdd-learnings-go-to-the-inbox" } }
+  ]
+}
