@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3 — 2026-10-04
+
+- `/sdd-finish` stages and commits whatever a story left uncommitted, instead of refusing.
+
 ## 0.1.0 — 2026-10-02
 
 - First release: spec-driven development over a spec set — `spec.md` as index, one `spec-<key>.md` per part with ids under its prefix, and `plan.json` for story dependencies.
