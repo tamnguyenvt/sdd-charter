@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.4 — 2026-10-04
+
+- `/sdd-implement` verifies and reviews a change on its own before handing it to you, and again after each change you ask for.
+- `/sdd-implement` runs `/sdd-finish` as soon as the story is accepted as done.
+
 ## 0.1.3 — 2026-10-04
 
 - `/sdd-finish` stages and commits whatever a story left uncommitted, instead of refusing.
