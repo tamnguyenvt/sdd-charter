@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.8 — 2026-10-06
+
+- Rebuilt with the latest `cw`.
+
 ## 0.1.7 — 2026-10-06
 
 - Only `/sdd-init`, `/sdd-plan`, `/sdd-implement`, `/sdd-bug-fix`, `/sdd-status` and `/sdd-report` are offered as commands; the steps they run, such as review and verify, are opened by the agent alone. Needs a `cw` that knows `disable-user-invocation`.
