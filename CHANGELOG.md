@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.5 — 2026-10-06
+
+- New `/sdd-cleanup` lists the story and phase branches whose work has landed and deletes the ones you confirm.
+- `/sdd-implement` draws the roadmap before it picks a story, and `/sdd-finish` draws it again once the story has landed.
+
 ## 0.1.4 — 2026-10-04
 
 - `/sdd-implement` verifies and reviews a change on its own before handing it to you, and again after each change you ask for.
