@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.6 — 2026-10-06
+
+- New `/sdd-bug-fix` fixes one bug on a `fix/` branch: it reproduces the bug with evidence, reports the cause and the fix for your yes, and lands the fix in your development branch.
+- `/sdd-init` asks for your development branch, `develop` unless you name another; add a `Development branch` line to an existing `manifest.md`, or `develop` is assumed.
+
 ## 0.1.5 — 2026-10-06
 
 - New `/sdd-cleanup` lists the story and phase branches whose work has landed and deletes the ones you confirm.
