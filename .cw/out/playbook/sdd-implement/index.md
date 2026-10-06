@@ -18,6 +18,8 @@ decides the worktree, the order, the branches and how changes are committed.
 Do as it says; where it says nothing about the case at hand, ask.
 
 1. **Pick** —
+   - Run /sdd-report first, so the user sees the roadmap the story is picked
+     from.
    - With more than one `spec-<key>.md`, ask which spec to work in before
      looking up any story, unless the user named one.
    - Run `ready` of [sdd-specs](../../script/sdd-specs/index.md): the stories whose dependencies are `Done`.

@@ -31,7 +31,8 @@ nothing about the case at hand, ask, and offer to write the answer into it.
    say why.
 4. **Clean up** — with **Worktree** per story, remove the story's worktree
    once its branch is merged; delete a merged story branch only if the user
-   says so.
+   says so (/sdd-cleanup).
+5. **Report** — run /sdd-report, so the roadmap shows what just landed.
 
 Say which branch went where, the resulting commit or pull request, and the
 next ready story (`ready` of [[sdd-specs]]).
