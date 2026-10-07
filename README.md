@@ -26,14 +26,8 @@ request — with recommendations drawn from your history, and writes it down.
 | `/sdd-plan <what you want>` | Clarifies, then writes the phase's stories, FR and SC into the right spec, and their dependencies into `plan.json`. |
 | `/sdd-implement` | Draws the roadmap, asks which spec, takes a ready story, then spec gate, test first, verify, review, and marks it `Done`. |
 | `/sdd-bug-fix <the bug>` | On a `fix/` branch from your development branch: reproduces the bug with evidence, reports the root cause and the fix for your yes, fixes it test first, reviews, verifies, and finishes into the development branch. |
-| `/sdd-finish` | Merges, squashes or opens a pull request, as `manifest.md` says, then redraws the roadmap. A bug fix lands in the development branch. |
-| `/sdd-cleanup` | Lists the story and phase branches whose work has landed, and deletes the ones you confirm, with their worktrees. |
 | `/sdd-status` | Every story with its status, and which can be built now. |
 | `/sdd-report` | Draws the roadmap into `report.html`: what is done, in progress, ready and waiting, and what waits on what. |
-| `/sdd-analyze` | Gaps, contradictions and format faults in the spec set; changes nothing. |
-| `/sdd-verify` | Tests, checks and a manual run, with evidence. |
-| `/sdd-review` | The change against the story's FR and SC — nothing missing, nothing extra — and security. |
-| `/sdd-learn` | What the conversation taught, into `learning/inbox/`. |
 
 ## The spec set
 

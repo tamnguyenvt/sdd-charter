@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.9 — 2026-10-07
+
+- `/sdd-init` asks whether the conversation is short, the default, or detailed, and writes it to `manifest.md`. Short: the spec gate is one sentence, asking only a technical decision or what is unclear, and a finished story or fix is handed over in one line for your review. Detailed is how it was. Add a `Conversation` line under `## Talking` to an existing `manifest.md`, or short is assumed.
+- `sdd-review` grades each finding `bug`, `risk`, `nit` or `q`: a `bug` or `risk` fails the review, a `nit` or `q` is yours to decide at the gate.
+- A new `sdd-locator` agent finds the code a story or a bug runs through and names it as `path:line` ranges, so the main conversation reads only those.
+- What `/sdd-implement`, `/sdd-bug-fix` and `/sdd-plan` share — how they talk to you, how a change is handed over, the iron laws — is written once, in the mixins `sdd-voice`, `sdd-change-rules` and `sdd-iron-laws`.
+- The README lists only the commands you run.
+- Needs a `cw` that knows an agent's `model` and a mixin's `position`; an older one runs `sdd-locator` on the default model and puts the iron laws first.
+
 ## 0.1.8 — 2026-10-06
 
 - Rebuilt with the latest `cw`.
