@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.10 — 2026-10-07
+
+- `/sdd-init` asks what happens to a story or fix branch once it has landed: delete it locally and on the remote, the default, delete only the local branch, or keep it, and writes it to `manifest.md` as `Branch after finishing` under `## Finishing`. `/sdd-finish` then deletes the branch as it says, never one with an open pull request, never a phase branch. An existing `manifest.md` without the line keeps the branch, as before, and `/sdd-finish` offers `/sdd-cleanup`.
+
 ## 0.1.9 — 2026-10-07
 
 - `/sdd-init` asks whether the conversation is short, the default, or detailed, and writes it to `manifest.md`. Short: the spec gate is one sentence, asking only a technical decision or what is unclear, and a finished story or fix is handed over in one line for your review. Detailed is how it was. Add a `Conversation` line under `## Talking` to an existing `manifest.md`, or short is assumed.
