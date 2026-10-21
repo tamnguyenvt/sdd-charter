@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.11 — 2026-10-21
+
+- `/sdd-init` asks whether to leave changes unstaged until the story or fix is finished, the default, or to commit at each step that passes its checks.
+
 ## 0.1.10 — 2026-10-07
 
 - `/sdd-init` asks what happens to a story or fix branch once it has landed: delete it locally and on the remote, the default, delete only the local branch, or keep it, and writes it to `manifest.md` as `Branch after finishing` under `## Finishing`. `/sdd-finish` then deletes the branch as it says, never one with an open pull request, never a phase branch. An existing `manifest.md` without the line keeps the branch, as before, and `/sdd-finish` offers `/sdd-cleanup`.
