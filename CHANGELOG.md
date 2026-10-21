@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.12 — 2026-10-21
+
+- The specs are linked and checked when the agent stops in a subfolder of the repository too, not only at its root.
+
 ## 0.1.11 — 2026-10-21
 
 - `/sdd-init` asks whether to leave changes unstaged until the story or fix is finished, the default, or to commit at each step that passes its checks.
