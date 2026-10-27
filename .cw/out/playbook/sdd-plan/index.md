@@ -68,6 +68,15 @@ Pause for the user's acceptance after each step.
    `dependsOn`: the stories, in any spec, that must be `Done` before it can be
    built. Depend only on what the story truly needs, so independent stories can
    run side by side. Show the user which stories become ready together.
+   Then add the quality cross-checks: count the stories in `plan.json` after
+   its last `Quality cross-check of …` story — where there is none, only the
+   stories this phase adds. After every five, or the number `manifest.md`
+   names as **Quality cross-check**, add a story right after them,
+   `Quality cross-check of <their ids>`, depending on those stories, in the
+   spec most of them belong to, priority P3, its one scenario: once they are
+   `Done`, /sdd-quality grades every spec they belong to and the
+   lowest-graded part is offered for cleanup. The stories left over count
+   toward the next phase's.
 7. **Check** — `link`, then `check` of [sdd-specs](../../script/sdd-specs/index.md), until it passes; then
    /sdd-analyze, fixing every error it reports.
 8. **Review** — show the new stories, FR, SC and dependencies by id.

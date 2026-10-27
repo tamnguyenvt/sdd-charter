@@ -57,6 +57,8 @@ with no pause.
 ## Steps
 
 1. **Pick**
+   - Where `<spec folder>/quality.md` exists, name its lowest-graded part
+     and its grade first.
    - Run /sdd-report.
    - With more than one spec and none named, ask which one.
    - Take the story the user names, else the first one already
@@ -85,11 +87,14 @@ with no pause.
      short, say that sentence alone, and ask only a decision that needs the
      user, or what is unclear.
 4. **Implement** — a failing test per scenario, then the code that passes it.
-   Surgical edits only.
+   Surgical edits only. A quality cross-check story is built by
+   /sdd-quality instead: its pass written and its cleanup offer answered.
 5. **Verify and review** — /sdd-review.
 6. **Hand over** — gate.
 7. **Learn** — only if something surprising came up: /sdd-learn.
 8. **Done**
+   - A quality cross-check story is never set `Done` before /sdd-quality
+     has written its pass and the user has answered its cleanup offer.
    - Set the story `Done`, write the evidence into its `plan.json` entry —
      `"evidence": { "summary": "<one line>", "date": "yyyy-mm-dd" }`, the
      line /sdd-verify ended on and the day it ran — remove its handoff note,

@@ -181,7 +181,7 @@ error; /sdd-verify reports the error and fails.
 
 ### CORE Story 7 - Grade each part of the product over time (Priority: P3)
 
-**Status**: Todo
+**Status**: Done
 
 In a periodic cleanup pass, the agent grades each spec of
 the set from A to F against the same criteria, with the reason for each grade,

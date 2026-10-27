@@ -97,6 +97,10 @@ the user takes with "yes":
 11. **Conversation** — short or detailed. Short, the default: a gate says only
    what it asks, and what changed is never listed — the user reads the code
    and asks. Detailed: each step reports what it did and what it showed.
+12. **Quality cross-check** — after how many stories /sdd-plan adds a
+   quality cross-check story, which runs /sdd-quality on them. Recommend 5,
+   the default when the user names none, and say that an existing manifest
+   without the line reads as 5.
 
 ## 4. Write, and check
 

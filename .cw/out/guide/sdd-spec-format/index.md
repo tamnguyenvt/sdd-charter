@@ -1,8 +1,8 @@
 ---
 kind: guide
 id: sdd-spec-format
-description: The shape of a spec set — spec.md as index, spec-<key>.md with prefixed ids, plan.json, manifest.md, ADR.md — what and why, never how.
-globs: ["**/spec.md", "**/spec-*.md", "**/plan.json", "**/manifest.md", "**/ADR.md"]
+description: The shape of a spec set — spec.md as index, spec-<key>.md with prefixed ids, plan.json, manifest.md, ADR.md, quality.md — what and why, never how.
+globs: ["**/spec.md", "**/spec-*.md", "**/plan.json", "**/manifest.md", "**/ADR.md", "**/quality.md"]
 rationale: sdd-concept
 ---
 
@@ -16,6 +16,7 @@ A repository's specs live in one folder, the one `.sdd/settings.json` names
 | `plan.json` | every story of every spec, once, and the stories it depends on: the roadmap; a `Done` story's entry also holds the evidence that proved it. |
 | `manifest.md` | how work is carried out and finished here, as the user chose it (/sdd-init). |
 | `ADR.md` | the decisions that change how every later story is built or written. |
+| `quality.md` | each spec's grade A–F per criterion and overall, with its reason and the grade before it, from [sdd-quality-doc](../../template/sdd-quality-doc/index.md); rewritten by each quality pass (/sdd-quality), never by hand. |
 | `report.html` | the roadmap drawn from `plan.json` and the statuses (/sdd-report); generated, never edited, and ignored by the folder's `.gitignore`. |
 | `handoff/` | one note per story `In Progress`, `<prefix>-<n>.md` from [sdd-handoff](../../template/sdd-handoff/index.md): what is done, what remains, the decisions taken, what blocks it — nothing the spec says. Removed once the story is `Done`; committed or ignored as `manifest.md` says. Never linked or checked as a spec. |
 | `mockup/` | designs, when there are any. |

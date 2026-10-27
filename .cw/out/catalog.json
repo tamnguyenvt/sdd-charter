@@ -121,6 +121,18 @@
   },
   {
     "kind": "skill",
+    "id": "sdd-quality",
+    "description": "Grade each spec of the set A–F on five criteria and overall, with the reason and the grade before, into quality.md in the spec folder, and offer the lowest-graded part for cleanup.",
+    "file": ".cw/out/skill/sdd-quality/index.md"
+  },
+  {
+    "kind": "template",
+    "id": "sdd-quality-doc",
+    "description": "The skeleton of quality.md — each spec's grade per criterion and overall, with the reason and the grade the pass before gave.",
+    "file": ".cw/out/template/sdd-quality-doc/index.md"
+  },
+  {
+    "kind": "skill",
     "id": "sdd-report",
     "description": "Draw the roadmap — every story of plan.json, where it stands and what it waits on — into report.html in the spec folder, and say what it shows.",
     "file": ".cw/out/skill/sdd-report/index.md"
@@ -146,14 +158,15 @@
   {
     "kind": "guide",
     "id": "sdd-spec-format",
-    "description": "The shape of a spec set — spec.md as index, spec-<key>.md with prefixed ids, plan.json, manifest.md, ADR.md — what and why, never how.",
+    "description": "The shape of a spec set — spec.md as index, spec-<key>.md with prefixed ids, plan.json, manifest.md, ADR.md, quality.md — what and why, never how.",
     "file": ".cw/out/guide/sdd-spec-format/index.md",
     "globs": [
       "**/spec.md",
       "**/spec-*.md",
       "**/plan.json",
       "**/manifest.md",
-      "**/ADR.md"
+      "**/ADR.md",
+      "**/quality.md"
     ]
   },
   {
