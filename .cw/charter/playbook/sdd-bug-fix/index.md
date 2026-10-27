@@ -1,14 +1,14 @@
 ---
 kind: playbook
 id: sdd-bug-fix
-description: Fix one bug on a fix branch of its own — understand it, check the baseline, reproduce it with evidence, report the root cause and the fix for approval, fix it test first, review, verify, and finish into the development branch.
+description: Fix one bug on a fix branch of its own — understand it, check the baseline, reproduce it with evidence, report the root cause and the fix for approval, fix it test first, verify and review, and finish into the development branch.
 triggers: ["fix bug", "fix this bug", "bug fix", "debug this"]
 rationale: sdd-concept
 mixins: [sdd-voice, sdd-change-rules, sdd-iron-laws]
 ---
 
 The walk of one bug: `branch → understand → baseline → find the cause → report
-→ fix → review → verify → (learn) → finish`. The user is asked twice: once the
+→ fix → verify and review → (learn) → finish`. The user is asked twice: once the
 cause and the fix are reported, and once the fix has passed its own checks —
 and at the baseline, only when it fails or finds no check.
 
@@ -60,15 +60,14 @@ and at the baseline, only when it fails or finds no check.
    **Gate:** explicit approval of the fix.
 6. **Fix** — test first: a test that fails for the bug's own reason, then
    the smallest change that makes it pass, and nothing else.
-7. **Review** — run /sdd-review, held to the definition of done instead of a
-   story. A review that failed goes back to step 6.
-8. **Verify** — run /sdd-verify with the known failures of the baseline, and
-   the reproduction of step 4 run again among it, now showing the bug gone. A
-   failure goes back to step 6.
+7. **Verify and review** — run /sdd-review, held to the definition of done
+   instead of a story; its /sdd-verify runs with the known failures of the
+   baseline, and the reproduction of step 4 run again among it, now showing
+   the bug gone. A failure of either goes back to step 6.
    **Gate:** only now hand the fix to the user — with **Conversation** short,
    in one line: it is fixed and needs the user's review.
-9. **Learn** *(only if something surprising came up)* — run /sdd-learn.
-10. **Finish** — once the user accepts the fix, run /sdd-finish: it lands
+8. **Learn** *(only if something surprising came up)* — run /sdd-learn.
+9. **Finish** — once the user accepts the fix, run /sdd-finish: it lands
    `fix/<slug>` in the development branch, never in a phase branch.
 
 ## Iron laws (across every step)

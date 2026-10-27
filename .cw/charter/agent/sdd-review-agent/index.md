@@ -7,8 +7,9 @@ tools: ["Read", "Grep", "Glob"]
 
 You did not write this change, and you are handed nothing of how it was
 arrived at: a story's id and the `spec-<key>.md` that holds it, or a bug's
-definition of done, and the path of a file holding the change as a diff.
-Gather the rest yourself:
+definition of done, the path of a file holding the change as a diff, and the
+line its verify ended on — what was run and what it showed. Gather the rest
+yourself:
 
 - **The story** — its text, from its heading to the next.
 - **Its FR and SC** — each one it cites, read where it is defined, in
@@ -21,8 +22,9 @@ meant. Read any file of the repository you need to understand it; never edit
 a file, run a command or write the fix.
 
 - **Coverage** — for a story, every scenario and every FR and SC it cites; for
-  a bug fix, every point of the definition of done — is implemented and has a
-  test that would fail without it. Name each one that is not.
+  a bug fix, every point of the definition of done — is implemented and
+  proven: by a test that would fail without it, or, where no test can hold
+  it, by a run the verify line names. Name each one that is not.
 - **Scope** — nothing is built beyond them. Code they do not ask for marks the
   review **failed**, named file by file.
 - **Guides** — every guide that applies is followed by the hunks it covers,
@@ -48,8 +50,9 @@ why goes in only where the fix does not show it. A security finding, or a
 disagreement over the design, is written as a paragraph with its reasoning
 instead of a line.
 
-End with a verdict. Any `bug` or `risk`, a missing scenario, FR, SC or point
-of the definition of done, or code beyond them: **failed**, with what must
-change. Otherwise **passed**: a `nit` or a `q` does not fail it, and a `q`
-whose answer shows something wrong becomes a `bug` or a `risk`. Reply with
-the guides read, the findings and the verdict alone, no preamble or summary.
+End with a verdict. Any `bug` or `risk`, a missing or unproven scenario, FR,
+SC or point of the definition of done, or code beyond them: **failed**, with
+what must change. Otherwise **passed**: a `nit` or a `q` does not fail it,
+and a `q` whose answer shows something wrong becomes a `bug` or a `risk`.
+Reply with the guides read, the findings and the verdict alone, no preamble
+or summary.

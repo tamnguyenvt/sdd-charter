@@ -6,6 +6,7 @@
 
 **Input**: User description: "Phase 1 of the charter is done. Enhance it: a review by an agent other than the author, a baseline before the first change, a handoff for a story in progress, a clean state before finishing, the evidence kept with a Done story, the runtime read while verifying, a quality grade per part, and a health check of the setup."
 Then: "When planning, add a quality cross-check story after about every five stories, so the quality pass is sure to run instead of being skipped."
+Then: "Let the review see what verify proved: calling the review verifies too, so a scenario only a manual run can prove no longer comes back as a question."
 
 ## Overview
 
@@ -38,6 +39,8 @@ and the agents that walk them.
 ### Session 2026-10-27
 
 - Q: Does the reviewer also hold the guides that apply to the changed files? → A: yes, so it can catch a hunk that breaks one ([CORE-FR-001](#core-fr-001)).
+- Q: Is the story that lets the review see what verify proved graded by the first quality cross-check? → A: yes, it comes before it and the cross-check depends on it ([CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3), [CORE Story 10](#core-story-10---review-with-the-proof-verify-produced-priority-p2)).
+- Q: A scenario proven neither by a test nor by the line verify ended on — does the review fail or only ask? → A: it fails: nothing proves it ([CORE-FR-022](#core-fr-022)).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -59,7 +62,7 @@ scenario; the review, made by a separate agent, reports the miss.
 
 **Acceptance Scenarios**:
 
-1. **Given** a verified change, **When** the review step runs, **Then** it is made by an agent spawned for it, holding only the story, the FR and SC it cites, the guides that apply to the changed files, and the change ([CORE-FR-001](#core-fr-001)).
+1. **Given** a verified change, **When** the review step runs, **Then** it is made by an agent spawned for it, holding only the story, the FR and SC it cites, the guides that apply to the changed files, the change, and the line its verify ended on ([CORE-FR-001](#core-fr-001)).
 2. **Given** that review, **When** it finishes, **Then** the walk receives each finding graded `bug`, `risk`, `nit` or `q`, and a `bug` or `risk` fails the review as before ([CORE-FR-002](#core-fr-002)).
 
 ---
@@ -230,24 +233,51 @@ check; it names the missing answer and offers to ask it.
 
 ---
 
-### CORE Story 9 - Quality cross-check of CORE Stories 1–8 (Priority: P3)
+### CORE Story 9 - Quality cross-check of CORE Stories 1–8 and 10 (Priority: P3)
 
 **Status**: Todo
 
-The first quality cross-check: once the eight stories of this phase are
-`Done`, the quality pass grades the spec set and the lowest-graded part is
+The first quality cross-check: once the other nine stories of this phase
+are `Done`, the quality pass grades the spec set and the lowest-graded part is
 offered for cleanup.
 
 **Why this priority**: it proves the cross-check this phase adds, on the
 phase that adds it.
 
-**Independent Test**: once CORE Stories 1–8 are `Done`, build this story; a
+**Independent Test**: once CORE Stories 1–8 and 10 are `Done`, build this story; a
 quality document exists with a grade per criterion for CORE.
 
 **Acceptance Scenarios**:
 
-1. **Given** CORE Stories 1–8 `Done`, **When** this story is built, **Then** the quality document grades CORE on each criterion and overall, with reasons ([CORE-FR-014](#core-fr-014), [CORE-FR-015](#core-fr-015)).
+1. **Given** CORE Stories 1–8 and 10 `Done`, **When** this story is built, **Then** the quality document grades CORE on each criterion and overall, with reasons ([CORE-FR-014](#core-fr-014), [CORE-FR-015](#core-fr-015)).
 2. **Given** that document, **When** the story finishes, **Then** the lowest-graded part has been offered for cleanup ([CORE-FR-020](#core-fr-020)).
+
+---
+
+### CORE Story 10 - Review with the proof verify produced (Priority: P2)
+
+**Status**: Done
+
+A developer runs /sdd-implement or /sdd-bug-fix. Verifying and reviewing are
+one step: the review verifies the change first, stops on a failure, and hands
+the reviewing agent the line verify ended on with the change. A scenario no
+automated test can hold — one proven by a run by hand — counts as proven by
+that line, so the review no longer asks what the walk has already shown.
+
+**Why this priority**: a review that holds only the change asks about every
+scenario proven by hand, and the developer answers at the gate what verify
+already showed.
+
+**Independent Test**: build a change whose scenario only a run by hand can
+prove; the review accepts the run verify reported and asks nothing about it;
+with no such run reported, the review fails on that scenario.
+
+**Acceptance Scenarios**:
+
+1. **Given** a change, **When** the review step runs, **Then** it verifies the change first, and a failing verify stops the step before any review is made ([CORE-FR-021](#core-fr-021)).
+2. **Given** a passed verify, **When** the reviewing agent starts, **Then** it holds the line verify ended on beside the story, its FR and SC, the guides and the change, and nothing else ([CORE-FR-001](#core-fr-001)).
+3. **Given** a scenario no test holds, **When** the line verify ended on proves it, **Then** the review counts it proven; **When** it does not, **Then** the review fails on it ([CORE-FR-022](#core-fr-022)).
+4. **Given** a check failing during verify, **When** verify reports, **Then** it changes nothing itself, and the walk goes back to the change ([CORE-FR-023](#core-fr-023)).
 
 ---
 
@@ -268,8 +298,11 @@ quality document exists with a grade per criterion for CORE.
 
 **Review**
 
-- <a id="core-fr-001"></a>**CORE-FR-001**: The review of a change MUST be made by an agent other than the one that wrote it, starting from the story, the FR and SC it cites, the guides that apply to the changed files, and the change alone.
+- <a id="core-fr-001"></a>**CORE-FR-001**: The review of a change MUST be made by an agent other than the one that wrote it, starting from the story, the FR and SC it cites, the guides that apply to the changed files, the change and the line its verify ended on, and nothing else.
 - <a id="core-fr-002"></a>**CORE-FR-002**: That review MUST grade each finding `bug`, `risk`, `nit` or `q`, and fail on any `bug` or `risk`.
+- <a id="core-fr-021"></a>**CORE-FR-021**: The review step MUST verify the change first, and stop before any review is made when verify fails.
+- <a id="core-fr-022"></a>**CORE-FR-022**: The review MUST count a scenario proven by a test that would fail without it or by the line verify ended on, and fail on a scenario proven by neither.
+- <a id="core-fr-023"></a>**CORE-FR-023**: Verify MUST report a failing check without changing anything itself; the walk goes back to the change.
 
 **Baseline**
 

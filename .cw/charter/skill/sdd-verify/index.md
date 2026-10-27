@@ -8,7 +8,7 @@ disable-user-invocation: true
 
 1. Run the full test suite and every static check the project defines —
    look in `package.json` scripts, the `Makefile`, the CI config: tests,
-   type check, lint, dependency rules. Every one must pass; a failure is fixed,
+   type check, lint, dependency rules. Every one must pass, and a failure is
    never skipped. The one exception is a known failure the baseline of this
    walk recorded: a check that fails with none but the failures it recorded
    — each failing test's name, each error's line — does not fail this step,
@@ -27,4 +27,5 @@ disable-user-invocation: true
 Report what was run and what it showed, quoting the decisive output, and end
 on one line that sums it up — what was run, what it showed — the evidence a
 `Done` story keeps. No claim of "works" or "passes" without that evidence from
-this turn.
+this turn. A failure of any step is reported, never fixed here: nothing is
+changed, and the walk goes back to the change.

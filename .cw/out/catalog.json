@@ -32,7 +32,7 @@
   {
     "kind": "playbook",
     "id": "sdd-bug-fix",
-    "description": "Fix one bug on a fix branch of its own — understand it, check the baseline, reproduce it with evidence, report the root cause and the fix for approval, fix it test first, review, verify, and finish into the development branch.",
+    "description": "Fix one bug on a fix branch of its own — understand it, check the baseline, reproduce it with evidence, report the root cause and the fix for approval, fix it test first, verify and review, and finish into the development branch.",
     "file": ".cw/out/playbook/sdd-bug-fix/index.md"
   },
   {
@@ -74,7 +74,7 @@
   {
     "kind": "playbook",
     "id": "sdd-implement",
-    "description": "Implement a ready story of the spec set — pick it, baseline, spec gate, test first, verify, review — the way manifest.md says, and mark it Done.",
+    "description": "Implement a ready story of the spec set — pick it, baseline, spec gate, test first, verify and review — the way manifest.md says, and mark it Done.",
     "file": ".cw/out/playbook/sdd-implement/index.md"
   },
   {
@@ -128,7 +128,7 @@
   {
     "kind": "skill",
     "id": "sdd-review",
-    "description": "Have an agent that did not write the change review it against the story's scenarios, FR and SC — nothing missing, nothing beyond them — and for security issues.",
+    "description": "Verify the change, then have an agent that did not write it review it, with what verify showed, against the story's scenarios, FR and SC — nothing missing, nothing beyond them — and for security issues.",
     "file": ".cw/out/skill/sdd-review/index.md"
   },
   {

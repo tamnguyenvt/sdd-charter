@@ -1,7 +1,7 @@
 ---
 kind: playbook
 id: sdd-implement
-description: Implement a ready story of the spec set — pick it, baseline, spec gate, test first, verify, review — the way manifest.md says, and mark it Done.
+description: Implement a ready story of the spec set — pick it, baseline, spec gate, test first, verify and review — the way manifest.md says, and mark it Done.
 triggers: ["implement task", "implement next task", "implement the next story", "implement story"]
 rationale: sdd-concept
 mixins: [sdd-voice, sdd-change-rules, sdd-iron-laws]
@@ -9,8 +9,8 @@ mixins: [sdd-voice, sdd-change-rules, sdd-iron-laws]
 
 One story, from `Todo` to `Done`:
 
-`pick → baseline → spec → implement → verify → review → hand over → (learn) →
-done`
+`pick → baseline → spec → implement → verify and review → hand over → (learn)
+→ done`
 
 The user answers at the two gates, at the pick when it asks, and at the
 baseline when it fails or finds no check. Every other step runs on its own,
@@ -48,11 +48,10 @@ with no pause.
      user, or what is unclear.
 4. **Implement** — a failing test per scenario, then the code that passes it.
    Surgical edits only.
-5. **Verify** — /sdd-verify.
-6. **Review** — /sdd-review.
-7. **Hand over** — gate.
-8. **Learn** — only if something surprising came up: /sdd-learn.
-9. **Done**
+5. **Verify and review** — /sdd-review.
+6. **Hand over** — gate.
+7. **Learn** — only if something surprising came up: /sdd-learn.
+8. **Done**
    - Set the story `Done`, write the evidence into its `plan.json` entry —
      `"evidence": { "summary": "<one line>", "date": "yyyy-mm-dd" }`, the
      line /sdd-verify ended on and the day it ran — remove its handoff note,
@@ -74,7 +73,7 @@ story that is not.
 
 - Verify or review fails: back to step 4.
 - The user asks for a change at the hand-over: make it, then verify and
-  review again.
+  review it again.
 
 ## Known failures
 

@@ -10,6 +10,8 @@
       "evidence": { "summary": "node --test: 35 pass, 0 fail; cw test 4 cases; a manual run exiting 0 with an error on stderr fails on the quoted line, a silent run is said to log nothing", "date": "2026-10-27" } },
     { "id": "CORE Story 7", "title": "Grade each part of the product over time", "dependsOn": [] },
     { "id": "CORE Story 8", "title": "Check the spec-driven setup itself", "dependsOn": ["CORE Story 3"] },
-    { "id": "CORE Story 9", "title": "Quality cross-check of CORE Stories 1–8", "dependsOn": ["CORE Story 1", "CORE Story 2", "CORE Story 3", "CORE Story 4", "CORE Story 5", "CORE Story 6", "CORE Story 7", "CORE Story 8"] }
+    { "id": "CORE Story 10", "title": "Review with the proof verify produced", "dependsOn": ["CORE Story 1"],
+      "evidence": { "summary": "node --test: 35 pass, 0 fail; cw test 4 cases; a failing verify stopped the review with the tree unchanged; a reviewer handed a verify line naming no hand run failed the unproven scenario", "date": "2026-10-27" } },
+    { "id": "CORE Story 9", "title": "Quality cross-check of CORE Stories 1–8 and 10", "dependsOn": ["CORE Story 1", "CORE Story 2", "CORE Story 3", "CORE Story 4", "CORE Story 5", "CORE Story 6", "CORE Story 7", "CORE Story 8", "CORE Story 10"] }
   ]
 }
