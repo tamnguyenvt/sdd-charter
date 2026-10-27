@@ -112,7 +112,7 @@ already decided.
 
 ### CORE Story 4 - Refuse to finish on an unclean state (Priority: P2)
 
-**Status**: Todo
+**Status**: Done
 
 Before /sdd-finish lands a story or a fix, it checks that nothing is left
 behind: no stray or temporary files, no debug output or leftover markers

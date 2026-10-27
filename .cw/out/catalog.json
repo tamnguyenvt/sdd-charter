@@ -42,6 +42,12 @@
     "file": ".cw/out/mixin/sdd-change-rules/index.md"
   },
   {
+    "kind": "script",
+    "id": "sdd-clean",
+    "description": "Say what a change would leave behind if it landed — a stray or temporary file, debug output, a leftover marker, a secret — each by where it is; changes nothing.",
+    "file": ".cw/out/script/sdd-clean/index.md"
+  },
+  {
     "kind": "skill",
     "id": "sdd-cleanup",
     "description": "List the story and phase branches whose work has already landed, and delete the ones the user confirms, with their worktrees.",

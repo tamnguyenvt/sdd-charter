@@ -15,6 +15,17 @@ nothing about the case at hand, ask, and offer to write the answer into it.
    accepted the fix at /sdd-bug-fix's last gate, and the checks pass
    (/sdd-verify). Refuse otherwise, saying what is missing.
 
+   On a story or a fix branch, before anything is committed, check that
+   nothing is left behind: run `check` of [[sdd-specs]] — a handoff note of a
+   `Done` story fails it — and [[sdd-clean]] with the branch the change lands
+   in. On any finding, land nothing: name each finding as it was printed, and
+   ask the user to clean it or to accept it for this change. Run both again
+   until nothing is left but what the user accepted: [[sdd-clean]] with each
+   finding it printed and the user accepted as `--accept <path>:<line>`, or
+   `--accept <path>` for a file; `check`, which takes no `--accept`, by
+   setting aside each fault it printed that the user accepted. An acceptance
+   holds for this change only.
+
    On a story branch, a change still in the working tree, staged or not, is
    the story's: being asked to finish is being asked to commit it. Stage every
    change and commit it on the story branch without asking, the story's id

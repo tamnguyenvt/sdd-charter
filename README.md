@@ -69,6 +69,9 @@ specs/
 - **Work outlives the session.** A story `In Progress` keeps a handoff note
   — done, remaining, decisions, blockers — that the next session reads
   before anything else, and that goes once the story is `Done`.
+- **Nothing left behind.** Before a story or a fix lands, its change is
+  checked for stray or temporary files, debug output, leftover markers and
+  secrets, and nothing lands until each finding is cleaned or accepted.
 - **Ids are cited, not copied.** When the agent stops with the spec folder
   changed, a hook links every id across files and checks the set against
   `plan.json`, and refuses to stop while either fails.
@@ -83,5 +86,6 @@ specs/
 - Guides: `sdd-spec-format` (on the spec set's files),
   `sdd-learnings-go-to-the-inbox`.
 - Sensor `sdd-specs-on-stop`; script `sdd-specs` (`link`, `check`, `ready`, `report`;
-  Node 20+, no dependencies); templates `sdd-spec-index`, `sdd-spec`,
+  Node 20+, no dependencies); script `sdd-clean` (what a change would leave
+  behind); templates `sdd-spec-index`, `sdd-spec`,
   `sdd-manifest`.
