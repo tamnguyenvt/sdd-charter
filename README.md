@@ -41,6 +41,7 @@ specs/
 ├── spec-billing.md       BILLING Story 1…, BILLING-FR-001…
 ├── plan.json             every story and what it depends on
 ├── manifest.md           how work is carried out and finished here
+├── handoff/core-3.md     where a story In Progress stands, for the next session
 └── ADR.md                decisions that shape every later story
 ```
 
@@ -65,6 +66,9 @@ specs/
 - **Status** sits under each story's heading: `Todo`, `In Progress`, `Done`.
 - **Roadmap apart from the prose.** Once CORE Story 3 is `Done`, CORE Story 4
   and BILLING Story 1 are both ready and can be built side by side.
+- **Work outlives the session.** A story `In Progress` keeps a handoff note
+  — done, remaining, decisions, blockers — that the next session reads
+  before anything else, and that goes once the story is `Done`.
 - **Ids are cited, not copied.** When the agent stops with the spec folder
   changed, a hook links every id across files and checks the set against
   `plan.json`, and refuses to stop while either fails.

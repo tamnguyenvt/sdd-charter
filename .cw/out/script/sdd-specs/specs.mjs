@@ -121,6 +121,24 @@ const visit = (id, path) => {
 };
 for (const id of plannedById.keys()) visit(id, []);
 
+// A handoff note per story In Progress, handoff/core-3.md for CORE Story 3,
+// and none for any other: the next session resumes from it. Where the manifest
+// says notes are ignored, a clone on another machine has none, so none is
+// required.
+const manifestFile = join(specFolder, "manifest.md");
+const handoffNotesIgnored = existsSync(manifestFile) && /^- \*\*Handoff notes\*\*: ignored\b/im.test(readFileSync(manifestFile, "utf8"));
+const handoffFolder = join(specFolder, "handoff");
+const handoffFileOf = (id) => join(handoffFolder, `${id.replace(" Story ", "-").toLowerCase()}.md`);
+const handoffFiles = existsSync(handoffFolder) ? readdirSync(handoffFolder).filter((name) => name.endsWith(".md")).map((name) => join(handoffFolder, name)) : [];
+for (const [id, story] of storyById)
+  if (story.status === "In Progress" && !handoffNotesIgnored && !handoffFiles.includes(handoffFileOf(id)))
+    faults.push(`${handoffFileOf(id)}: missing; ${id} is In Progress, so its handoff note says what is done, what remains, the decisions taken and what blocks it`);
+for (const file of handoffFiles) {
+  const id = [...storyById.keys()].find((storyId) => handoffFileOf(storyId) === file);
+  if (id === undefined) faults.push(`${file}: a handoff note for no story`);
+  else if (storyById.get(id).status !== "In Progress") faults.push(`${file}: a handoff note for ${id}, which is ${storyById.get(id).status}; remove it`);
+}
+
 if (command === "report") {
   const reportFile = join(specFolder, "report.html");
   writeFileSync(reportFile, reportHtmlOf(plannedStories, storyById, targetById));

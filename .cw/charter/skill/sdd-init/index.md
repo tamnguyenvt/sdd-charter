@@ -82,14 +82,19 @@ the user takes with "yes":
    finished, so the user stages what they have read, or commit at each step
    that passes its checks, a linear history of small commits. Recommend
    unstaged, the default when the user names none.
-7. **Commit message** — the convention, and whether to add a
+7. **Handoff notes** — the note a story `In Progress` keeps in
+   `<folder>/handoff/`: committed with the work, so a session on another
+   machine resumes from it, or ignored, so it stays on the machine that wrote
+   it. Recommend committed, the default when the user names none, and say
+   that an existing manifest without the line commits them.
+8. **Commit message** — the convention, and whether to add a
    `Co-Authored-By` line for the agent.
-8. **Finishing** — merge, squash-merge or pull request, into which branch, and
+9. **Finishing** — merge, squash-merge or pull request, into which branch, and
    what happens when a phase is done.
-9. **Branch after finishing** — once a story or bug fix branch has landed:
+10. **Branch after finishing** — once a story or bug fix branch has landed:
    delete it both locally and on the remote, delete only the local branch, or
    keep both. Recommend deleting both, the default when the user names none.
-10. **Conversation** — short or detailed. Short, the default: a gate says only
+11. **Conversation** — short or detailed. Short, the default: a gate says only
    what it asks, and what changed is never listed — the user reads the code
    and asks. Detailed: each step reports what it did and what it showed.
 
@@ -97,7 +102,8 @@ the user takes with "yes":
 
 - `.sdd/settings.json`: `{ "specFolder": "<folder>" }`.
 - `<folder>/manifest.md` from [[sdd-manifest]], every bracket answered.
-- `<folder>/.gitignore` holding `report.html`, which /sdd-report generates.
+- `<folder>/.gitignore` holding `report.html`, which /sdd-report generates,
+  and `handoff/` where handoff notes are ignored.
 - The spec set as accepted: `spec.md` from [[sdd-spec-index]], each
   `spec-<key>.md` (from the sources, or [[sdd-spec]] for an empty set),
   `plan.json`, and `ADR.md` titled `# Architecture Decision Records`.

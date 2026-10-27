@@ -17,6 +17,7 @@ A repository's specs live in one folder, the one `.sdd/settings.json` names
 | `manifest.md` | how work is carried out and finished here, as the user chose it (/sdd-init). |
 | `ADR.md` | the decisions that change how every later story is built or written. |
 | `report.html` | the roadmap drawn from `plan.json` and the statuses (/sdd-report); generated, never edited, and ignored by the folder's `.gitignore`. |
+| `handoff/` | one note per story `In Progress`, `<prefix>-<n>.md` from [sdd-handoff](../../template/sdd-handoff/index.md): what is done, what remains, the decisions taken, what blocks it — nothing the spec says. Removed once the story is `Done`; committed or ignored as `manifest.md` says. Never linked or checked as a spec. |
 | `mockup/` | designs, when there are any. |
 
 A part grows in its own spec, extended in place; a new part gets a new

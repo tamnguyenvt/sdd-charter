@@ -29,6 +29,7 @@ by asking the user.
 
 - **While working**: [unstaged — leave every change unstaged until the story or fix is finished; the user stages what they have read, and /sdd-finish commits | linear — commit at each step that passes its checks]
 - **Message**: [the convention: `CORE Story 4: <title>`, Conventional Commits, …]
+- **Handoff notes**: [committed — a story's handoff note is committed with its work, so another machine resumes from it; with **While working** unstaged, it waits in the working tree with the rest of the work | ignored — `handoff/` is in the spec folder's `.gitignore`; a note stays on the machine that wrote it]
 - **Co-Authored-By**: [yes — end each commit with the agent's Co-Authored-By line | no — no AI attribution]
 
 ## Finishing

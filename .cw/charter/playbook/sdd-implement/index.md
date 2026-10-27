@@ -21,11 +21,20 @@ with no pause.
 1. **Pick**
    - Run /sdd-report.
    - With more than one spec and none named, ask which one.
-   - Take the story the user names, else the first `ready` one in that spec
-     ([[sdd-specs]]).
+   - Take the story the user names, else the first one already
+     `In Progress` in that spec, in `plan.json` order, else the first `ready`
+     one ([[sdd-specs]]).
+   - A story `In Progress`: switch to its branch and read its handoff note
+     before anything else of it. Say where the note and the code differ — the
+     code wins — then go on at the step the note names under Remaining,
+     asking nothing the note answers. A baseline or a spec gate the note
+     records as passed is not run again, and the story's own tests are its
+     work, never a baseline failure. No note, as where notes are ignored:
+     start from the story and its branch.
    - With **Order** parallel and several ready, offer an agent and a worktree
      to each.
-   - Open the story's branch, and set it `In Progress`.
+   - A story not yet `In Progress`: open its branch, set it `In Progress`,
+     and write its handoff note from [[sdd-handoff]].
    - Find the code it touches with [[sdd-locator]].
 2. **Baseline** — run every test and static check the project defines.
    - None defined: ask whether to go on.
@@ -44,9 +53,20 @@ with no pause.
 7. **Hand over** — gate.
 8. **Learn** — only if something surprising came up: /sdd-learn.
 9. **Done**
-   - Set the story `Done`, and run `check` of [[sdd-specs]].
+   - Set the story `Done`, remove its handoff note, and run `check` of
+     [[sdd-specs]].
    - Commit or leave the change as **While working** says.
    - Run /sdd-finish at once; the user accepting the change is the ask.
+
+## Handoff note
+
+Before every stop on a story `In Progress` — at a gate, mid-step, or because
+the session ends — bring `<spec folder>/handoff/<prefix>-<n>.md` up to date:
+what is done — the baseline with each known failure, the spec gate once it
+passed — what remains, from the step to go on at, the decisions taken and what
+blocks it, and nothing the spec already says. `check` refuses a story
+`In Progress` without one — except where notes are ignored — and a note for a
+story that is not.
 
 ## Going back
 

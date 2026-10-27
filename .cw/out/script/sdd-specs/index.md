@@ -28,7 +28,17 @@ the file citing it. Code spans and fenced blocks are left as written.
 file whose prefix is not its own (`spec-core.md` defines `CORE-…` only); a
 story with no `**Status**: Todo | In Progress | Done` line right under its
 heading; a story missing from `plan.json`, or one there that no spec holds; a
-dependency on no story; a dependency cycle; a stale link.
+dependency on no story; a dependency cycle; a stale link; a story `In Progress`
+with no handoff note at `handoff/<prefix>-<n>.md` (`handoff/core-3.md` for
+CORE Story 3) — unless `manifest.md` says `**Handoff notes**: ignored` — or
+a note there for a story that is not `In Progress`. Notes are not read as
+specs: what they cite is neither linked nor checked.
+
+Its tests, beside it:
+
+```bash
+node --test .cw/out/script/sdd-specs/specs.test.mjs
+```
 
 **ready** lists, in `plan.json` order, every story not `Done` whose
 `dependsOn` are all `Done` — the ones that can be built now, side by side.

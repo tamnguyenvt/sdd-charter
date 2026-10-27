@@ -60,6 +60,12 @@
     "file": ".cw/out/skill/sdd-finish/index.md"
   },
   {
+    "kind": "template",
+    "id": "sdd-handoff",
+    "description": "The skeleton of a handoff note, <spec folder>/handoff/<prefix>-<n>.md — where a story In Progress stands, for the next session to resume from.",
+    "file": ".cw/out/template/sdd-handoff/index.md"
+  },
+  {
     "kind": "playbook",
     "id": "sdd-implement",
     "description": "Implement a ready story of the spec set — pick it, baseline, spec gate, test first, verify, review — the way manifest.md says, and mark it Done.",

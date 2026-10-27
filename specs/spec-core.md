@@ -88,7 +88,7 @@ blamed on it, and the story's verify step cannot tell the two apart.
 
 ### CORE Story 3 - Hand a story in progress over to the next session (Priority: P1)
 
-**Status**: Todo
+**Status**: Done
 
 When a session ends with a story still `In Progress`, it leaves a handoff note
 for that story: what is done, what remains, the decisions taken, and what
