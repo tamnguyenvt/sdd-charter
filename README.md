@@ -39,7 +39,7 @@ specs/
 ├── spec.md               index: one row per spec, its prefix and scope
 ├── spec-core.md          CORE Story 1…, CORE-FR-001…, CORE-SC-001…
 ├── spec-billing.md       BILLING Story 1…, BILLING-FR-001…
-├── plan.json             every story and what it depends on
+├── plan.json             every story, what it depends on, what proved it Done
 ├── manifest.md           how work is carried out and finished here
 ├── handoff/core-3.md     where a story In Progress stands, for the next session
 └── ADR.md                decisions that shape every later story
@@ -69,6 +69,9 @@ specs/
 - **Work outlives the session.** A story `In Progress` keeps a handoff note
   — done, remaining, decisions, blockers — that the next session reads
   before anything else, and that goes once the story is `Done`.
+- **Done says why.** A story set `Done` keeps, in its `plan.json` entry,
+  one line of what proved it and the date, and `check` refuses evidence on a
+  story that is not `Done`.
 - **Nothing left behind.** Before a story or a fix lands, its change is
   checked for stray or temporary files, debug output, leftover markers and
   secrets, and nothing lands until each finding is cleaned or accepted.

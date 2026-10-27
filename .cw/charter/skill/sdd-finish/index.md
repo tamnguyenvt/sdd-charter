@@ -17,8 +17,9 @@ nothing about the case at hand, ask, and offer to write the answer into it.
 
    On a story or a fix branch, before anything is committed, check that
    nothing is left behind: run `check` of [[sdd-specs]] — a handoff note of a
-   `Done` story fails it — and [[sdd-clean]] with the branch the change lands
-   in. On any finding, land nothing: name each finding as it was printed, and
+   `Done` story fails it; on a story branch, with `--landing "<story id>"`, so
+   a story landing with no evidence in `plan.json` fails it too — and
+   [[sdd-clean]] with the branch the change lands in. On any finding, land nothing: name each finding as it was printed, and
    ask the user to clean it or to accept it for this change. Run both again
    until nothing is left but what the user accepted: [[sdd-clean]] with each
    finding it printed and the user accepted as `--accept <path>:<line>`, or

@@ -30,7 +30,7 @@ and the agents that walk them.
 ### Session 2026-10-26
 
 - Q: Where does the handoff note of a story in progress live, and is it committed? → A: in the spec folder, one note per story in a folder of its own; /sdd-init asks whether those notes are committed or ignored ([CORE-FR-005](#core-fr-005), [CORE-FR-007](#core-fr-007)).
-- Q: Where is the proof that a story works kept once it is `Done`? → A: briefly, in the story's entry of the roadmap ([CORE-FR-011](#core-fr-011), ADR-001).
+- Q: Where is the proof that a story works kept once it is `Done`? → A: briefly, in the story's entry of the roadmap ([CORE-FR-011](#core-fr-011)).
 - Q: What happens when the checks already fail before the story's first change? → A: stop and ask: fix it first through /sdd-bug-fix, or record it as a known failure and go on ([CORE-FR-003](#core-fr-003), [CORE-FR-004](#core-fr-004)).
 - Q: When is the quality document updated, and who reads it? → A: in a periodic cleanup pass, not after every story; every new session reads it before picking a story ([CORE-FR-014](#core-fr-014), [CORE-FR-016](#core-fr-016)).
 - Q: How is the periodic pass made sure to run? → A: /sdd-plan puts a quality cross-check story on the roadmap after every five stories, depending on them, so it is built like any other story ([CORE-FR-019](#core-fr-019), [CORE-FR-020](#core-fr-020)).
@@ -135,7 +135,7 @@ change, then finish it; /sdd-finish refuses and names both.
 
 ### CORE Story 5 - Keep the proof that a story works (Priority: P2)
 
-**Status**: Todo
+**Status**: Done
 
 When a story is set to `Done`, its entry in the roadmap gets a short line of
 evidence — what was run and what it showed — and the date, so anyone can see

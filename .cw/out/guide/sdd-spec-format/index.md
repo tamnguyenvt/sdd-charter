@@ -13,7 +13,7 @@ A repository's specs live in one folder, the one `.sdd/settings.json` names
 |---|---|
 | `spec.md` | the index: one row per spec — its file, its prefix, what part of the product it covers. No stories. |
 | `spec-<key>.md` | one part of the product: what it must do and why. Its ids carry the prefix its key makes, upper-cased without hyphens: `spec-core.md` is `CORE`. |
-| `plan.json` | every story of every spec, once, and the stories it depends on: the roadmap. |
+| `plan.json` | every story of every spec, once, and the stories it depends on: the roadmap; a `Done` story's entry also holds the evidence that proved it. |
 | `manifest.md` | how work is carried out and finished here, as the user chose it (/sdd-init). |
 | `ADR.md` | the decisions that change how every later story is built or written. |
 | `report.html` | the roadmap drawn from `plan.json` and the statuses (/sdd-report); generated, never edited, and ignored by the folder's `.gitignore`. |
@@ -64,7 +64,8 @@ Title, `**Created**`, `**Updated**`, `**Input**` (each request appended as
 ```json
 {
   "stories": [
-    { "id": "CORE Story 3", "title": "Sign in", "dependsOn": [] },
+    { "id": "CORE Story 3", "title": "Sign in", "dependsOn": [],
+      "evidence": { "summary": "npm test: 41 pass, 0 fail; signed in by hand as a new user", "date": "2026-10-27" } },
     { "id": "CORE Story 4", "title": "Reset a password", "dependsOn": ["CORE Story 3"] },
     { "id": "BILLING Story 1", "title": "Pay an invoice", "dependsOn": ["CORE Story 3"] }
   ]
@@ -73,9 +74,11 @@ Title, `**Created**`, `**Updated**`, `**Input**` (each request appended as
 
 Every story of every spec, once, in the order it is to be built; `title` as
 its heading says it; `dependsOn` the stories that must be `Done` first, in any
-spec. No status here — the spec's status line is the one. Stories whose
-dependencies are all `Done` can be built side by side: `ready` of
-[sdd-specs](../../script/sdd-specs/index.md) lists them.
+spec. No status here — the spec's status line is the one. `evidence` is set
+by /sdd-implement when it sets the story `Done`: one line of what /sdd-verify
+ran and what it showed, and the date it was produced. A story set back from
+`Done` loses its evidence. Stories whose dependencies are all `Done` can be
+built side by side: `ready` of [sdd-specs](../../script/sdd-specs/index.md) lists them.
 
 ## Citing
 

@@ -12,6 +12,7 @@ Node 20 or later, nothing else.
 ```bash
 node .cw/out/script/sdd-specs/specs.mjs link    # anchor every definition, link every citation, across files
 node .cw/out/script/sdd-specs/specs.mjs check   # change nothing; exit 1 on any fault
+node .cw/out/script/sdd-specs/specs.mjs check --landing "CORE Story 3"   # and on that story with no evidence
 node .cw/out/script/sdd-specs/specs.mjs ready   # stories not Done whose dependencies are all Done
 node .cw/out/script/sdd-specs/specs.mjs report  # write <spec folder>/report.html, the roadmap drawn
 ```
@@ -31,8 +32,13 @@ heading; a story missing from `plan.json`, or one there that no spec holds; a
 dependency on no story; a dependency cycle; a stale link; a story `In Progress`
 with no handoff note at `handoff/<prefix>-<n>.md` (`handoff/core-3.md` for
 CORE Story 3) — unless `manifest.md` says `**Handoff notes**: ignored` — or
-a note there for a story that is not `In Progress`. Notes are not read as
-specs: what they cite is neither linked nor checked.
+a note there for a story that is not `In Progress`; evidence on the
+`plan.json` entry of a story that is not `Done`, or evidence that is not
+`{ "summary": "<one line>", "date": "yyyy-mm-dd" }`. A `Done` story with no
+evidence passes, as the stories landed before evidence was kept; with
+`--landing "<story id>"`, which /sdd-finish passes for the story it lands,
+that story with no evidence fails. Notes are not read as specs: what they
+cite is neither linked nor checked.
 
 Its tests, beside it:
 

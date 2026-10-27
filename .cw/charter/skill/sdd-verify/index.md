@@ -20,5 +20,7 @@ disable-user-invocation: true
    browser tool such as Playwright, and look at the result.
 3. Run `check` of [[sdd-specs]] if anything in the spec folder changed.
 
-Report what was run and what it showed, quoting the decisive output. No claim
-of "works" or "passes" without that evidence from this turn.
+Report what was run and what it showed, quoting the decisive output, and end
+on one line that sums it up — what was run, what it showed — the evidence a
+`Done` story keeps. No claim of "works" or "passes" without that evidence from
+this turn.

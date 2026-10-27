@@ -91,8 +91,10 @@ with no pause.
 7. **Hand over** — gate.
 8. **Learn** — only if something surprising came up: /sdd-learn.
 9. **Done**
-   - Set the story `Done`, remove its handoff note, and run `check` of
-     [sdd-specs](../../script/sdd-specs/index.md).
+   - Set the story `Done`, write the evidence into its `plan.json` entry —
+     `"evidence": { "summary": "<one line>", "date": "yyyy-mm-dd" }`, the
+     line /sdd-verify ended on and the day it ran — remove its handoff note,
+     and run `check` of [sdd-specs](../../script/sdd-specs/index.md).
    - Commit or leave the change as **While working** says.
    - Run /sdd-finish at once; the user accepting the change is the ask.
 
@@ -124,11 +126,12 @@ The user picks one:
 ## Iron laws (across every phase)
 
 - **No building without acceptance criteria.** The spec gate is real.
-- **The spec is not rewritten per story.** Only the status line changes. The
-  one exception is a requirement the user reverses during the story: ask, then
-  update the spec, and `plan.json` where a dependency changes, as /sdd-plan's
-  clarify step would, and run `check` until it passes. A reversal that changes
-  how every later story is built also goes to `ADR.md`.
+- **The spec is not rewritten per story.** Only the status line changes, and
+  the story's evidence in `plan.json` once it is `Done`. The one exception is
+  a requirement the user reverses during the story: ask, then update the spec,
+  and `plan.json` where a dependency changes, as /sdd-plan's clarify step
+  would, and run `check` until it passes. A reversal that changes how every
+  later story is built also goes to `ADR.md`.
 - **No silent overwrite** of a file the user did not ask to change.
 
 ## Iron laws of every change

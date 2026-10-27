@@ -5,6 +5,7 @@
 //
 //   node specs.mjs link  [--if-changed]   rewrite the spec files' links and anchors
 //   node specs.mjs check [--if-changed]   change nothing; exit 1 on any fault
+//         [--landing "<story id>"]        and on that story with no evidence
 //   node specs.mjs ready                  the stories whose dependencies are Done
 //   node specs.mjs report                 write <spec folder>/report.html, the roadmap drawn
 //
@@ -108,6 +109,22 @@ for (const planned of plannedStories) {
   else if (planned.title !== undefined && planned.title !== story.title) faults.push(`${planFile}: "${planned.id}" is titled "${planned.title}"; its heading says "${story.title}"`);
   for (const dependency of planned.dependsOn ?? [])
     if (!storyById.has(dependency)) faults.push(`${planFile}: "${planned.id}" depends on "${dependency}", which is no story`);
+  // Evidence is what proved a Done story, and when; a story set back from Done
+  // loses it.
+  if (planned.evidence !== undefined) {
+    const { summary, date } = planned.evidence ?? {};
+    const isDay = typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date) && new Date(`${date}T00:00:00Z`).toJSON()?.startsWith(date) === true;
+    if (typeof summary !== "string" || summary.trim() === "" || /[\r\n]/.test(summary) || !isDay)
+      faults.push(`${planFile}: "${planned.id}" has evidence that is not { "summary": "<one line>", "date": "yyyy-mm-dd" }`);
+    if (STATUSES.includes(story?.status) && story.status !== "Done") faults.push(`${planFile}: "${planned.id}" has evidence, but is ${story.status}; remove it`);
+  }
+}
+// The story /sdd-finish lands: set Done from now on, it carries its evidence.
+const landingIndex = flags.indexOf("--landing");
+if (landingIndex !== -1) {
+  const landingId = flags[landingIndex + 1];
+  if (!plannedById.has(landingId)) faults.push(`${planFile}: "${landingId}" lands, but is no story in plan.json`);
+  else if (plannedById.get(landingId).evidence === undefined) faults.push(`${planFile}: "${landingId}" lands with no evidence; write what proved it and the date`);
 }
 for (const id of storyById.keys()) if (!plannedById.has(id)) faults.push(`${planFile}: "${id}" is missing`);
 // A dependency cycle leaves its stories never ready.
