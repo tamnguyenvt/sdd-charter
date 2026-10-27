@@ -74,6 +74,8 @@ specs/
 - Playbooks: `sdd-plan`, `sdd-implement`, `sdd-bug-fix`.
 - Skills: `sdd-init`, `sdd-finish`, `sdd-cleanup`, `sdd-status`, `sdd-report`,
   `sdd-analyze`, `sdd-verify`, `sdd-review`, `sdd-learn`.
+- Agents: `sdd-locator` (where a story's code lives), `sdd-review-agent` (the
+  review, by an agent that did not write the change).
 - Guides: `sdd-spec-format` (on the spec set's files),
   `sdd-learnings-go-to-the-inbox`.
 - Sensor `sdd-specs-on-stop`; script `sdd-specs` (`link`, `check`, `ready`, `report`;

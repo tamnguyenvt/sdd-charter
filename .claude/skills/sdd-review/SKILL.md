@@ -1,6 +1,6 @@
 ---
 name: sdd-review
-description: "Review the change against the story's scenarios, FR and SC — nothing missing, nothing beyond them — and for security issues. Use when: review implementation."
+description: "Have an agent that did not write the change review it against the story's scenarios, FR and SC — nothing missing, nothing beyond them — and for security issues. Use when: review implementation."
 user-invocable: false
 ---
 

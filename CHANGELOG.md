@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- The review is made by a new agent, `sdd-review-agent`, that did not write the change: it is handed only the story's id and spec, or a bug fix's definition of done, and the diff; it reads the FR, SC and guides that apply itself, and grades each finding `bug`, `risk`, `nit` or `q`.
+
 ## 0.1.12 — 2026-10-21
 
 - The specs are linked and checked when the agent stops in a subfolder of the repository too, not only at its root.

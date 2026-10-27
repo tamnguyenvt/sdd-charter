@@ -2,7 +2,7 @@
 
 **Created**: 2026-10-26
 
-**Updated**: 2026-10-26
+**Updated**: 2026-10-27
 
 **Input**: User description: "Phase 1 of the charter is done. Enhance it: a review by an agent other than the author, a baseline before the first change, a handoff for a story in progress, a clean state before finishing, the evidence kept with a Done story, the runtime read while verifying, a quality grade per part, and a health check of the setup."
 Then: "When planning, add a quality cross-check story after about every five stories, so the quality pass is sure to run instead of being skipped."
@@ -35,16 +35,20 @@ and the agents that walk them.
 - Q: When is the quality document updated, and who reads it? → A: in a periodic cleanup pass, not after every story; every new session reads it before picking a story ([CORE-FR-014](#core-fr-014), [CORE-FR-016](#core-fr-016)).
 - Q: How is the periodic pass made sure to run? → A: /sdd-plan puts a quality cross-check story on the roadmap after every five stories, depending on them, so it is built like any other story ([CORE-FR-019](#core-fr-019), [CORE-FR-020](#core-fr-020)).
 
+### Session 2026-10-27
+
+- Q: Does the reviewer also hold the guides that apply to the changed files? → A: yes, so it can catch a hunk that breaks one ([CORE-FR-001](#core-fr-001)).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### CORE Story 1 - Review by an agent that did not write the change (Priority: P1)
 
-**Status**: Todo
+**Status**: Done
 
 A developer runs /sdd-implement. Once the change is verified, it is reviewed
-by an agent that starts with a clean context — the story, its FR and SC, and
-the change, nothing of how the change was arrived at — and the developer gets
-its graded findings.
+by an agent that starts with a clean context — the story, its FR and SC, the
+guides that apply, and the change, nothing of how the change was arrived
+at — and the developer gets its graded findings.
 
 **Why this priority**: a model grading its own work passes what it meant to
 write rather than what it wrote; every later story is only as sound as its
@@ -55,7 +59,7 @@ scenario; the review, made by a separate agent, reports the miss.
 
 **Acceptance Scenarios**:
 
-1. **Given** a verified change, **When** the review step runs, **Then** it is made by an agent spawned for it, holding only the story, the FR and SC it cites, and the change ([CORE-FR-001](#core-fr-001)).
+1. **Given** a verified change, **When** the review step runs, **Then** it is made by an agent spawned for it, holding only the story, the FR and SC it cites, the guides that apply to the changed files, and the change ([CORE-FR-001](#core-fr-001)).
 2. **Given** that review, **When** it finishes, **Then** the walk receives each finding graded `bug`, `risk`, `nit` or `q`, and a `bug` or `risk` fails the review as before ([CORE-FR-002](#core-fr-002)).
 
 ---
@@ -264,7 +268,7 @@ quality document exists with a grade per criterion for CORE.
 
 **Review**
 
-- <a id="core-fr-001"></a>**CORE-FR-001**: The review of a change MUST be made by an agent other than the one that wrote it, starting from the story, the FR and SC it cites, and the change alone.
+- <a id="core-fr-001"></a>**CORE-FR-001**: The review of a change MUST be made by an agent other than the one that wrote it, starting from the story, the FR and SC it cites, the guides that apply to the changed files, and the change alone.
 - <a id="core-fr-002"></a>**CORE-FR-002**: That review MUST grade each finding `bug`, `risk`, `nit` or `q`, and fail on any `bug` or `risk`.
 
 **Baseline**
