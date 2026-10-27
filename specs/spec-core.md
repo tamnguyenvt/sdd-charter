@@ -156,7 +156,7 @@ the date, and the roadmap still checks.
 
 ### CORE Story 6 - Read the runtime while verifying (Priority: P2)
 
-**Status**: Todo
+**Status**: Done
 
 When /sdd-verify runs the story by hand, it also reads what the running
 program says — its log, its console, its error output — and treats an error

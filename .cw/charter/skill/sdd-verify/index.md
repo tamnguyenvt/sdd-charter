@@ -17,7 +17,11 @@ disable-user-invocation: true
    baseline did not record is a failure like any other.
 2. Test it by hand, as a user of the story would: run the command, call the
    endpoint, open the page. For a UI, start the server and drive it with a
-   browser tool such as Playwright, and look at the result.
+   browser tool such as Playwright, and look at the result. Read what the
+   program logged and printed during the run — its output and error
+   streams, its log files, the browser console — and report it, or say that
+   nothing was logged. An error or a warning raised on the story's path
+   fails this step, quoted as it was printed.
 3. Run `check` of [[sdd-specs]] if anything in the spec folder changed.
 
 Report what was run and what it showed, quoting the decisive output, and end
