@@ -3,6 +3,9 @@
 ## Unreleased
 
 - The review is made by a new agent, `sdd-review-agent`, that did not write the change: it is handed only the story's id and spec, or a bug fix's definition of done, and the diff; it reads the FR, SC and guides that apply itself, and grades each finding `bug`, `risk`, `nit` or `q`.
+- `/sdd-implement` checks the baseline once the story is picked, and `/sdd-bug-fix` once the bug is understood, before the first change: every test and static check the project defines is run. When one fails, the walk stops and offers to fix it first through `/sdd-bug-fix` or to record it as a known failure and go on. A check that fails only with the failures the baseline recorded does not fail `/sdd-verify`, and is named at the hand-over. A project that defines no check is said to define none, and you are asked whether to go on.
+- `sdd-implement` is cut to short steps that say only what the agent cannot infer, with the hand-over a step of its own, and where a failure goes back to and how a known failure is handled each in a section of its own.
+- `/sdd-implement` has no check drift step any more: the review already holds every changed hunk to the guides that apply, line by line, old code on a changed line included.
 
 ## 0.1.12 — 2026-10-21
 

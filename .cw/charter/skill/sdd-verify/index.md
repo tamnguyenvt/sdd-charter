@@ -9,7 +9,12 @@ disable-user-invocation: true
 1. Run the full test suite and every static check the project defines —
    look in `package.json` scripts, the `Makefile`, the CI config: tests,
    type check, lint, dependency rules. Every one must pass; a failure is fixed,
-   never skipped.
+   never skipped. The one exception is a known failure the baseline of this
+   walk recorded: a check that fails with none but the failures it recorded
+   — each failing test's name, each error's line — does not fail this step,
+   and they are reported as known, never as caused by the change. A known
+   failure that no longer fails is reported as fixed. Any failure the
+   baseline did not record is a failure like any other.
 2. Test it by hand, as a user of the story would: run the command, call the
    endpoint, open the page. For a UI, start the server and drive it with a
    browser tool such as Playwright, and look at the result.

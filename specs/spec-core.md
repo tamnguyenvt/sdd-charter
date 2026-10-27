@@ -66,7 +66,7 @@ scenario; the review, made by a separate agent, reports the miss.
 
 ### CORE Story 2 - Check the baseline before the first change (Priority: P1)
 
-**Status**: Todo
+**Status**: Done
 
 Before a story's first change, the agent runs the tests and static checks the
 project defines. When they pass, it goes on; when they fail, it stops and asks

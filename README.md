@@ -24,8 +24,8 @@ request — with recommendations drawn from your history, and writes it down.
 |---|---|
 | `/sdd-init` | Surveys the repository, offers to refactor the specs it already has (one big spec, Spec Kit folders, a PRD) into a spec set, asks how work is done and finished, and writes `.sdd/settings.json` and `<specs>/manifest.md`. |
 | `/sdd-plan <what you want>` | Clarifies, then writes the phase's stories, FR and SC into the right spec, and their dependencies into `plan.json`. |
-| `/sdd-implement` | Draws the roadmap, asks which spec, takes a ready story, then spec gate, test first, verify, review, and marks it `Done`. |
-| `/sdd-bug-fix <the bug>` | On a `fix/` branch from your development branch: reproduces the bug with evidence, reports the root cause and the fix for your yes, fixes it test first, reviews, verifies, and finishes into the development branch. |
+| `/sdd-implement` | Draws the roadmap, asks which spec, takes a ready story, checks the baseline, then spec gate, test first, verify, review, and marks it `Done`. |
+| `/sdd-bug-fix <the bug>` | On a `fix/` branch from your development branch: checks the baseline, reproduces the bug with evidence, reports the root cause and the fix for your yes, fixes it test first, reviews, verifies, and finishes into the development branch. |
 | `/sdd-status` | Every story with its status, and which can be built now. |
 | `/sdd-report` | Draws the roadmap into `report.html`: what is done, in progress, ready and waiting, and what waits on what. |
 

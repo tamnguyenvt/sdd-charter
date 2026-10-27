@@ -32,7 +32,7 @@
   {
     "kind": "playbook",
     "id": "sdd-bug-fix",
-    "description": "Fix one bug on a fix branch of its own — understand it, reproduce it with evidence, report the root cause and the fix for approval, fix it test first, review, verify, and finish into the development branch.",
+    "description": "Fix one bug on a fix branch of its own — understand it, check the baseline, reproduce it with evidence, report the root cause and the fix for approval, fix it test first, review, verify, and finish into the development branch.",
     "file": ".cw/out/playbook/sdd-bug-fix/index.md"
   },
   {
@@ -62,7 +62,7 @@
   {
     "kind": "playbook",
     "id": "sdd-implement",
-    "description": "Implement a ready story of the spec set — pick it, spec gate, test first, verify, review — the way manifest.md says, and mark it Done.",
+    "description": "Implement a ready story of the spec set — pick it, baseline, spec gate, test first, verify, review — the way manifest.md says, and mark it Done.",
     "file": ".cw/out/playbook/sdd-implement/index.md"
   },
   {

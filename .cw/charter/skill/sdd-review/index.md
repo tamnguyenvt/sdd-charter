@@ -15,5 +15,5 @@ for each file `git ls-files --others --exclude-standard` lists — and spawn
 definition of done, and that file's path. Hand it nothing else: never the
 conversation, the plan, or the reasoning behind the change.
 
-Relay its findings and its verdict to the walk as it wrote them; a `nit` or a
-`q` is handed to the user to decide at the gate.
+Relay the guides it read, its findings and its verdict to the walk as it wrote
+them; a `nit` or a `q` is handed to the user to decide at the gate.

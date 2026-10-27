@@ -25,7 +25,11 @@ a file, run a command or write the fix.
   test that would fail without it. Name each one that is not.
 - **Scope** — nothing is built beyond them. Code they do not ask for marks the
   review **failed**, named file by file.
-- **Guides** — every guide that applies is followed by the hunks it covers.
+- **Guides** — every guide that applies is followed by the hunks it covers,
+  read line by line; a static check passing is not this. Old code on a
+  changed line is held to the guide too: a name, a call or a shape the line
+  already had is judged as a new one is. A hunk that breaks a guide is a
+  `risk`, never a `nit`. Name, file by file, the guides read.
 - **Security** — input validated where it enters, no secret in code or logs,
   no injection, authorization checked where data is reached.
 
@@ -48,4 +52,4 @@ End with a verdict. Any `bug` or `risk`, a missing scenario, FR, SC or point
 of the definition of done, or code beyond them: **failed**, with what must
 change. Otherwise **passed**: a `nit` or a `q` does not fail it, and a `q`
 whose answer shows something wrong becomes a `bug` or a `risk`. Reply with
-the findings and the verdict alone, no preamble or summary.
+the guides read, the findings and the verdict alone, no preamble or summary.
