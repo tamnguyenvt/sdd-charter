@@ -7,6 +7,7 @@ by asking the user.
 ## Specs
 
 - **Folder**: `specs`
+- **Quality cross-check**: every 5 stories
 
 ## Working
 
@@ -23,6 +24,7 @@ by asking the user.
 
 - **While working**: unstaged — leave every change unstaged until the story or fix is finished; the user stages what they have read, and /sdd-finish commits
 - **Message**: one plain English sentence saying what changed, as the history does; a story's is `CORE Story 4: <title>`
+- **Handoff notes**: committed — a story's handoff note is committed with its work, so another machine resumes from it; with **While working** unstaged, it waits in the working tree with the rest of the work
 - **Co-Authored-By**: yes — end each commit with the agent's Co-Authored-By line
 
 ## Finishing

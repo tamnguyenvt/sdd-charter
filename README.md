@@ -28,6 +28,7 @@ request — with recommendations drawn from your history, and writes it down.
 | `/sdd-bug-fix <the bug>` | On a `fix/` branch from your development branch: checks the baseline, reproduces the bug with evidence, reports the root cause and the fix for your yes, fixes it test first, verifies and reviews, and finishes into the development branch. |
 | `/sdd-status` | Every story with its status, and which can be built now. |
 | `/sdd-quality` | Grades each spec A–F on verification, understandability, test stability, boundaries and conventions, with why and the grade before, into `quality.md`, and offers the lowest-graded part for cleanup. |
+| `/sdd-doctor` | Checks the spec set is set up — settings, spec folder, every answer the manifest needs today — each passing or failing with why, and offers the fix of each fault. The engine's own health is `cw doctor`'s. |
 | `/sdd-report` | Draws the roadmap into `report.html`: what is done, in progress, ready and waiting, and what waits on what. |
 
 ![The roadmap /sdd-report draws into report.html: Done stories grey with green ids, In Progress pink with a green dot, ready with a solid border, waiting dashed, and an arrow from each story to the ones waiting on it](docs/report.png)
@@ -89,12 +90,13 @@ specs/
 
 - Playbooks: `sdd-plan`, `sdd-implement`, `sdd-bug-fix`.
 - Skills: `sdd-init`, `sdd-finish`, `sdd-cleanup`, `sdd-status`, `sdd-report`,
-  `sdd-analyze`, `sdd-verify`, `sdd-review`, `sdd-quality`, `sdd-learn`.
+  `sdd-analyze`, `sdd-verify`, `sdd-review`, `sdd-quality`, `sdd-doctor`,
+  `sdd-learn`.
 - Agents: `sdd-locator` (where a story's code lives), `sdd-review-agent` (the
   review, by an agent that did not write the change).
 - Guides: `sdd-spec-format` (on the spec set's files),
   `sdd-learnings-go-to-the-inbox`.
-- Sensor `sdd-specs-on-stop`; script `sdd-specs` (`link`, `check`, `ready`, `report`;
+- Sensor `sdd-specs-on-stop`; script `sdd-specs` (`link`, `check`, `ready`, `report`, `doctor`;
   Node 20+, no dependencies); script `sdd-clean` (what a change would leave
   behind); templates `sdd-spec-index`, `sdd-spec`,
   `sdd-manifest`, `sdd-quality-doc`.

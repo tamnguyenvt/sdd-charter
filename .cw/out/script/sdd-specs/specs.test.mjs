@@ -1,8 +1,9 @@
-// The handoff note and evidence rules of `check`, run against spec folders made for each case.
+// The handoff note and evidence rules of `check`, and `doctor`, run against
+// spec folders and repositories made for each case.
 //
 //   node --test .cw/out/script/sdd-specs/specs.test.mjs
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -161,3 +162,123 @@ test("landing a story that is not in plan.json fails", () => {
   specSetOf({ statuses: ["Done", "Todo"], evidence: [proof] });
   assert.match(check("--landing", "CORE Story 7").output, /"CORE Story 7" lands, but is no story in plan\.json/);
 });
+
+// `doctor`: a repository set up in full, every answer the sdd-manifest template
+// asks for given, short of what is left out.
+const manifestTemplate = join(dirname(specsScript), "..", "..", "template", "sdd-manifest", "index.md");
+const manifestFields = [...readFileSync(manifestTemplate, "utf8").matchAll(/^- \*\*([^*]+)\*\*:/gm)].map((match) => match[1]);
+
+function setUpRepository({ settings = true, leaveOut = [], answers = {} } = {}) {
+  repositoryFolder = mkdtempSync(join(tmpdir(), "sdd-doctor-"));
+  if (!settings) return;
+  mkdirSync(join(repositoryFolder, ".sdd"));
+  mkdirSync(join(repositoryFolder, "specs"));
+  writeFileSync(join(repositoryFolder, ".sdd", "settings.json"), '{ "specFolder": "specs" }');
+  const lines = manifestFields.filter((field) => !leaveOut.includes(field)).map((field) => `- **${field}**: ${answers[field] ?? "answered"}`);
+  writeFileSync(join(repositoryFolder, "specs", "manifest.md"), `# Manifest\n\n${lines.join("\n")}\n`);
+}
+
+function doctor() {
+  const run = spawnSync(process.execPath, [specsScript, "doctor"], { cwd: repositoryFolder, encoding: "utf8" });
+  return { status: run.status, output: run.stdout + run.stderr, stderr: run.stderr };
+}
+
+test("doctor passes each item of a repository set up in full, with its reason, and checks nothing else", () => {
+  setUpRepository();
+  const { status, output } = doctor();
+  assert.equal(status, 0, output);
+  for (const item of ["settings", "spec folder", "manifest"]) assert.match(output, new RegExp(`^pass  ${item} +\\S`, "m"));
+  assert.equal(output.trim().split("\n").length, 3);
+});
+
+test("doctor fails a manifest missing an answer, and offers the one question that writes it", () => {
+  setUpRepository({ leaveOut: ["Handoff notes"] });
+  const { status, output } = doctor();
+  assert.equal(status, 1);
+  assert.match(output, /^fail  manifest +specs\/manifest\.md has no \*\*Handoff notes\*\* — fix: ask \/sdd-init's question on \*\*Handoff notes\*\* and write the answer$/m);
+  assert.equal(output.match(/^fail/gm).length, 1);
+});
+
+test("doctor fails an answer left as the template's text", () => {
+  const templateOrder = /^- \*\*Order\*\*:(.*)$/m.exec(readFileSync(manifestTemplate, "utf8"))[1].trim();
+  setUpRepository({ answers: { Order: templateOrder } });
+  assert.match(doctor().output, /^fail  manifest +specs\/manifest\.md leaves \*\*Order\*\* unanswered — fix: ask \/sdd-init's question on \*\*Order\*\*/m);
+});
+
+test("doctor fails an answer keeping a placeholder of the template mid-line", () => {
+  setUpRepository({ answers: { "Quality cross-check": "every [5, unless the user names another number] stories" } });
+  assert.match(doctor().output, /^fail  manifest +specs\/manifest\.md leaves \*\*Quality cross-check\*\* unanswered/m);
+});
+
+test("doctor fails an answer keeping a placeholder nested in the template's choice", () => {
+  setUpRepository({ answers: { Worktree: "per story — each story in a git worktree of its own, under `[path]`" } });
+  assert.match(doctor().output, /^fail  manifest +specs\/manifest\.md leaves \*\*Worktree\*\* unanswered/m);
+});
+
+test("doctor fails an answer that is an empty code span", () => {
+  setUpRepository({ answers: { Message: "``" } });
+  assert.match(doctor().output, /^fail  manifest +specs\/manifest\.md leaves \*\*Message\*\* unanswered/m);
+});
+
+test("doctor passes an answer holding a bracket the template does not", () => {
+  setUpRepository({ answers: { "Pull request": "title `[CORE Story 4] <title>`" } });
+  assert.equal(doctor().status, 0);
+});
+
+test("doctor passes an answer that opens and closes on a bracket of its own", () => {
+  setUpRepository({ answers: { "Pull request": "[CORE Story 4] <title> [draft]" } });
+  assert.equal(doctor().status, 0);
+});
+
+test("doctor says a repository with no settings is not set up, and offers /sdd-init", () => {
+  setUpRepository({ settings: false });
+  const { status, output } = doctor();
+  assert.equal(status, 1);
+  assert.match(output, /^fail  settings +no \.sdd\/settings\.json: this repository is not set up for spec-driven development — fix: \/sdd-init$/m);
+});
+
+for (const [name, settingsText] of [["that are no JSON", "{"], ["naming a spec folder by no string", '{ "specFolder": 5 }']])
+  test(`doctor reports settings ${name}, offering the spec folder question, and does not crash`, () => {
+    setUpRepository();
+    writeFileSync(join(repositoryFolder, ".sdd", "settings.json"), settingsText);
+    const { status, output, stderr } = doctor();
+    assert.equal(status, 1);
+    assert.match(output, /^fail  settings +\.sdd\/settings\.json names no "specFolder" — fix: ask \/sdd-init's question on the spec folder$/m);
+    assert.equal(stderr, "");
+  });
+
+test("doctor says the folder it checks is assumed when the settings name none", () => {
+  setUpRepository();
+  writeFileSync(join(repositoryFolder, ".sdd", "settings.json"), "{}");
+  const { output } = doctor();
+  assert.match(output, /^pass  spec folder specs \(assumed\) exists$/m);
+  assert.match(output, /^pass  manifest +specs\/manifest\.md \(assumed\) answers all/m);
+});
+
+test("doctor fails a missing spec folder, offering /sdd-init", () => {
+  setUpRepository();
+  rmSync(join(repositoryFolder, "specs"), { recursive: true });
+  assert.match(doctor().output, /^fail  spec folder +no folder at specs — fix: \/sdd-init$/m);
+});
+
+test("doctor fails a file standing where the spec folder should be", () => {
+  setUpRepository();
+  rmSync(join(repositoryFolder, "specs"), { recursive: true });
+  writeFileSync(join(repositoryFolder, "specs"), "");
+  assert.match(doctor().output, /^fail  spec folder +no folder at specs — fix: \/sdd-init$/m);
+});
+
+test("doctor gives the same report twice and changes nothing", () => {
+  setUpRepository({ leaveOut: ["Order"] });
+  const before = snapshotOf(repositoryFolder);
+  const first = doctor();
+  assert.deepEqual(doctor(), first);
+  assert.deepEqual(snapshotOf(repositoryFolder), before);
+});
+
+function snapshotOf(folder) {
+  return readdirSync(folder, { recursive: true }).sort().map((name) => {
+    const path = join(folder, name);
+    return statSync(path).isFile() ? [name, readFileSync(path, "utf8")] : [name];
+  });
+}

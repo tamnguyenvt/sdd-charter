@@ -8,18 +8,87 @@
 //         [--landing "<story id>"]        and on that story with no evidence
 //   node specs.mjs ready                  the stories whose dependencies are Done
 //   node specs.mjs report                 write <spec folder>/report.html, the roadmap drawn
+//   node specs.mjs doctor                 whether the settings, spec folder and manifest are set up; exit 1 on any fault
 //
 // The spec folder is read from .sdd/settings.json ("specFolder"), from the
 // repository's root; "specs" when there is none.
 import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, relative } from "node:path";
 
 const [command = "check", ...flags] = process.argv.slice(2);
 const settingsFile = join(".sdd", "settings.json");
+if (command === "doctor") {
+  // The report is flushed before exiting, a pipe on macOS being asynchronous.
+  process.exitCode = doctor();
+  await new Promise((resolve) => process.stdout.write("", resolve));
+  process.exit();
+}
 const specFolder = existsSync(settingsFile) ? JSON.parse(readFileSync(settingsFile, "utf8")).specFolder ?? "specs" : "specs";
 const planFile = join(specFolder, "plan.json");
 const STATUSES = ["Todo", "In Progress", "Done"];
+
+// Whether the spec set is set up — settings, spec folder, manifest — one line
+// per item: pass or fail, its reason, and for a fault its fix. Reads only;
+// exit 1 on any fail.
+function doctor() {
+  const report = [];
+  const pass = (item, reason) => report.push(`pass  ${item.padEnd(11)} ${reason}`);
+  const fail = (item, reason, fix) => report.push(`fail  ${item.padEnd(11)} ${reason} — fix: ${fix}`);
+  const print = () => {
+    console.log(report.join("\n"));
+    return report.some((line) => line.startsWith("fail")) ? 1 : 0;
+  };
+
+  if (!existsSync(settingsFile)) {
+    fail("settings", `no ${settingsFile}: this repository is not set up for spec-driven development`, "/sdd-init");
+    return print();
+  }
+  let folder;
+  try {
+    folder = JSON.parse(readFileSync(settingsFile, "utf8")).specFolder;
+  } catch {}
+  if (typeof folder !== "string" || folder === "") folder = undefined;
+  if (folder) pass("settings", `${settingsFile} names "${folder}"`);
+  else fail("settings", `${settingsFile} names no "specFolder"`, "ask /sdd-init's question on the spec folder");
+  // With none named, the rest is checked on "specs", and says so.
+  const assumed = !folder;
+  folder ||= "specs";
+  const shown = (path) => (assumed ? `${path} (assumed)` : path);
+
+  let isFolder = false;
+  try {
+    isFolder = statSync(folder).isDirectory();
+  } catch {}
+  if (isFolder) pass("spec folder", `${shown(folder)} exists`);
+  else fail("spec folder", `no folder at ${shown(folder)}`, "/sdd-init");
+
+  // Every answer the manifest template asks for, as /sdd-init asks it today.
+  const templateFile = join(dirname(process.argv[1]), "..", "..", "template", "sdd-manifest", "index.md");
+  const manifestFile = join(folder, "manifest.md");
+  if (!existsSync(manifestFile)) fail("manifest", `no ${shown(manifestFile)}`, "/sdd-init");
+  else {
+    // An answer is left unanswered when it is still the template's text for
+    // its field, or keeps one of its placeholders, `[path]`.
+    const fields = [...readFileSync(templateFile, "utf8").matchAll(/^- \*\*([^*]+)\*\*:(.*)$/gm)].map((match) => ({
+      field: match[1],
+      text: match[2].trim(),
+      placeholders: match[2].match(/\[[^[\]]*\]/g) ?? [],
+    }));
+    const manifestText = readFileSync(manifestFile, "utf8");
+    const before = report.length;
+    for (const { field, text, placeholders } of fields) {
+      const answer = new RegExp(`^- \\*\\*${field.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\*\\*:(.*)$`, "m").exec(manifestText)?.[1].trim();
+      const fix = `ask /sdd-init's question on **${field}** and write the answer`;
+      if (answer === undefined) fail("manifest", `${shown(manifestFile)} has no **${field}**`, fix);
+      else if (answer.replace(/[`\s]/g, "") === "" || answer === text || placeholders.some((placeholder) => answer.includes(placeholder)))
+        fail("manifest", `${shown(manifestFile)} leaves **${field}** unanswered`, fix);
+    }
+    if (report.length === before) pass("manifest", `${shown(manifestFile)} answers all ${fields.length} questions`);
+  }
+
+  return print();
+}
 
 if (flags.includes("--if-changed")) {
   let changed = "x";

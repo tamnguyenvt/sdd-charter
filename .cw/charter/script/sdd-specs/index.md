@@ -15,6 +15,7 @@ node .cw/out/script/sdd-specs/specs.mjs check   # change nothing; exit 1 on any 
 node .cw/out/script/sdd-specs/specs.mjs check --landing "CORE Story 3"   # and on that story with no evidence
 node .cw/out/script/sdd-specs/specs.mjs ready   # stories not Done whose dependencies are all Done
 node .cw/out/script/sdd-specs/specs.mjs report  # write <spec folder>/report.html, the roadmap drawn
+node .cw/out/script/sdd-specs/specs.mjs doctor  # whether settings, spec folder and manifest are set up; change nothing; exit 1 on any fault
 ```
 
 `--if-changed` makes `link` and `check` do nothing when `git status` reports
@@ -39,6 +40,15 @@ evidence passes, as the stories landed before evidence was kept; with
 `--landing "<story id>"`, which /sdd-finish passes for the story it lands,
 that story with no evidence fails. Notes are not read as specs: what they
 cite is neither linked nor checked.
+
+**doctor** prints a line per item, `pass` or `fail` with its reason, and for
+a fault its fix: `.sdd/settings.json` names a spec folder — where there is no
+settings file, the one line says the repository is not set up, fix /sdd-init;
+the folder exists; `manifest.md` answers every `- **<Field>**:` line of the
+[[sdd-manifest]] template, read beside this script — each one missing, left
+as the template's text or keeping one of its `[placeholders]` a line of its
+own, fix the /sdd-init question on it. It checks the spec set alone; the
+engine's health is `cw doctor`'s.
 
 Its tests, beside it:
 

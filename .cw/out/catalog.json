@@ -61,6 +61,12 @@
   },
   {
     "kind": "skill",
+    "id": "sdd-doctor",
+    "description": "Check that the repository's spec set is set up — settings, spec folder, every manifest answer — and offer the fix of each fault.",
+    "file": ".cw/out/skill/sdd-doctor/index.md"
+  },
+  {
+    "kind": "skill",
     "id": "sdd-finish",
     "description": "Finish the story, bug fix or phase you stand on exactly as manifest.md says — merge, squash-merge or pull request, into the branch it names — then clean its worktree up.",
     "file": ".cw/out/skill/sdd-finish/index.md"

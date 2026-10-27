@@ -1,0 +1,23 @@
+---
+kind: skill
+id: sdd-doctor
+description: Check that the repository's spec set is set up — settings, spec folder, every manifest answer — and offer the fix of each fault.
+triggers: ["sdd doctor", "check the sdd setup", "is the spec setup healthy"]
+rationale: sdd-concept
+---
+
+Run `doctor` of [[sdd-specs]] and give its report as it printed it. Change
+nothing until the user picks a fix.
+
+Then offer each `fail` line's fix, one at a time:
+
+- **ask /sdd-init's question on** `**<Field>**` — ask the one question of
+  /sdd-init that writes that line, with its recommendation, and write the
+  answer into `manifest.md` under the heading the [[sdd-manifest]] template
+  puts it; nothing else of the manifest changes.
+- **ask /sdd-init's question on the spec folder** — ask it, and write the
+  answer to `.sdd/settings.json` as `specFolder` and to the manifest's
+  **Folder**.
+- **/sdd-init** — offer to run it.
+
+Run `doctor` again after the fixes, and end on its report.

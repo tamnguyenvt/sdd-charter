@@ -41,6 +41,7 @@ and the agents that walk them.
 - Q: Does the reviewer also hold the guides that apply to the changed files? → A: yes, so it can catch a hunk that breaks one ([CORE-FR-001](#core-fr-001)).
 - Q: Is the story that lets the review see what verify proved graded by the first quality cross-check? → A: yes, it comes before it and the cross-check depends on it ([CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3), [CORE Story 10](#core-story-10---review-with-the-proof-verify-produced-priority-p2)).
 - Q: A scenario proven neither by a test nor by the line verify ended on — does the review fail or only ask? → A: it fails: nothing proves it ([CORE-FR-022](#core-fr-022)).
+- Q: Does the health check also check the check on stop and the tools it runs? → A: no: it checks the spec set's setup alone; the engine's health is `cw doctor`'s ([CORE-FR-017](#core-fr-017)).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -211,16 +212,16 @@ scenario, and the next /sdd-implement mentions it.
 
 ### CORE Story 8 - Check the spec-driven setup itself (Priority: P3)
 
-**Status**: Todo
+**Status**: Done
 
 The developer asks whether the repository's spec-driven setup is healthy. The
-agent checks that the settings point at a spec folder that exists, that the
-manifest answers every question /sdd-init asks today, that the specs are
-checked when the agent stops, and that the tools it runs are available, and
-offers to fix each fault it finds.
+agent checks that the settings point at a spec folder that exists and that
+the manifest answers every question /sdd-init asks today, and offers to fix
+each fault it finds. The engine's own health — the check on stop, the build,
+the tools — is `cw doctor`'s, not this one's.
 
 **Why this priority**: a manifest written by an older version silently falls
-back to defaults, and a check that is not installed passes everything.
+back to defaults.
 
 **Independent Test**: remove an answer from the manifest and run the health
 check; it names the missing answer and offers to ask it.
@@ -340,7 +341,7 @@ with no such run reported, the review fails on that scenario.
 
 **Health**
 
-- <a id="core-fr-017"></a>**CORE-FR-017**: A health check MUST report whether the settings, the spec folder, every answer of the manifest, the check on stop and the tools it needs are in place, each with its reason.
+- <a id="core-fr-017"></a>**CORE-FR-017**: A health check MUST report whether the settings, the spec folder and every answer of the manifest are in place, each with its reason; it checks nothing of the engine — the check on stop, the build, the tools.
 - <a id="core-fr-018"></a>**CORE-FR-018**: For each fault, the health check MUST offer the fix: the one question to ask, or /sdd-init.
 
 ### Key Entities
