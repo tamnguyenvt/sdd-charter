@@ -14,7 +14,10 @@ the walk goes back to the change.
 The change is never reviewed by the agent that wrote it. Write the change to
 a temporary file outside the repository — `git diff $(git merge-base <the
 branch it started from> HEAD)`, then `git diff --no-index /dev/null -- "<file>"`
-for each file `git ls-files --others --exclude-standard` lists — and spawn
+for each file `git ls-files --others --exclude-standard` lists — raw, past
+any filter that rewrites command output (`rtk proxy git …` where rtk is
+installed); the file holds a `+++ ` header per changed file, or it is written
+again. Then spawn
 [sdd-review-agent](../../agent/sdd-review-agent/index.md) with the story's id and `spec-<key>.md`, or a bug fix's
 definition of done, that file's path, and the line /sdd-verify ended on.
 Hand it nothing else: never the conversation, the plan, or the reasoning

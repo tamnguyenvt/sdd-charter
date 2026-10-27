@@ -59,7 +59,9 @@ nothing about the case at hand, ask, and offer to write the answer into it.
 
    Where the manifest says nothing, keep the branch and offer /sdd-cleanup.
    A branch with an open pull request is never deleted, nor a phase branch.
-5. **Report** — run /sdd-report, so the roadmap shows what just landed.
+5. **Report** — run /sdd-report, then end on these four bullets alone:
 
-Say which branch went where, the resulting commit or pull request, and the
-next ready story (`ready` of [[sdd-specs]]).
+   - `branch <x> merged to <y>` — or the pull request opened
+   - `current branch: <z>`
+   - `next ready tasks: <numbers>` — `ready` of [[sdd-specs]]
+   - `recommend: <id>: <title>` — the first of them in `plan.json` order

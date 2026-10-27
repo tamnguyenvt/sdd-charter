@@ -12,10 +12,10 @@ decides the worktree, the order, the branches — the development branch
 where it says nothing about the case at hand, ask.
 
 - **Handed over only once checked.** The user is handed a change only after
-  /sdd-verify and /sdd-review have passed. With **Conversation** short, say
-  only that it is done and needs the user's review, with each `q` the review
-  left to answer; with it detailed, say what changed and what each check
-  showed, with each `nit` and `q` the review left for the user to decide.
-  Either way, name each known failure the baseline recorded. Each change the
+  /sdd-verify and /sdd-review have passed. With **Conversation** short, open
+  on each `nit` and `q` the review left for the user to decide, with no line
+  saying the change is done, checked or waiting; with it detailed, say what
+  changed and what each check showed, then each `nit` and `q`. Either way,
+  name each known failure the baseline recorded, where it recorded any. Each change the
   user asks for then is made and checked the same way again before it is
   handed back; a requested change is never reported done on the edit alone.
