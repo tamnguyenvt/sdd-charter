@@ -9,11 +9,11 @@ triggers: ["sdd doctor", "check the sdd setup", "is the spec setup healthy"]
 Run `doctor` of [sdd-specs](../../script/sdd-specs/index.md) and give its report as it printed it. Change
 nothing until the user picks a fix.
 
-Then offer each `fail` line's fix, one at a time:
+Then offer each fix the `fail` lines name, one at a time, each once:
 
-- **ask /sdd-init's question on** `**<Field>**` — ask the one question of
-  /sdd-init that writes that line, with its recommendation, and write the
-  answer into `manifest.md` under the heading the [sdd-manifest](../../template/sdd-manifest/index.md) template
+- **ask /sdd-init's question on** `**<Question>**` — ask that question of
+  /sdd-init, with its recommendation, and write each failed line it
+  answers into `manifest.md` under the heading the [sdd-manifest](../../template/sdd-manifest/index.md) template
   puts it; nothing else of the manifest changes.
 - **ask /sdd-init's question on the spec folder** — ask it, and write the
   answer to `.sdd/settings.json` as `specFolder` and to the manifest's

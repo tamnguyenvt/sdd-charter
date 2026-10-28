@@ -1,19 +1,24 @@
 {
   "stories": [
-    { "id": "CORE Story 1", "title": "Review by an agent that did not write the change", "dependsOn": [] },
-    { "id": "CORE Story 2", "title": "Check the baseline before the first change", "dependsOn": [] },
-    { "id": "CORE Story 3", "title": "Hand a story in progress over to the next session", "dependsOn": [] },
+    { "id": "CORE Story 1", "title": "Review by an agent that did not write the change", "dependsOn": [],
+      "evidence": { "summary": "by hand on CORE Story 9: a review agent spawned with only the story id, the diff path and the verify line gathered the story, FR, SC and guides itself and graded each finding bug, risk, nit or q, failing on the bug and risks", "date": "2026-10-27" } },
+    { "id": "CORE Story 2", "title": "Check the baseline before the first change", "dependsOn": [],
+      "evidence": { "summary": "by hand in a clone with one test broken: the baseline stopped before any change, quoted not ok 36, offered /sdd-bug-fix or known; recorded as known, verify passed naming it known, and the hand-over named it", "date": "2026-10-27" } },
+    { "id": "CORE Story 3", "title": "Hand a story in progress over to the next session", "dependsOn": [],
+      "evidence": { "summary": "node --test: 51 pass, 0 fail; by hand in clones: a new session read the handoff note before acting on the story, resumed at its Remaining step and asked nothing it answers; /sdd-init asked Handoff notes and wrote it; check fails a note for a Done story", "date": "2026-10-27" } },
     { "id": "CORE Story 4", "title": "Refuse to finish on an unclean state", "dependsOn": ["CORE Story 3"] },
     { "id": "CORE Story 5", "title": "Keep the proof that a story works", "dependsOn": [],
       "evidence": { "summary": "node --test: 35 pass, 0 fail; cw test 4 cases; check accepts evidence on a Done story, refuses it on one not Done, and --landing refuses a story with none", "date": "2026-10-27" } },
     { "id": "CORE Story 6", "title": "Read the runtime while verifying", "dependsOn": [],
       "evidence": { "summary": "node --test: 35 pass, 0 fail; cw test 4 cases; a manual run exiting 0 with an error on stderr fails on the quoted line, a silent run is said to log nothing", "date": "2026-10-27" } },
-    { "id": "CORE Story 7", "title": "Grade each part of the product over time", "dependsOn": [],
-      "evidence": { "summary": "node --test: 35 pass, 0 fail; cw test 5 cases; by hand in clones: /sdd-quality graded each spec with cited reasons, (was …) on a second pass and — for a spec with no Done story; /sdd-implement named the lowest part first and held a cross-check story from Done until the cleanup offer was answered; /sdd-plan added cross-checks after every five, or the manifest's number, carrying the leftovers", "date": "2026-10-27" } },
+    { "id": "CORE Story 7", "title": "Check the product against its stories over time", "dependsOn": [],
+      "evidence": { "summary": "node --test: 52 pass, 0 fail; by hand in clones: /sdd-quality, in a cross-check waiting on CORE alone, wrote the missing quality.md from its template, checked the code and every spec, BILLING included, item by item, failed each violation by path:line, graded F, handed the violations to /sdd-plan, fixed nothing and held the story from Done; a second pass put its report in place of the older one under Last pass, the checklist unchanged; /sdd-init wrote quality.md as the checklist; /sdd-plan added cross-checks after every five, or the manifest's number, carrying the leftovers", "date": "2026-10-27" } },
     { "id": "CORE Story 8", "title": "Check the spec-driven setup itself", "dependsOn": ["CORE Story 3"],
       "evidence": { "summary": "node --test: 50 pass, 0 fail; cw test 5 cases; doctor passes settings, spec folder and manifest here; in a clone it failed a manifest missing Handoff notes with that one /sdd-init question as its fix, passed once it was answered, and said a repository with no settings is not set up, offering /sdd-init", "date": "2026-10-27" } },
     { "id": "CORE Story 10", "title": "Review with the proof verify produced", "dependsOn": ["CORE Story 1"],
       "evidence": { "summary": "node --test: 35 pass, 0 fail; cw test 4 cases; a failing verify stopped the review with the tree unchanged; a reviewer handed a verify line naming no hand run failed the unproven scenario", "date": "2026-10-27" } },
-    { "id": "CORE Story 9", "title": "Quality cross-check of CORE Stories 1–8 and 10", "dependsOn": ["CORE Story 1", "CORE Story 2", "CORE Story 3", "CORE Story 4", "CORE Story 5", "CORE Story 6", "CORE Story 7", "CORE Story 8", "CORE Story 10"] }
+    { "id": "CORE Story 9", "title": "Quality cross-check of CORE Stories 1–8 and 10", "dependsOn": ["CORE Story 1", "CORE Story 2", "CORE Story 3", "CORE Story 4", "CORE Story 5", "CORE Story 6", "CORE Story 7", "CORE Story 8", "CORE Story 10"],
+      "evidence": { "summary": "node --test: 52 pass, 0 fail, twice; cw test 5 cases; by hand in clones: the quality pass checked the code and every spec against the checklist /sdd-init writes, graded once, put its report under Last pass in place of the older one, and handed its violations to /sdd-plan, now CORE Story 11; doctor named the /sdd-init question for each missing field", "date": "2026-10-28" } },
+    { "id": "CORE Story 11", "title": "Fix what the first quality pass found", "dependsOn": ["CORE Story 9"] }
   ]
 }

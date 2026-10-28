@@ -52,8 +52,9 @@ Pause for the user's acceptance after each step.
    names as **Quality cross-check**, add a story right after them,
    `Quality cross-check of <their ids>`, depending on those stories, in the
    spec most of them belong to, priority P3, its one scenario: once they are
-   `Done`, /sdd-quality grades every spec they belong to and the
-   lowest-graded part is offered for cleanup. The stories left over count
+   `Done`, /sdd-quality checks the code and every spec against the
+   checklist of `quality.md`, and each violation it reports becomes a story.
+   The stories left over count
    toward the next phase's.
 7. **Check** — `link`, then `check` of [[sdd-specs]], until it passes; then
    /sdd-analyze, fixing every error it reports.

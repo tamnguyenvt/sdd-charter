@@ -2,11 +2,13 @@
 
 **Created**: 2026-10-26
 
-**Updated**: 2026-10-27
+**Updated**: 2026-10-28
 
 **Input**: User description: "Phase 1 of the charter is done. Enhance it: a review by an agent other than the author, a baseline before the first change, a handoff for a story in progress, a clean state before finishing, the evidence kept with a Done story, the runtime read while verifying, a quality grade per part, and a health check of the setup."
 Then: "When planning, add a quality cross-check story after about every five stories, so the quality pass is sure to run instead of being skipped."
 Then: "Let the review see what verify proved: calling the review verifies too, so a scenario only a manual run can prove no longer comes back as a question."
+Then: "A quality pass checks the whole codebase against the stories written, and the specs against each other — consistent, complete, with no conflict — from a checklist in quality.md that /sdd-init writes from a template; one overall grade; its report goes at the end of quality.md, to be read again any time, and what it finds becomes stories through /sdd-plan."
+Then: "Fix what the first quality pass found, as one story."
 
 ## Overview
 
@@ -33,8 +35,8 @@ and the agents that walk them.
 - Q: Where does the handoff note of a story in progress live, and is it committed? → A: in the spec folder, one note per story in a folder of its own; /sdd-init asks whether those notes are committed or ignored ([CORE-FR-005](#core-fr-005), [CORE-FR-007](#core-fr-007)).
 - Q: Where is the proof that a story works kept once it is `Done`? → A: briefly, in the story's entry of the roadmap ([CORE-FR-011](#core-fr-011)).
 - Q: What happens when the checks already fail before the story's first change? → A: stop and ask: fix it first through /sdd-bug-fix, or record it as a known failure and go on ([CORE-FR-003](#core-fr-003), [CORE-FR-004](#core-fr-004)).
-- Q: When is the quality document updated, and who reads it? → A: in a periodic cleanup pass, not after every story; every new session reads it before picking a story ([CORE-FR-014](#core-fr-014), [CORE-FR-016](#core-fr-016)).
-- Q: How is the periodic pass made sure to run? → A: /sdd-plan puts a quality cross-check story on the roadmap after every five stories, depending on them, so it is built like any other story ([CORE-FR-019](#core-fr-019), [CORE-FR-020](#core-fr-020)).
+- Q: When does a quality pass run, and where does what it finds go? → A: in a quality cross-check story, not after every story; its report goes at the end of the quality document, and each violation becomes a story ([CORE-FR-015](#core-fr-015), [CORE-FR-020](#core-fr-020)).
+- Q: How is the quality pass made sure to run? → A: /sdd-plan puts a quality cross-check story on the roadmap after every five stories, depending on them, so it is built like any other story ([CORE-FR-019](#core-fr-019), [CORE-FR-020](#core-fr-020)).
 
 ### Session 2026-10-27
 
@@ -42,6 +44,20 @@ and the agents that walk them.
 - Q: Is the story that lets the review see what verify proved graded by the first quality cross-check? → A: yes, it comes before it and the cross-check depends on it ([CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3), [CORE Story 10](#core-story-10---review-with-the-proof-verify-produced-priority-p2)).
 - Q: A scenario proven neither by a test nor by the line verify ended on — does the review fail or only ask? → A: it fails: nothing proves it ([CORE-FR-022](#core-fr-022)).
 - Q: Does the health check also check the check on stop and the tools it runs? → A: no: it checks the spec set's setup alone; the engine's health is `cw doctor`'s ([CORE-FR-017](#core-fr-017)).
+- Q: Is the pass that grades the specs called one name throughout? → A: yes, the quality pass ([CORE-FR-014](#core-fr-014)).
+- Q: Are the findings picked from the cleanup [CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3) offers fixed in that story, or each in a change of its own? → A: in that story: all four, the evidence of CORE Stories 1–3 included ([CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3) scenario 3).
+- Q: Must a quality cross-check whose stories belong to several specs check each of them? → A: yes: every pass checks every spec of the set ([CORE-FR-024](#core-fr-024)).
+- Q: What does the quality pass check? → A: the whole codebase against every story written, and the specs against each other — consistent, complete, with no conflict — item by item against a checklist ([CORE-FR-014](#core-fr-014)).
+- Q: Where is that checklist kept? → A: in the quality document in the spec folder, written from its template by /sdd-init, or by a pass that finds none ([CORE-FR-025](#core-fr-025)).
+- Q: Is each spec graded on its own? → A: no: one overall grade for the product, from the checklist ([CORE-FR-014](#core-fr-014)).
+- Q: Where does a pass's report go? → A: in a section of its own at the end of the quality document, rewritten by each pass, so it can be read again any time; the checklist above it is left as it is ([CORE-FR-015](#core-fr-015)).
+- Q: Does a cross-check story fix what its pass finds? → A: no: /sdd-plan turns each violation into a story to fix it; the four findings of the pass [CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3) ran before the checklist existed are fixed in [CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3) ([CORE-FR-020](#core-fr-020)).
+- Q: Does /sdd-implement still name the lowest-graded part before the roadmap? → A: no: no part is graded on its own any more, and the violations are stories on the roadmap; `CORE-FR-016` is dropped.
+
+### Session 2026-10-28
+
+- Q: Are the violations the first quality pass found fixed in one story or several? → A: one, [CORE Story 11](#core-story-11---fix-what-the-first-quality-pass-found-priority-p2) ([CORE-FR-020](#core-fr-020)).
+- Q: Does the checklist hold the code to the guides that apply to it? → A: yes: the pass checks the code against the stories and those guides, and nothing else ([CORE-FR-014](#core-fr-014)).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -180,33 +196,37 @@ error; /sdd-verify reports the error and fails.
 
 ---
 
-### CORE Story 7 - Grade each part of the product over time (Priority: P3)
+### CORE Story 7 - Check the product against its stories over time (Priority: P3)
 
 **Status**: Done
 
-In a periodic cleanup pass, the agent grades each spec of
-the set from A to F against the same criteria, with the reason for each grade,
-and keeps the grades in a quality document in the spec folder. Every new
-session reads it before picking a story, and the lowest-graded part is
-offered first for cleanup. So that the pass is never skipped, /sdd-plan puts a
-quality cross-check story on the roadmap after every five stories it adds,
-waiting on them, and it is built like any other story.
+In a quality pass, the agent checks the whole codebase against every story
+the spec set holds, and the specs against each other, item by item against a
+checklist kept in a quality document in the spec folder, and gives the product
+one grade from A to F. Each violation it finds is named with the stories, FR or
+SC behind it, and becomes a story that fixes it through /sdd-plan. So that the
+pass is never skipped, /sdd-plan puts a quality cross-check story on the
+roadmap after every five stories it adds, waiting on them, and it is built like
+any other story.
 
-**Why this priority**: every story can pass its own review while a part
-decays as a whole — a test skipped, an FR bent by a later story — and nothing
-that looks at one change at a time sees it.
+**Why this priority**: every story can pass its own review while the product
+decays as a whole — a test skipped, an FR bent by a later story, two specs
+written apart that contradict each other — and nothing that looks at one change
+at a time sees it.
 
-**Independent Test**: run the cleanup pass on a spec set where a `Done`
-story's scenario has no test; its part loses a grade, the reason names the
-scenario, and the next /sdd-implement mentions it.
+**Independent Test**: run the quality pass on a spec set where a `Done`
+story's scenario has no test and two FR contradict each other; both items of
+the checklist fail, each naming what is behind it, and each becomes a story
+/sdd-plan adds.
 
 **Acceptance Scenarios**:
 
-1. **Given** a spec set, **When** the developer runs the quality pass, **Then** each spec gets a grade A–F on each criterion and overall, with a reason citing the stories, FR or SC behind it ([CORE-FR-014](#core-fr-014), [CORE-FR-015](#core-fr-015)).
-2. **Given** an earlier quality document, **When** the pass runs again, **Then** each grade shows what it was before, so a drop can be seen ([CORE-FR-015](#core-fr-015)).
-3. **Given** a quality document, **When** /sdd-implement starts, **Then** it names the lowest-graded part before the roadmap is shown ([CORE-FR-016](#core-fr-016)).
+1. **Given** a spec set and the checklist of its quality document, **When** the developer runs the quality pass, **Then** each item of the checklist passes or fails across the whole codebase and every spec, each failure naming its violation and citing the stories, FR or SC behind it, with one overall grade A–F ([CORE-FR-014](#core-fr-014), [CORE-FR-015](#core-fr-015)).
+2. **Given** a quality pass, **When** it ends, **Then** its report is the last section of the quality document, in place of the report of the pass before, and the checklist above it is unchanged ([CORE-FR-015](#core-fr-015)).
+3. **Given** a spec set /sdd-init writes, or a spec folder with no quality document, **When** /sdd-init or the pass runs, **Then** the quality document holds the checklist of its template ([CORE-FR-025](#core-fr-025)).
 4. **Given** /sdd-plan adding twelve stories, **When** it writes the roadmap, **Then** it adds two quality cross-check stories, the first waiting on the first five stories and the second on the next five ([CORE-FR-019](#core-fr-019), [CORE-SC-005](#core-sc-005)).
-5. **Given** a quality cross-check story picked by /sdd-implement, **When** it is built, **Then** it runs the quality pass, offers the lowest-graded part for cleanup, and is `Done` only once both are done ([CORE-FR-020](#core-fr-020)).
+5. **Given** a quality cross-check story picked by /sdd-implement, **When** it is built, **Then** the violations its pass reports go to /sdd-plan as stories that fix them, it fixes none itself, and it is `Done` only once the developer has accepted those stories, or the pass found none ([CORE-FR-020](#core-fr-020)).
+6. **Given** a quality cross-check story waiting on stories of one spec, **When** it is built, **Then** its pass checks every spec of the set ([CORE-FR-024](#core-fr-024)).
 
 ---
 
@@ -236,22 +256,25 @@ check; it names the missing answer and offers to ask it.
 
 ### CORE Story 9 - Quality cross-check of CORE Stories 1–8 and 10 (Priority: P3)
 
-**Status**: Todo
+**Status**: Done
 
-The first quality cross-check: once the other nine stories of this phase
-are `Done`, the quality pass grades the spec set and the lowest-graded part is
-offered for cleanup.
+The first quality cross-check: once the other nine stories of this phase are
+`Done`, it makes the quality pass what [CORE Story 7](#core-story-7---check-the-product-against-its-stories-over-time-priority-p3) now describes, runs it, and
+hands what it finds to /sdd-plan. The four findings of the pass it ran before
+the checklist existed are fixed in it.
 
 **Why this priority**: it proves the cross-check this phase adds, on the
 phase that adds it.
 
-**Independent Test**: once CORE Stories 1–8 and 10 are `Done`, build this story; a
-quality document exists with a grade per criterion for CORE.
+**Independent Test**: once CORE Stories 1–8 and 10 are `Done`, build this
+story; the quality document holds the checklist and, at its end, the report;
+each violation it names is a story on the roadmap.
 
 **Acceptance Scenarios**:
 
-1. **Given** CORE Stories 1–8 and 10 `Done`, **When** this story is built, **Then** the quality document grades CORE on each criterion and overall, with reasons ([CORE-FR-014](#core-fr-014), [CORE-FR-015](#core-fr-015)).
-2. **Given** that document, **When** the story finishes, **Then** the lowest-graded part has been offered for cleanup ([CORE-FR-020](#core-fr-020)).
+1. **Given** CORE Stories 1–8 and 10 `Done`, **When** this story is built, **Then** the quality pass checks the code and every spec against the checklist, and reports each item and one overall grade at the end of the quality document ([CORE-FR-014](#core-fr-014), [CORE-FR-015](#core-fr-015), [CORE-FR-025](#core-fr-025)).
+2. **Given** that report, **When** the story finishes, **Then** each violation it names is a story /sdd-plan added and the developer accepted, or it names none ([CORE-FR-020](#core-fr-020)).
+3. **Given** the four findings picked from the pass run before the checklist, **When** the story finishes, **Then** each one is fixed in this story and proven, and each of CORE Stories 1–3 has evidence in the roadmap ([CORE-FR-011](#core-fr-011)).
 
 ---
 
@@ -282,15 +305,42 @@ with no such run reported, the review fails on that scenario.
 
 ---
 
+### CORE Story 11 - Fix what the first quality pass found (Priority: P2)
+
+**Status**: Todo
+
+The first quality pass, run by [CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3), failed six items of the
+checklist. This story fixes each violation it named, so that the next pass
+finds them passing.
+
+**Why this priority**: a `Done` story nothing proves is a claim, and specs that
+contradict each other mislead every story built on them.
+
+**Independent Test**: run the quality pass once this story is `Done`; none of
+the violations the pass of [CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3) named is reported again.
+
+**Acceptance Scenarios**:
+
+1. **Given** [CORE Story 4](#core-story-4---refuse-to-finish-on-an-unclean-state-priority-p2) and [CORE Story 10](#core-story-10---review-with-the-proof-verify-produced-priority-p2) scenario 3, **When** this story is `Done`, **Then** each of their scenarios is held by a test that would fail without it, or by a run their evidence names ([CORE-FR-011](#core-fr-011), [CORE-FR-022](#core-fr-022)).
+2. **Given** a bug fix whose baseline recorded a known failure, **When** /sdd-bug-fix hands it over, **Then** it hands it over under the same rules as /sdd-implement and names that failure ([CORE-FR-004](#core-fr-004)).
+3. **Given** a change with more findings than 128 KB of output holds, **When** the clean-state check writes them into a pipe, **Then** every finding is written ([CORE-FR-010](#core-fr-010)).
+4. **Given** the commands the first phase built, **When** the quality pass checks the code against the stories, **Then** each is described by a `Done` story and the FR it cites ([CORE-FR-028](#core-fr-028)).
+5. **Given** the checklist's item on the guides, **When** the spec is checked, **Then** its out of scope agrees that the code is checked against the stories and the guides that apply to it ([CORE-FR-014](#core-fr-014)).
+6. **Given** handoff notes set to be ignored and a story `In Progress` with no note, **When** /sdd-implement picks it, **Then** it starts from the story and its branch ([CORE-FR-026](#core-fr-026)).
+7. **Given** a spec with no `Done` story, **When** the quality pass runs, **Then** it checks that spec against the other specs and no code against it ([CORE-FR-027](#core-fr-027)).
+8. **Given** this spec and the index, **When** the next quality pass runs, **Then** "health" names the setup check alone, the Overview gives the product one grade, every mention of how often a cross-check comes takes the manifest's number, and the index names the quality document ([CORE-FR-019](#core-fr-019), [CORE-SC-005](#core-sc-005)).
+
+---
+
 ### Edge Cases
 
 - A story picked up again whose handoff note disagrees with the code — the code wins; the agent says where they differ before going on.
-- Handoff notes set to be ignored — a session on another machine finds none, and starts from the story and its branch.
+- Handoff notes set to be ignored — a session on another machine finds none, and starts from the story and its branch ([CORE-FR-026](#core-fr-026)).
 - A project that defines no test or static check — the baseline says so instead of passing silently, and asks whether to go on.
 - A secret-like string that is a fixture or a test value — the clean-state check names it, and the developer may accept it once for that change.
 - A program run by hand that writes no log — verify says nothing was logged rather than reporting a clean log.
-- A spec with no `Done` story yet — the quality pass grades it `—`, not A or F.
-- A quality cross-check story whose stories are split across specs — it grades every spec those stories belong to.
+- A spec with no `Done` story yet — no code is checked against it, and it is still checked against the other specs ([CORE-FR-027](#core-fr-027)).
+- A quality cross-check story whose stories are split across specs — its pass checks every spec of the set, as every pass does ([CORE-FR-024](#core-fr-024)).
 - A story set back from `Done` — its evidence is removed with the status.
 
 ## Requirements *(mandatory)*
@@ -317,6 +367,7 @@ with no such run reported, the review fails on that scenario.
 - <a id="core-fr-007"></a>**CORE-FR-007**: /sdd-init MUST ask whether handoff notes are committed or ignored, and record the answer in the manifest.
 - <a id="core-fr-008"></a>**CORE-FR-008**: /sdd-implement MUST read a story's handoff note before working on it again, and say where the note and the code differ, the code winning.
 - <a id="core-fr-009"></a>**CORE-FR-009**: A story's handoff note MUST be removed when the story is set to `Done`.
+- <a id="core-fr-026"></a>**CORE-FR-026**: Where handoff notes are ignored, /sdd-implement MUST start a story `In Progress` that has no note from the story and its branch.
 
 **Clean state**
 
@@ -333,22 +384,29 @@ with no such run reported, the review fails on that scenario.
 
 **Quality**
 
-- <a id="core-fr-014"></a>**CORE-FR-014**: A quality pass MUST grade each spec A–F on verification passing, agent understandability, test stability, boundaries kept and conventions followed, and overall; a spec with no `Done` story is graded `—`.
-- <a id="core-fr-015"></a>**CORE-FR-015**: Each grade MUST carry its reason, citing the stories, FR or SC behind it, and the grade the previous pass gave.
-- <a id="core-fr-016"></a>**CORE-FR-016**: /sdd-implement MUST name the lowest-graded part, when there is a quality document, before it shows the roadmap.
+- <a id="core-fr-014"></a>**CORE-FR-014**: A quality pass MUST check the whole codebase against every story the spec set holds, and the specs against each other — consistent, complete, and with no conflict — item by item against the checklist of the quality document, and give the product one overall grade A–F.
+- <a id="core-fr-015"></a>**CORE-FR-015**: Each item that fails MUST name its violation, citing the stories, FR or SC behind it; the report of a pass — each item and the grade — MUST go at the end of the quality document, in place of the report of the pass before, leaving the checklist as it is.
 - <a id="core-fr-019"></a>**CORE-FR-019**: /sdd-plan MUST add a quality cross-check story after every five stories it adds — the number the manifest names, where it names one — depending on those stories, and carry the stories left over to the next phase's count.
-- <a id="core-fr-020"></a>**CORE-FR-020**: A quality cross-check story MUST run the quality pass and offer the lowest-graded part for cleanup, and MUST NOT be set to `Done` before both are done.
+- <a id="core-fr-020"></a>**CORE-FR-020**: A quality cross-check story MUST run the quality pass and hand the violations it reports to /sdd-plan, which adds a story to fix each; it fixes nothing itself — but for [CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3), which fixes the four findings of the pass it ran before the quality document held a checklist — and MUST NOT be set to `Done` before the developer has accepted those stories, or the pass found none.
+- <a id="core-fr-024"></a>**CORE-FR-024**: A quality pass MUST check every spec of the set, whichever stories the cross-check waits on.
+- <a id="core-fr-025"></a>**CORE-FR-025**: The quality document MUST hold the checklist the quality pass checks against: /sdd-init writes it from its template, the project may edit it, and a pass that finds none writes it the same way first.
+- <a id="core-fr-027"></a>**CORE-FR-027**: A quality pass MUST check a spec with no `Done` story against the other specs, and no code against it.
 
 **Health**
 
 - <a id="core-fr-017"></a>**CORE-FR-017**: A health check MUST report whether the settings, the spec folder and every answer of the manifest are in place, each with its reason; it checks nothing of the engine — the check on stop, the build, the tools.
 - <a id="core-fr-018"></a>**CORE-FR-018**: For each fault, the health check MUST offer the fix: the one question to ask, or /sdd-init.
 
+**Coverage**
+
+- <a id="core-fr-028"></a>**CORE-FR-028**: Every command the charter offers MUST be described by a `Done` story of the spec set and the FR it cites.
+
 ### Key Entities
 
 - **Handoff note**: where a story in progress stands — done, remaining, decisions, blockers. One per story, alive while the story is `In Progress`.
 - **Evidence**: a one-line summary of what proved a `Done` story and when; part of the story's roadmap entry.
-- **Quality document**: one grade per spec per criterion, with reasons and the previous grade; rewritten by each quality pass.
+- **Quality document**: the checklist a quality pass checks the code and the specs against, written from its template and kept and edited by the project, followed by the report of the last pass.
+- **Quality report**: each item of the checklist passed or failed, with its violations, and the overall grade; the last section of the quality document, rewritten by each pass.
 
 ## Success Criteria *(mandatory)*
 
@@ -371,4 +429,4 @@ with no such run reported, the review fails on that scenario.
 
 - Benchmarks and structured logging of the product: they belong to a product, not to the charter.
 - Running the quality pass on a schedule; the developer may schedule it themselves.
-- Grading the code outside what the spec set describes.
+- Judging the style of code no story describes: the pass checks the code only against the stories.

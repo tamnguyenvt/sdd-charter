@@ -27,7 +27,7 @@ request — with recommendations drawn from your history, and writes it down.
 | `/sdd-implement` | Draws the roadmap, asks which spec, takes a ready story, checks the baseline, then spec gate, test first, verify and review, and marks it `Done`. |
 | `/sdd-bug-fix <the bug>` | On a `fix/` branch from your development branch: checks the baseline, reproduces the bug with evidence, reports the root cause and the fix for your yes, fixes it test first, verifies and reviews, and finishes into the development branch. |
 | `/sdd-status` | Every story with its status, and which can be built now. |
-| `/sdd-quality` | Grades each spec A–F on verification, understandability, test stability, boundaries and conventions, with why and the grade before, into `quality.md`, and offers the lowest-graded part for cleanup. |
+| `/sdd-quality` | Checks the whole codebase against every story, and the specs against each other — consistent, complete, no conflict — item by item against the checklist in `quality.md`; gives the product one grade, reports it, and hands each violation to `/sdd-plan` to become a story. |
 | `/sdd-doctor` | Checks the spec set is set up — settings, spec folder, every answer the manifest needs today — each passing or failing with why, and offers the fix of each fault. The engine's own health is `cw doctor`'s. |
 | `/sdd-report` | Draws the roadmap into `report.html`: what is done, in progress, ready and waiting, and what waits on what. |
 
@@ -44,7 +44,7 @@ specs/
 ├── plan.json             every story, what it depends on, what proved it Done
 ├── manifest.md           how work is carried out and finished here
 ├── handoff/core-3.md     where a story In Progress stands, for the next session
-├── quality.md            each spec's grade per criterion, and why
+├── quality.md            the checklist the quality pass checks against
 └── ADR.md                decisions that shape every later story
 ```
 
@@ -80,8 +80,8 @@ specs/
   secrets, and nothing lands until each finding is cleaned or accepted.
 - **Quality on a beat.** /sdd-plan adds a quality cross-check story after
   every five stories, or the number `manifest.md` names: built like any
-  other, it grades each spec into `quality.md` and offers the lowest-graded
-  part for cleanup, which /sdd-implement names before every pick.
+  other, it checks the code and the specs against the checklist in
+  `quality.md`, and each violation it finds becomes a story through /sdd-plan.
 - **Ids are cited, not copied.** When the agent stops with the spec folder
   changed, a hook links every id across files and checks the set against
   `plan.json`, and refuses to stop while either fails.

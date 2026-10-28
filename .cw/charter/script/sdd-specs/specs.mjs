@@ -76,10 +76,15 @@ function doctor() {
       placeholders: match[2].match(/\[[^[\]]*\]/g) ?? [],
     }));
     const manifestText = readFileSync(manifestFile, "utf8");
+    // The /sdd-init question that writes a field, where its name differs.
+    const questions = { Message: "Commit message", "Co-Authored-By": "Commit message", Story: "Finishing", Phase: "Finishing", "Pull request": "Finishing" };
     const before = report.length;
     for (const { field, text, placeholders } of fields) {
       const answer = new RegExp(`^- \\*\\*${field.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\*\\*:(.*)$`, "m").exec(manifestText)?.[1].trim();
-      const fix = `ask /sdd-init's question on **${field}** and write the answer`;
+      const fix =
+        field === "Folder"
+          ? "ask /sdd-init's question on the spec folder"
+          : `ask /sdd-init's question on **${Object.hasOwn(questions, field) ? questions[field] : field}** and write the answer`;
       if (answer === undefined) fail("manifest", `${shown(manifestFile)} has no **${field}**`, fix);
       else if (answer.replace(/[`\s]/g, "") === "" || answer === text || placeholders.some((placeholder) => answer.includes(placeholder)))
         fail("manifest", `${shown(manifestFile)} leaves **${field}** unanswered`, fix);

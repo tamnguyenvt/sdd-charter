@@ -1,6 +1,6 @@
 ---
 name: sdd-quality
-description: "Grade each spec of the set A–F on five criteria and overall, with the reason and the grade before, into quality.md in the spec folder, and offer the lowest-graded part for cleanup. Use when: quality pass; grade the specs; sdd quality; quality cross-check."
+description: "Check the whole codebase against every story, and the specs against each other, item by item against the checklist in quality.md; give the product one grade, report it, and hand each violation to /sdd-plan. Use when: quality pass; check the product against its stories; sdd quality; quality cross-check."
 ---
 
 Read and follow @../../../.cw/out/skill/sdd-quality/index.md.

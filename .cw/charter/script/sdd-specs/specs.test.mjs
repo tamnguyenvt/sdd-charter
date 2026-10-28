@@ -199,6 +199,25 @@ test("doctor fails a manifest missing an answer, and offers the one question tha
   assert.equal(output.match(/^fail/gm).length, 1);
 });
 
+test("doctor offers the /sdd-init question that writes a field named otherwise", () => {
+  const questions = { Message: "Commit message", "Co-Authored-By": "Commit message", Story: "Finishing", Phase: "Finishing", "Pull request": "Finishing" };
+  setUpRepository({ leaveOut: [...Object.keys(questions), "Folder"] });
+  const { output } = doctor();
+  for (const [field, question] of Object.entries(questions))
+    assert.match(output, new RegExp(`has no \\*\\*${field}\\*\\* — fix: ask /sdd-init's question on \\*\\*${question}\\*\\* and write the answer$`, "m"));
+  assert.match(output, /has no \*\*Folder\*\* — fix: ask \/sdd-init's question on the spec folder$/m);
+});
+
+test("every question doctor offers is one /sdd-init asks", () => {
+  const initSkill = join(dirname(specsScript), "..", "..", "skill", "sdd-init", "index.md");
+  const questionList = readFileSync(initSkill, "utf8").split(/^## 3\. /m)[1].split(/^## /m)[0];
+  const asked = [...questionList.matchAll(/^\d+\. \*\*(.+?)\*\*/gm)].map((match) => match[1].toLowerCase());
+  setUpRepository({ leaveOut: manifestFields });
+  const offered = [...doctor().output.matchAll(/question on (?:\*\*(.+?)\*\*|the (spec folder))/g)].map((match) => (match[1] ?? match[2]).toLowerCase());
+  assert.equal(offered.length, manifestFields.length);
+  for (const question of offered) assert.ok(asked.includes(question), `/sdd-init asks no question on ${question}`);
+});
+
 test("doctor fails an answer left as the template's text", () => {
   const templateOrder = /^- \*\*Order\*\*:(.*)$/m.exec(readFileSync(manifestTemplate, "utf8"))[1].trim();
   setUpRepository({ answers: { Order: templateOrder } });

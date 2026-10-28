@@ -128,13 +128,13 @@
   {
     "kind": "skill",
     "id": "sdd-quality",
-    "description": "Grade each spec of the set A–F on five criteria and overall, with the reason and the grade before, into quality.md in the spec folder, and offer the lowest-graded part for cleanup.",
+    "description": "Check the whole codebase against every story, and the specs against each other, item by item against the checklist in quality.md; give the product one grade, report it, and hand each violation to /sdd-plan.",
     "file": ".cw/out/skill/sdd-quality/index.md"
   },
   {
     "kind": "template",
     "id": "sdd-quality-doc",
-    "description": "The skeleton of quality.md — each spec's grade per criterion and overall, with the reason and the grade the pass before gave.",
+    "description": "The skeleton of quality.md — the checklist a quality pass checks the code and the specs against, kept and edited by the project.",
     "file": ".cw/out/template/sdd-quality-doc/index.md"
   },
   {
