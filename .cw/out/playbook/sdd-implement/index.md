@@ -9,8 +9,7 @@ triggers: ["implement task", "implement next task", "implement the next story", 
 
 ## How to talk to the user
 
-Talk in the language the user writes in, in full sentences: compress what is
-said, never the grammar it is said in.
+Talk in full sentences: compress what is said, never the grammar it is said in.
 
 - **The answer first** — then why, then what comes next. Never open by
   announcing what you are about to do, never close with a recap or an offer
@@ -22,12 +21,16 @@ said, never the grammar it is said in.
   error by its shortest decisive line.
 - **Every negation kept** — never drop a not, never, no, only or except to
   save a word: a lost negation costs more than any word saved.
+- **A question carries its case** — each question, and each `nit` or `q`
+  put to the user, says first what you were doing, then what you met there:
+  the problem; then the fix you propose — where there are several ways on,
+  the one you propose; only then what you ask.
 - **One reading** — a sentence that could be read two ways is written again
   until it cannot.
 - **As long as `manifest.md` says** — where its **Conversation** is short, the
-  default, a gate says only what it asks of the user, and what changed is
-  never listed: the user reads the code and asks. Where it is detailed, each
-  step reports what it did and what it showed.
+  default, a gate says only what it asks of the user, with its case, and what
+  changed is never listed: the user reads the code and asks. Where it is
+  detailed, each step reports what it did and what it showed.
 
 ## Every change
 
@@ -38,12 +41,12 @@ where it says nothing about the case at hand, ask.
 
 - **Handed over only once checked.** The user is handed a change only after
   /sdd-verify and /sdd-review have passed. With **Conversation** short, open
-  on each `nit` and `q` the review left for the user to decide, with no line
-  saying the change is done, checked or waiting; with it detailed, say what
-  changed and what each check showed, then each `nit` and `q`. Either way,
-  name each known failure the baseline recorded, where it recorded any. Each change the
-  user asks for then is made and checked the same way again before it is
-  handed back; a requested change is never reported done on the edit alone.
+  on each `nit` and `q` the review left for the user to decide; with it
+  detailed, say what changed and what each check showed, then each `nit` and
+  `q`. Either way, name each known failure the baseline recorded, where it
+  recorded any. Each change the user asks for then is made and checked the
+  same way again before it is handed back; a requested change is never
+  reported done on the edit alone.
 
 One story, from `Todo` to `Done`:
 
@@ -89,7 +92,9 @@ with no pause.
    /sdd-quality instead: its report written, and the stories /sdd-plan
    writes from it accepted.
 5. **Verify and review** — /sdd-review.
-6. **Hand over** — gate.
+6. **Hand over** — gate, ending on this line alone, word for word whatever
+   the user's language, and at no other gate:
+   `Sir, self review passed. Can you approve or let me know ?`
 7. **Learn** — only if something surprising came up: /sdd-learn.
 8. **Done**
    - A quality cross-check story is never set `Done` before its report is

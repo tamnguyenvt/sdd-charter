@@ -175,6 +175,26 @@ test("run twice on the same state, it gives the same result and changes nothing"
   assert.equal(readFileSync(join(repositoryFolder, "app.mjs"), "utf8"), `export const one = 1;\n${DEBUG_PRINT}\n`);
 });
 
+test("run twice on a clean state, it passes both times with the same result", () => {
+  repositoryOf();
+  write("app.mjs", "export const one = 1;\nexport const two = 2;\n");
+  const first = clean();
+  const second = clean();
+  assert.equal(first.status, 0);
+  assert.deepEqual(second, first);
+});
+
+test("a list of findings longer than a pipe holds is written whole (an asynchronous pipe, as on macOS)", () => {
+  repositoryOf();
+  const count = 6000;
+  write("app.mjs", `export const one = 1;\n${`${DEBUG_PRINT}\n`.repeat(count)}`);
+  const { status, output } = clean();
+  assert.equal(status, 1);
+  assert.ok(output.length > 128 * 1024);
+  assert.equal(output.match(/^app\.mjs:\d+: debug: /gm)?.length, count);
+  assert.match(output, new RegExp(`^app\\.mjs:${count + 1}: debug: `, "m"));
+});
+
 test("gitignored files are not looked at", () => {
   repositoryOf({ ".gitignore": "*.log\n" });
   write("debug.log", "x\n");

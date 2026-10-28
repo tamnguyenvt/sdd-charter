@@ -200,6 +200,12 @@
     "file": ".cw/out/skill/sdd-status/index.md"
   },
   {
+    "kind": "guide",
+    "id": "sdd-talk-in-the-users-language",
+    "description": "Answer in the language of the user's own words, from the first message, whatever language the code, the specs or the tools speak.",
+    "file": ".cw/out/guide/sdd-talk-in-the-users-language/index.md"
+  },
+  {
     "kind": "skill",
     "id": "sdd-verify",
     "description": "Prove the change works with evidence produced this turn — tests, static checks, and a manual run of what the story describes.",
@@ -208,7 +214,7 @@
   {
     "kind": "mixin",
     "id": "sdd-voice",
-    "description": "How a playbook of the spec set talks to the user: the answer first, a line per step, every name and error verbatim, in full sentences of the user's language.",
+    "description": "How a playbook or skill of the spec set talks to the user: the answer first, a line per step, every name and error verbatim, in full sentences.",
     "file": ".cw/out/mixin/sdd-voice/index.md"
   },
   {

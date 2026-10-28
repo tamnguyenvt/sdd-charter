@@ -5,6 +5,7 @@ description: Check the spec set for gaps, contradictions and format faults, and 
 triggers: ["analyze the spec", "check the spec", "review the spec"]
 disable-user-invocation: true
 rationale: sdd-concept
+mixins: ["sdd-voice"]
 ---
 
 Read the spec folder (`.sdd/settings.json`): `spec.md`, every

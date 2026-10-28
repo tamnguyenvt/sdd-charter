@@ -5,6 +5,7 @@ description: Verify the change, then have an agent that did not write it review 
 triggers: ["review implementation"]
 disable-user-invocation: true
 rationale: sdd-concept
+mixins: ["sdd-voice"]
 ---
 
 Run /sdd-verify first, with what the walk hands it — the baseline's known

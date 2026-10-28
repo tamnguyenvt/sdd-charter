@@ -1,0 +1,6 @@
+{
+  "description": "Talking in the user's language comes up every turn, whatever file is touched.",
+  "cases": [
+    { "do": { "touchFile": "src/app.mjs" }, "expect": { "activate": "sdd-talk-in-the-users-language" } }
+  ]
+}

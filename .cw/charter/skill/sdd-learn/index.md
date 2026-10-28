@@ -5,6 +5,7 @@ description: Write what this conversation taught — a correction, a preference,
 triggers: ["learn from the conversation"]
 disable-user-invocation: true
 rationale: sdd-why-learnings-go-to-the-inbox
+mixins: ["sdd-voice"]
 ---
 
 Find what this conversation taught that the next one should know: a correction

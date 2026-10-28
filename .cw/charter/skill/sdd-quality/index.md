@@ -4,6 +4,7 @@ id: sdd-quality
 description: Check the whole codebase against every story, and the specs against each other, item by item against the checklist in quality.md; give the product one grade, report it, and hand each violation to /sdd-plan.
 triggers: ["quality pass", "check the product against its stories", "sdd quality", "quality cross-check"]
 rationale: sdd-concept
+mixins: ["sdd-voice"]
 ---
 
 The quality pass. It reads and runs, and fixes nothing.
@@ -18,7 +19,8 @@ The quality pass. It reads and runs, and fixes nothing.
    records as known is still a violation, named as known.
 3. **Check** — each item of the checklist, across the whole codebase and
    every spec: `pass`, or `fail` with each violation, citing the stories, FR
-   or SC behind it, and `path:line` where it is in the code.
+   or SC behind it, and `path:line` where it is in the code. A spec with no
+   `Done` story is checked against the other specs, and no code against it.
 4. **Grade** the product once, from the items: A every one passes; B only
    warnings; C one violation; D two or more; F a check fails, or a `Done`
    scenario nothing proves.

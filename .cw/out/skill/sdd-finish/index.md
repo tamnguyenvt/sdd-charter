@@ -3,29 +3,58 @@ kind: skill
 id: sdd-finish
 description: Finish the story, bug fix or phase you stand on exactly as manifest.md says — merge, squash-merge or pull request, into the branch it names — then clean its worktree up.
 rationale: sdd-concept
+mixins: ["sdd-voice"]
 triggers: ["finish the story", "finish the task", "merge branch", "finish the phase"]
 disable-user-invocation: true
 ---
 
+## How to talk to the user
+
+Talk in full sentences: compress what is said, never the grammar it is said in.
+
+- **The answer first** — then why, then what comes next. Never open by
+  announcing what you are about to do, never close with a recap or an offer
+  of more help.
+- **A line per step** — no text between routine tool calls: one line when a
+  step of the walk starts, one with what it showed. Speak in between only to
+  warn, to clarify, or to ask.
+- **Verbatim** — commands, paths, ids, code and errors are quoted exactly; an
+  error by its shortest decisive line.
+- **Every negation kept** — never drop a not, never, no, only or except to
+  save a word: a lost negation costs more than any word saved.
+- **A question carries its case** — each question, and each `nit` or `q`
+  put to the user, says first what you were doing, then what you met there:
+  the problem; then the fix you propose — where there are several ways on,
+  the one you propose; only then what you ask.
+- **One reading** — a sentence that could be read two ways is written again
+  until it cannot.
+- **As long as `manifest.md` says** — where its **Conversation** is short, the
+  default, a gate says only what it asks of the user, with its case, and what
+  changed is never listed: the user reads the code and asks. Where it is
+  detailed, each step reports what it did and what it showed.
+
 Read `<spec folder>/manifest.md` (the folder is in `.sdd/settings.json`). Do
 what its **Finishing** section says and nothing it does not; if it says
-nothing about the case at hand, ask, and offer to write the answer into it.
+nothing about the case at hand — no **Story** line for a story or a fix, no
+**Phase** line for a phase — ask, never inferring it from the rest of the
+manifest or the history, and offer to write the answer into it.
 
 1. **Check** — the story's status is `Done`, or on a fix branch the user has
    accepted the fix at /sdd-bug-fix's last gate, and the checks pass
    (/sdd-verify). Refuse otherwise, saying what is missing.
 
-   On a story or a fix branch, before anything is committed, check that
-   nothing is left behind: run `check` of [sdd-specs](../../script/sdd-specs/index.md) — a handoff note of a
-   `Done` story fails it; on a story branch, with `--landing "<story id>"`, so
-   a story landing with no evidence in `plan.json` fails it too — and
-   [sdd-clean](../../script/sdd-clean/index.md) with the branch the change lands in. On any finding, land nothing: name each finding as it was printed, and
-   ask the user to clean it or to accept it for this change. Run both again
-   until nothing is left but what the user accepted: [sdd-clean](../../script/sdd-clean/index.md) with each
-   finding it printed and the user accepted as `--accept <path>:<line>`, or
-   `--accept <path>` for a file; `check`, which takes no `--accept`, by
-   setting aside each fault it printed that the user accepted. An acceptance
-   holds for this change only.
+   On a story or a fix branch, before anything is committed, check that nothing
+   is left behind: run `check` of [sdd-specs](../../script/sdd-specs/index.md) — a handoff note of a `Done`
+   story fails it; on a story branch, with `--landing "<story id>"`, so a story
+   landing with no evidence in `plan.json` fails it too — and [sdd-clean](../../script/sdd-clean/index.md)
+   with the branch the change lands in: the target **Story** names for a story,
+   the development branch for a fix. On any finding, land nothing: name each
+   finding as it was printed, and ask the user to clean it or to accept it for
+   this change. Run both again until nothing is left but what the user
+   accepted: [sdd-clean](../../script/sdd-clean/index.md) with each finding it printed and the user accepted
+   as `--accept <path>:<line>`, or `--accept <path>` for a file; `check`, which
+   takes no `--accept`, by setting aside each fault it printed that the user
+   accepted. An acceptance holds for this change only.
 
    On a story branch, a change still in the working tree, staged or not, is
    the story's: being asked to finish is being asked to commit it. Stage every

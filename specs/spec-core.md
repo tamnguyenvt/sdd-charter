@@ -9,6 +9,9 @@ Then: "When planning, add a quality cross-check story after about every five sto
 Then: "Let the review see what verify proved: calling the review verifies too, so a scenario only a manual run can prove no longer comes back as a question."
 Then: "A quality pass checks the whole codebase against the stories written, and the specs against each other — consistent, complete, with no conflict — from a checklist in quality.md that /sdd-init writes from a template; one overall grade; its report goes at the end of quality.md, to be read again any time, and what it finds becomes stories through /sdd-plan."
 Then: "Fix what the first quality pass found, as one story."
+Then: "Give every skill the voice too, so each reports in the right language."
+Then: "Always talk in my language, and give each question its context: what you were doing, the problem you met, then the fix you propose."
+Then: "Answer in my language even after a slash command, and propose before asking. Let /sdd-init ask whether the review is strict or quick: quick leaves each nit to the handoff note, settles a small q itself, writing what it settles to the handoff note and not to the chat. And stop removing the handoff note at Done."
 
 ## Overview
 
@@ -18,15 +21,15 @@ repository, it lets a coding agent take a story of a spec set from request to
 `Done`, stopping for the user's yes at each gate, and land the work the way
 the repository's manifest says. Phase 1 — the spec set, the roadmap, the
 manifest, planning, implementing, fixing a bug, finishing, reviewing,
-verifying and reporting — is done.
+verifying and reporting — is done, described by CORE Stories 12–18.
 
 This phase makes that walk trustworthy across sessions: the code is checked by
-someone other than its author, the agent knows the repository was healthy
-before it touched it, work survives the end of a session, nothing is left
-behind when a story lands, the proof that a story works is kept, and the
-health of each part is graded on a regular beat so the next session knows
-where to clean first. It serves the developers who run the charter's commands
-and the agents that walk them.
+someone other than its author, the agent knows the checks passed before it
+touched the repository, work survives the end of a session, nothing is left
+behind when a story lands, the proof that a story works is kept, and the whole
+product is checked against its stories on a regular beat and given one grade,
+what it finds becoming stories on the roadmap. It serves the developers who
+run the charter's commands and the agents that walk them.
 
 ## Clarifications
 
@@ -36,14 +39,14 @@ and the agents that walk them.
 - Q: Where is the proof that a story works kept once it is `Done`? → A: briefly, in the story's entry of the roadmap ([CORE-FR-011](#core-fr-011)).
 - Q: What happens when the checks already fail before the story's first change? → A: stop and ask: fix it first through /sdd-bug-fix, or record it as a known failure and go on ([CORE-FR-003](#core-fr-003), [CORE-FR-004](#core-fr-004)).
 - Q: When does a quality pass run, and where does what it finds go? → A: in a quality cross-check story, not after every story; its report goes at the end of the quality document, and each violation becomes a story ([CORE-FR-015](#core-fr-015), [CORE-FR-020](#core-fr-020)).
-- Q: How is the quality pass made sure to run? → A: /sdd-plan puts a quality cross-check story on the roadmap after every five stories, depending on them, so it is built like any other story ([CORE-FR-019](#core-fr-019), [CORE-FR-020](#core-fr-020)).
+- Q: How is the quality pass made sure to run? → A: /sdd-plan puts a quality cross-check story on the roadmap after every five stories — the number the manifest names, where it names one — depending on them, so it is built like any other story ([CORE-FR-019](#core-fr-019), [CORE-FR-020](#core-fr-020)).
 
 ### Session 2026-10-27
 
 - Q: Does the reviewer also hold the guides that apply to the changed files? → A: yes, so it can catch a hunk that breaks one ([CORE-FR-001](#core-fr-001)).
 - Q: Is the story that lets the review see what verify proved graded by the first quality cross-check? → A: yes, it comes before it and the cross-check depends on it ([CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3), [CORE Story 10](#core-story-10---review-with-the-proof-verify-produced-priority-p2)).
 - Q: A scenario proven neither by a test nor by the line verify ended on — does the review fail or only ask? → A: it fails: nothing proves it ([CORE-FR-022](#core-fr-022)).
-- Q: Does the health check also check the check on stop and the tools it runs? → A: no: it checks the spec set's setup alone; the engine's health is `cw doctor`'s ([CORE-FR-017](#core-fr-017)).
+- Q: Does the health check also check the check on stop and the tools it runs? → A: no: it checks the spec set's setup alone; the engine is `cw doctor`'s to check ([CORE-FR-017](#core-fr-017)).
 - Q: Is the pass that grades the specs called one name throughout? → A: yes, the quality pass ([CORE-FR-014](#core-fr-014)).
 - Q: Are the findings picked from the cleanup [CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3) offers fixed in that story, or each in a change of its own? → A: in that story: all four, the evidence of CORE Stories 1–3 included ([CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3) scenario 3).
 - Q: Must a quality cross-check whose stories belong to several specs check each of them? → A: yes: every pass checks every spec of the set ([CORE-FR-024](#core-fr-024)).
@@ -58,6 +61,12 @@ and the agents that walk them.
 
 - Q: Are the violations the first quality pass found fixed in one story or several? → A: one, [CORE Story 11](#core-story-11---fix-what-the-first-quality-pass-found-priority-p2) ([CORE-FR-020](#core-fr-020)).
 - Q: Does the checklist hold the code to the guides that apply to it? → A: yes: the pass checks the code against the stories and those guides, and nothing else ([CORE-FR-014](#core-fr-014)).
+- Q: Where are the commands phase 1 built described? → A: as `Done` stories of this spec, [CORE Story 12](#core-story-12---set-a-repository-up-for-spec-driven-development-priority-p1) on, with the FR they cite ([CORE-FR-028](#core-fr-028)).
+- Q: Is giving every skill the voice of the walks part of this story? → A: yes, written into it, not a change of its own ([CORE-FR-044](#core-fr-044)).
+- Q: What does a hand-over say, from /sdd-implement and /sdd-bug-fix alike? → A: each `nit` and `q`, each known failure the baseline recorded, then one line: `Sir, self review passed. Can you approve or let me know ?` ([CORE-FR-044](#core-fr-044)).
+- Q: Where do the `nit` a quick review leaves and the decisions the agent takes itself go? → A: into the story's handoff note alone, never the chat ([CORE-FR-046](#core-fr-046)).
+- Q: Is a story's handoff note removed when the story is `Done`? → A: no: it stays, committed or ignored as the manifest says; a project that wants its notes kept commits them ([CORE-FR-009](#core-fr-009)).
+- Q: When is a `q` small enough for a quick review to settle without the developer? → A: when its answer changes no FR, scenario or out of scope, and touches only the files the story changed; any other `q` is asked ([CORE-FR-046](#core-fr-046)).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -126,7 +135,6 @@ already decided.
 1. **Given** a story `In Progress`, **When** the session stops, **Then** the story's handoff note holds what is done, what remains, the decisions taken and what blocks it ([CORE-FR-005](#core-fr-005), [CORE-FR-006](#core-fr-006)).
 2. **Given** a story with a handoff note, **When** /sdd-implement picks it up, **Then** the note is read before anything else of the story is done ([CORE-FR-008](#core-fr-008), [CORE-SC-001](#core-sc-001)).
 3. **Given** /sdd-init, **When** it asks how work is carried out, **Then** it asks whether handoff notes are committed or ignored, and writes the answer to the manifest ([CORE-FR-007](#core-fr-007)).
-4. **Given** a story set to `Done`, **When** it is finished, **Then** its handoff note is gone ([CORE-FR-009](#core-fr-009)).
 
 ---
 
@@ -136,8 +144,8 @@ already decided.
 
 Before /sdd-finish lands a story or a fix, it checks that nothing is left
 behind: no stray or temporary files, no debug output or leftover markers
-added by the change, no secret, and no handoff note of a `Done` story. It
-refuses to land, naming what is left, until the state is clean.
+added by the change, and no secret. It refuses to land, naming what is left,
+until the state is clean.
 
 **Why this priority**: what is left behind "for later" is never cleaned, and
 the next session starts on the mess.
@@ -206,8 +214,8 @@ checklist kept in a quality document in the spec folder, and gives the product
 one grade from A to F. Each violation it finds is named with the stories, FR or
 SC behind it, and becomes a story that fixes it through /sdd-plan. So that the
 pass is never skipped, /sdd-plan puts a quality cross-check story on the
-roadmap after every five stories it adds, waiting on them, and it is built like
-any other story.
+roadmap after every five stories it adds — the number the manifest names, where
+it names one — waiting on them, and it is built like any other story.
 
 **Why this priority**: every story can pass its own review while the product
 decays as a whole — a test skipped, an FR bent by a later story, two specs
@@ -224,7 +232,7 @@ the checklist fail, each naming what is behind it, and each becomes a story
 1. **Given** a spec set and the checklist of its quality document, **When** the developer runs the quality pass, **Then** each item of the checklist passes or fails across the whole codebase and every spec, each failure naming its violation and citing the stories, FR or SC behind it, with one overall grade A–F ([CORE-FR-014](#core-fr-014), [CORE-FR-015](#core-fr-015)).
 2. **Given** a quality pass, **When** it ends, **Then** its report is the last section of the quality document, in place of the report of the pass before, and the checklist above it is unchanged ([CORE-FR-015](#core-fr-015)).
 3. **Given** a spec set /sdd-init writes, or a spec folder with no quality document, **When** /sdd-init or the pass runs, **Then** the quality document holds the checklist of its template ([CORE-FR-025](#core-fr-025)).
-4. **Given** /sdd-plan adding twelve stories, **When** it writes the roadmap, **Then** it adds two quality cross-check stories, the first waiting on the first five stories and the second on the next five ([CORE-FR-019](#core-fr-019), [CORE-SC-005](#core-sc-005)).
+4. **Given** a manifest that names no number and /sdd-plan adding twelve stories, **When** it writes the roadmap, **Then** it adds two quality cross-check stories, the first waiting on the first five stories and the second on the next five ([CORE-FR-019](#core-fr-019), [CORE-SC-005](#core-sc-005)).
 5. **Given** a quality cross-check story picked by /sdd-implement, **When** it is built, **Then** the violations its pass reports go to /sdd-plan as stories that fix them, it fixes none itself, and it is `Done` only once the developer has accepted those stories, or the pass found none ([CORE-FR-020](#core-fr-020)).
 6. **Given** a quality cross-check story waiting on stories of one spec, **When** it is built, **Then** its pass checks every spec of the set ([CORE-FR-024](#core-fr-024)).
 
@@ -237,8 +245,8 @@ the checklist fail, each naming what is behind it, and each becomes a story
 The developer asks whether the repository's spec-driven setup is healthy. The
 agent checks that the settings point at a spec folder that exists and that
 the manifest answers every question /sdd-init asks today, and offers to fix
-each fault it finds. The engine's own health — the check on stop, the build,
-the tools — is `cw doctor`'s, not this one's.
+each fault it finds. The engine — the check on stop, the build, the tools —
+is `cw doctor`'s to check, not this one's.
 
 **Why this priority**: a manifest written by an older version silently falls
 back to defaults.
@@ -307,7 +315,7 @@ with no such run reported, the review fails on that scenario.
 
 ### CORE Story 11 - Fix what the first quality pass found (Priority: P2)
 
-**Status**: Todo
+**Status**: Done
 
 The first quality pass, run by [CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3), failed six items of the
 checklist. This story fixes each violation it named, so that the next pass
@@ -322,13 +330,257 @@ the violations the pass of [CORE Story 9](#core-story-9---quality-cross-check-of
 **Acceptance Scenarios**:
 
 1. **Given** [CORE Story 4](#core-story-4---refuse-to-finish-on-an-unclean-state-priority-p2) and [CORE Story 10](#core-story-10---review-with-the-proof-verify-produced-priority-p2) scenario 3, **When** this story is `Done`, **Then** each of their scenarios is held by a test that would fail without it, or by a run their evidence names ([CORE-FR-011](#core-fr-011), [CORE-FR-022](#core-fr-022)).
-2. **Given** a bug fix whose baseline recorded a known failure, **When** /sdd-bug-fix hands it over, **Then** it hands it over under the same rules as /sdd-implement and names that failure ([CORE-FR-004](#core-fr-004)).
+2. **Given** a bug fix whose baseline recorded a known failure, **When** /sdd-bug-fix hands it over, **Then** it hands it over under the same rules as /sdd-implement, names that failure, and ends on the line the developer set ([CORE-FR-004](#core-fr-004), [CORE-FR-044](#core-fr-044)).
 3. **Given** a change with more findings than 128 KB of output holds, **When** the clean-state check writes them into a pipe, **Then** every finding is written ([CORE-FR-010](#core-fr-010)).
 4. **Given** the commands the first phase built, **When** the quality pass checks the code against the stories, **Then** each is described by a `Done` story and the FR it cites ([CORE-FR-028](#core-fr-028)).
 5. **Given** the checklist's item on the guides, **When** the spec is checked, **Then** its out of scope agrees that the code is checked against the stories and the guides that apply to it ([CORE-FR-014](#core-fr-014)).
 6. **Given** handoff notes set to be ignored and a story `In Progress` with no note, **When** /sdd-implement picks it, **Then** it starts from the story and its branch ([CORE-FR-026](#core-fr-026)).
 7. **Given** a spec with no `Done` story, **When** the quality pass runs, **Then** it checks that spec against the other specs and no code against it ([CORE-FR-027](#core-fr-027)).
 8. **Given** this spec and the index, **When** the next quality pass runs, **Then** "health" names the setup check alone, the Overview gives the product one grade, every mention of how often a cross-check comes takes the manifest's number, and the index names the quality document ([CORE-FR-019](#core-fr-019), [CORE-SC-005](#core-sc-005)).
+9. **Given** a developer writing a message in a language, **When** a command of the spec set answers it, **Then** it answers in that language from the first message, and each question it asks says first what it was doing and the problem it met ([CORE-FR-044](#core-fr-044)).
+
+---
+
+### CORE Story 12 - Set a repository up for spec-driven development (Priority: P1)
+
+**Status**: Done
+
+A developer installs the charter and runs /sdd-init. The agent looks at what
+the repository already has — its specs, its branches, how it commits and
+merges — proposes how the specs become a spec set, and asks how work is
+carried out and finished there, each question with a recommendation drawn
+from the repository. Once the developer says yes, it writes the settings, the
+spec folder, its index and its manifest.
+
+**Why this priority**: every other command reads the spec set and the
+manifest; without them none can start.
+
+**Independent Test**: run /sdd-init in a repository with no spec set; it asks
+before writing, then writes a spec set that checks.
+
+**Acceptance Scenarios**:
+
+1. **Given** a repository with no spec set, **When** /sdd-init runs, **Then** it reports the specs and habits it found, proposes the spec set, asks each question of the manifest with its recommendation, and writes nothing before the developer says yes ([CORE-FR-029](#core-fr-029)).
+2. **Given** the developer's yes, **When** /sdd-init writes, **Then** the settings name the spec folder, which holds the index, the roadmap and the manifest, and the spec set checks ([CORE-FR-029](#core-fr-029), [CORE-FR-030](#core-fr-030)).
+3. **Given** a file of the spec set, **When** the agent touches it, **Then** the shape of a spec set comes up for it ([CORE-FR-030](#core-fr-030)).
+
+---
+
+### CORE Story 13 - Plan a phase into stories (Priority: P1)
+
+**Status**: Done
+
+A developer asks for a phase. /sdd-plan says which spec it belongs to,
+restates it, clarifies what is unclear, and writes its stories, FR and SC into
+that spec and onto the roadmap, pausing for the developer after each step. The
+spec set is then analysed for gaps, contradictions and format faults.
+
+**Why this priority**: no story can be built before it is written with the
+scenarios that prove it.
+
+**Independent Test**: ask /sdd-plan for a phase; its stories land in the spec
+and the roadmap, each citing the FR it proves, and the analysis reports none
+of its errors.
+
+**Acceptance Scenarios**:
+
+1. **Given** a request for a phase, **When** /sdd-plan runs, **Then** it restates the phase, asks at most five questions, writes each answer as it is given, and drafts stories numbered after the spec's last one, each `Todo` with the stories it depends on in the roadmap, pausing for the developer at each step ([CORE-FR-031](#core-fr-031)).
+2. **Given** a spec set with an FR no story cites, **When** it is analysed, **Then** the analysis names that FR as an error with its fix, and changes nothing ([CORE-FR-032](#core-fr-032)).
+
+---
+
+### CORE Story 14 - See where the roadmap stands (Priority: P2)
+
+**Status**: Done
+
+Whenever the agent stops with the spec folder changed, every id the specs cite
+is linked to where it is defined and the spec set is checked; the agent keeps
+working while the check fails. The developer can list every story with its
+status, the stories that can be built now, and draw the roadmap as one page.
+
+**Why this priority**: a spec set that disagrees with itself, or a roadmap no
+one can see, sends the next story the wrong way.
+
+**Independent Test**: cite an id and break a status line, then stop; the
+citation is linked and the fault handed back. Draw the roadmap; each story
+shows where it stands.
+
+**Acceptance Scenarios**:
+
+1. **Given** a spec citing an id defined in another spec, **When** the agent stops, **Then** the citation links to where it is defined ([CORE-FR-033](#core-fr-033)).
+2. **Given** a spec set that fails its check, **When** the agent stops, **Then** the fault is handed back and the agent keeps working ([CORE-FR-033](#core-fr-033)).
+3. **Given** a roadmap, **When** the developer asks what can start, **Then** every story not `Done` whose dependencies are all `Done` is listed, in roadmap order ([CORE-FR-034](#core-fr-034)).
+4. **Given** a roadmap, **When** the developer asks for it, **Then** every story is listed with its status by spec, and drawn as one page showing where it stands and what it waits on ([CORE-FR-035](#core-fr-035)).
+
+---
+
+### CORE Story 15 - Implement a story from pick to Done (Priority: P1)
+
+**Status**: Done
+
+A developer runs /sdd-implement. It takes a story, opens its branch as the
+manifest says, finds the code the story touches, restates the story and the
+decisions it needs, and waits for the developer's yes. It then writes a failing
+test per scenario before the code that passes it, verifies and reviews the
+change, and sets the story `Done` once the developer accepts it.
+
+**Why this priority**: it is the walk every story is built through.
+
+**Independent Test**: run /sdd-implement on a ready story; it stops at the
+spec gate before any change, and once accepted the story is `Done`, each of
+its scenarios held by a test.
+
+**Acceptance Scenarios**:
+
+1. **Given** a roadmap and no story named, **When** /sdd-implement runs, **Then** it takes the first story `In Progress`, else the first ready one, opens its branch as the manifest says, and names the code it touches by path and lines ([CORE-FR-036](#core-fr-036)).
+2. **Given** a story picked, **When** the spec gate is reached, **Then** the story, its scenarios, FR and SC, what is out of scope and each technical decision are put to the developer, and nothing changes before the yes ([CORE-FR-037](#core-fr-037)).
+3. **Given** the yes, **When** the story is built, **Then** each scenario gets a failing test before the code that passes it, and the change is verified — every test and static check, and a run of what the story describes — before it is reviewed and handed over ([CORE-FR-038](#core-fr-038), [CORE-FR-039](#core-fr-039)).
+4. **Given** a change the developer accepts, **When** the walk ends, **Then** the story is `Done` ([CORE-FR-038](#core-fr-038)).
+
+---
+
+### CORE Story 16 - Fix a bug on a branch of its own (Priority: P2)
+
+**Status**: Done
+
+A developer runs /sdd-bug-fix with a bug. On a fix branch from the development
+branch, the agent restates the bug, reproduces it with evidence, and reports
+the root cause and the fix for the developer's approval; then it fixes it test
+first with the smallest change, verifies and reviews it, and lands it in the
+development branch once accepted.
+
+**Why this priority**: a bug found between stories needs a walk of its own
+that changes nothing beside it.
+
+**Independent Test**: report a bug; the agent reproduces it and stops at the
+report before changing anything, then fixes it with a test that failed for the
+bug's own reason.
+
+**Acceptance Scenarios**:
+
+1. **Given** a bug, **When** /sdd-bug-fix runs, **Then** it works on a fix branch started from the development branch, reproduces the bug with evidence, and changes nothing before the developer approves the reported root cause and fix ([CORE-FR-040](#core-fr-040)).
+2. **Given** the approval, **When** the fix is made, **Then** a test fails for the bug's own reason before the smallest change that passes it, and the fix lands in the development branch, never in a phase branch ([CORE-FR-040](#core-fr-040)).
+
+---
+
+### CORE Story 17 - Land the work the way the manifest says (Priority: P1)
+
+**Status**: Done
+
+Once a story is `Done`, a fix accepted or a phase complete, /sdd-finish lands
+it exactly as the manifest's finishing says — merge, squash-merge or pull
+request, into the branch it names — deletes the landed branch as it says, and
+ends on where the roadmap stands. Branches whose work landed earlier can be
+listed and deleted with the developer's confirmation.
+
+**Why this priority**: work that is built but not landed the agreed way is
+not done.
+
+**Independent Test**: finish a `Done` story; it lands in its target the way
+the manifest says, its branch deleted as it says.
+
+**Acceptance Scenarios**:
+
+1. **Given** a `Done` story, **When** /sdd-finish runs, **Then** it lands into the branch the manifest names, the way it names, and deletes the branch as it says; where it says nothing, it asks ([CORE-FR-041](#core-fr-041)).
+2. **Given** a fix accepted, **When** /sdd-finish runs, **Then** it lands in the development branch, never in a phase branch ([CORE-FR-041](#core-fr-041)).
+3. **Given** local branches, some landed, **When** the developer asks to clean up, **Then** the landed ones are listed and only those the developer confirms are deleted, never one whose work has not landed ([CORE-FR-042](#core-fr-042)).
+
+---
+
+### CORE Story 18 - Keep what a session learned (Priority: P3)
+
+**Status**: Done
+
+When a conversation teaches the agent something the next one should know — a
+correction, a preference, a constraint — it is written as a dated note in the
+learning inbox, never into the agent's own memory, so the project can turn
+repeated lessons into rules.
+
+**Why this priority**: a lesson kept in one agent's memory is lost to every
+other agent and machine, and no one can read or review it.
+
+**Independent Test**: correct the agent in a session and ask it to learn; a
+note appears in the inbox and the agent's memory is untouched.
+
+**Acceptance Scenarios**:
+
+1. **Given** a correction in the conversation, **When** the agent is asked to learn from it, **Then** a dated note in the learning inbox holds the lesson, why, and how to apply it ([CORE-FR-043](#core-fr-043)).
+2. **Given** anything worth keeping, **When** the agent would save it, **Then** it never writes to its own memory ([CORE-FR-043](#core-fr-043)).
+
+---
+
+### CORE Story 19 - Answer in the user's language after a slash command, and propose before asking (Priority: P2)
+
+**Status**: Todo
+
+A developer types a slash command followed by a few words of their own
+language. Every message of the walk is in that language, though the command
+and the charter are written in another. Each question it asks says what it
+was doing and the problem it met, proposes one way on, and only then asks.
+
+**Why this priority**: an answer in the wrong language, or a question with no
+proposal, leaves the developer to work out what is asked and what to answer.
+
+**Independent Test**: type a command followed by words of another language
+over a failing baseline; the walk answers in that language, and its question
+names the failure and proposes one of its ways on. Ask something outside any command; the answer
+keeps the same voice.
+
+**Acceptance Scenarios**:
+
+1. **Given** a slash command followed by words in a language, **When** the command answers, **Then** every message is in that language ([CORE-FR-044](#core-fr-044)).
+2. **Given** a question with several ways on, **When** it is asked, **Then** it says what was being done and the problem met, proposes one way, and only then asks ([CORE-FR-044](#core-fr-044)).
+3. **Given** the developer writing outside any command of the spec set, **When** the agent answers, **Then** it talks in the same voice as the commands, from one source that is always on ([CORE-FR-044](#core-fr-044)).
+
+---
+
+### CORE Story 20 - Choose how strict the review is (Priority: P2)
+
+**Status**: Todo
+
+/sdd-init asks the developer whether the review of a change is strict or
+quick, and writes the answer to the manifest. Strict hands every `nit` and `q`
+to the developer, as before. Quick acts on no `nit`, settling for writing it to
+the handoff note; it settles a small `q` itself, writing what it chose to the
+handoff note, and asks the developer only the rest. Nothing it settles alone is
+said in the chat.
+
+**Why this priority**: a developer who trusts the walk is slowed by every
+small finding put to them at the hand-over.
+
+**Independent Test**: with a quick review, finish a change whose review leaves
+a `nit` and a small `q`; the hand-over asks neither, and the handoff note holds
+both, with what was chosen.
+
+**Acceptance Scenarios**:
+
+1. **Given** /sdd-init, **When** it asks how work is carried out, **Then** it asks whether the review is strict or quick, and writes the answer to the manifest ([CORE-FR-045](#core-fr-045)).
+2. **Given** a quick review that leaves a `nit`, **When** the change is handed over, **Then** the `nit` is not acted on, is written to the handoff note, and is not said in the chat ([CORE-FR-046](#core-fr-046)).
+3. **Given** a quick review that leaves a `q` whose answer changes no FR, scenario or out of scope and touches only the files the story changed, **When** the change is handed over, **Then** the agent settles it, writes what it chose to the handoff note, and does not ask it ([CORE-FR-046](#core-fr-046)).
+4. **Given** a quick review that leaves any other `q`, **When** the change is handed over, **Then** it is asked ([CORE-FR-046](#core-fr-046)).
+5. **Given** a strict review, or a manifest with no answer on it, **When** the change is handed over, **Then** every `nit` and `q` is put to the developer, as before ([CORE-FR-045](#core-fr-045), [CORE-FR-046](#core-fr-046)).
+
+---
+
+### CORE Story 21 - Keep the handoff note once the story is Done (Priority: P2)
+
+**Status**: Todo
+
+When a story is set to `Done`, its handoff note stays where it is: committed
+with the work where the manifest commits notes, left in the working tree where
+it ignores them. Neither the check of the spec set nor /sdd-finish refuses a
+`Done` story for keeping its note.
+
+**Why this priority**: what a story decided on its way, its quick-review
+findings included, is lost the moment its note is removed.
+
+**Independent Test**: finish a story with committed notes; its note is in the
+landed commit, and the check and /sdd-finish pass.
+
+**Acceptance Scenarios**:
+
+1. **Given** a story set to `Done`, **When** it is finished, **Then** its handoff note stays, committed or ignored as the manifest says ([CORE-FR-009](#core-fr-009)).
+2. **Given** a `Done` story whose note stayed, **When** the spec set is checked or /sdd-finish lands it, **Then** neither fails on the note ([CORE-FR-009](#core-fr-009), [CORE-FR-010](#core-fr-010)).
 
 ---
 
@@ -366,12 +618,12 @@ the violations the pass of [CORE Story 9](#core-story-9---quality-cross-check-of
 - <a id="core-fr-006"></a>**CORE-FR-006**: A handoff note MUST say what is done, what remains, the decisions taken and what blocks the story, and nothing the spec already says.
 - <a id="core-fr-007"></a>**CORE-FR-007**: /sdd-init MUST ask whether handoff notes are committed or ignored, and record the answer in the manifest.
 - <a id="core-fr-008"></a>**CORE-FR-008**: /sdd-implement MUST read a story's handoff note before working on it again, and say where the note and the code differ, the code winning.
-- <a id="core-fr-009"></a>**CORE-FR-009**: A story's handoff note MUST be removed when the story is set to `Done`.
+- <a id="core-fr-009"></a>**CORE-FR-009**: A story's handoff note MUST stay when the story is set to `Done`, committed or ignored as the manifest says.
 - <a id="core-fr-026"></a>**CORE-FR-026**: Where handoff notes are ignored, /sdd-implement MUST start a story `In Progress` that has no note from the story and its branch.
 
 **Clean state**
 
-- <a id="core-fr-010"></a>**CORE-FR-010**: /sdd-finish MUST refuse to land a story or a fix while its change holds a stray or temporary file, debug output, a leftover marker, a secret, or a handoff note of a `Done` story, naming each; a finding the developer accepts for that change no longer blocks it.
+- <a id="core-fr-010"></a>**CORE-FR-010**: /sdd-finish MUST refuse to land a story or a fix while its change holds a stray or temporary file, debug output, a leftover marker, or a secret, naming each; a finding the developer accepts for that change no longer blocks it.
 
 **Evidence**
 
@@ -397,13 +649,58 @@ the violations the pass of [CORE Story 9](#core-story-9---quality-cross-check-of
 - <a id="core-fr-017"></a>**CORE-FR-017**: A health check MUST report whether the settings, the spec folder and every answer of the manifest are in place, each with its reason; it checks nothing of the engine — the check on stop, the build, the tools.
 - <a id="core-fr-018"></a>**CORE-FR-018**: For each fault, the health check MUST offer the fix: the one question to ask, or /sdd-init.
 
+**Setup**
+
+- <a id="core-fr-029"></a>**CORE-FR-029**: /sdd-init MUST survey the specs and the habits the repository already has, propose how they become a spec set, and ask how work is carried out and finished, writing the settings, the spec folder, its index and its manifest only once the developer says yes.
+- <a id="core-fr-030"></a>**CORE-FR-030**: A spec set MUST keep one shape — an index of specs, one spec per part with its ids under the part's prefix, a roadmap of every story, the manifest, the decisions, the quality document — saying what and why, never how, and that shape MUST come up whenever a file of it is touched.
+
+**Planning**
+
+- <a id="core-fr-031"></a>**CORE-FR-031**: /sdd-plan MUST write a phase's stories, FR and SC into the spec of its part — a new spec for a new part — after clarifying what is unclear, at most five questions, each answer written as it is given, and add each story to the roadmap with the stories it depends on, pausing for the developer after each step.
+- <a id="core-fr-032"></a>**CORE-FR-032**: The analysis of a spec set MUST report each gap, contradiction and format fault by id, with its severity and its fix, and change nothing.
+
+**Roadmap**
+
+- <a id="core-fr-033"></a>**CORE-FR-033**: Whenever the agent stops with the spec folder changed, every id the specs cite MUST be linked to where it is defined, across the specs, and the agent MUST NOT stop while the spec set fails its check.
+- <a id="core-fr-034"></a>**CORE-FR-034**: The stories that can be built now — not `Done`, every dependency `Done` — MUST be listable in roadmap order.
+- <a id="core-fr-035"></a>**CORE-FR-035**: Every story MUST be listable with its status by spec, and the roadmap drawable as one page showing each story's status and what it waits on.
+
+**Implementing**
+
+- <a id="core-fr-036"></a>**CORE-FR-036**: /sdd-implement MUST take the story the developer names, else the first `In Progress`, else the first ready one, open its branch as the manifest says, and name the code it touches by path and lines.
+- <a id="core-fr-037"></a>**CORE-FR-037**: Before a story's first change, /sdd-implement MUST put to the developer the story's intent, scenarios, FR and SC, what is out of scope, and each technical decision it needs, and change nothing before the yes.
+- <a id="core-fr-038"></a>**CORE-FR-038**: Each scenario MUST get a failing test before the code that passes it, and the story MUST be set `Done` only once the developer accepts the change.
+- <a id="core-fr-039"></a>**CORE-FR-039**: A change MUST be verified — every test and static check the project defines, and a run of what the story describes — before it is reviewed and handed over.
+
+**Bug fix**
+
+- <a id="core-fr-040"></a>**CORE-FR-040**: /sdd-bug-fix MUST fix a bug on a fix branch from the development branch: reproduce it with evidence, report the root cause and the fix and change nothing before the developer approves, fix it with a test that fails for the bug's own reason and the smallest change that passes it, and land it in the development branch.
+
+**Finishing**
+
+- <a id="core-fr-041"></a>**CORE-FR-041**: /sdd-finish MUST land a `Done` story, an accepted fix or a phase exactly as the manifest's finishing says — merge, squash-merge or pull request, into the branch it names, a fix into the development branch — and delete the landed branch as it says; where it says nothing, it asks.
+- <a id="core-fr-042"></a>**CORE-FR-042**: The local branches whose work has landed MUST be listable, and only those the developer confirms deleted, never one whose work has not landed.
+
+**Learning**
+
+- <a id="core-fr-043"></a>**CORE-FR-043**: What a conversation taught — a correction, a preference, a constraint — MUST be written as a dated note in the learning inbox, and never into the agent's own memory.
+
+**Voice**
+
+- <a id="core-fr-044"></a>**CORE-FR-044**: Every command of the spec set, and the agent between them, MUST talk to the developer in the language the developer writes in, in every message but the hand-over's closing line, in the voice the walks share; each question it asks MUST first say what it was doing, the problem it met there, and the fix it proposes; a hand-over MUST end on the line the developer set, word for word.
+
+**Review mode**
+
+- <a id="core-fr-045"></a>**CORE-FR-045**: /sdd-init MUST ask whether the review of a change is strict or quick and record the answer in the manifest; a manifest with no answer reads as strict.
+- <a id="core-fr-046"></a>**CORE-FR-046**: In a quick review, a `nit` MUST NOT be acted on but written to the story's handoff note; a `q` whose answer changes no FR, scenario or out of scope and touches only the files the story changed MUST be settled by the agent and written to the handoff note; neither is said in the chat, and every other `q` is asked. In a strict review every `nit` and `q` MUST be put to the developer.
+
 **Coverage**
 
 - <a id="core-fr-028"></a>**CORE-FR-028**: Every command the charter offers MUST be described by a `Done` story of the spec set and the FR it cites.
 
 ### Key Entities
 
-- **Handoff note**: where a story in progress stands — done, remaining, decisions, blockers. One per story, alive while the story is `In Progress`.
+- **Handoff note**: where a story in progress stands — done, remaining, decisions, blockers. One per story, written while the story is `In Progress` and kept once it is `Done`.
 - **Evidence**: a one-line summary of what proved a `Done` story and when; part of the story's roadmap entry.
 - **Quality document**: the checklist a quality pass checks the code and the specs against, written from its template and kept and edited by the project, followed by the report of the last pass.
 - **Quality report**: each item of the checklist passed or failed, with its violations, and the overall grade; the last section of the quality document, rewritten by each pass.
@@ -416,17 +713,17 @@ the violations the pass of [CORE Story 9](#core-story-9---quality-cross-check-of
 - <a id="core-sc-002"></a>**CORE-SC-002**: Every check this spec adds gives the same result run twice on the same state, and changes nothing it checks.
 - <a id="core-sc-003"></a>**CORE-SC-003**: Every `Done` story landed after this phase carries evidence in the roadmap.
 - <a id="core-sc-004"></a>**CORE-SC-004**: A failure present before a story started is never reported as caused by it.
-- <a id="core-sc-005"></a>**CORE-SC-005**: Once this phase is done, no more than five stories in a row land without a quality pass between them.
+- <a id="core-sc-005"></a>**CORE-SC-005**: Once this phase is done, no more stories in a row than the number the manifest names — five where it names none — land without a quality pass between them.
 
 ## Assumptions
 
-- A handoff note is removed when its story is `Done`, whether notes are committed or ignored.
+- A handoff note stays when its story is `Done`, committed or ignored as the manifest says.
 - An existing manifest without the handoff answer is read as "committed".
 - The health check runs when the developer asks. The quality pass runs in each quality cross-check story, and whenever the developer asks.
-- A phase that adds fewer than five stories adds no quality cross-check story; its stories count toward the next.
+- A phase that adds fewer stories than the manifest's number — five where it names none — adds no quality cross-check story; its stories count toward the next.
 
 ## Out of Scope
 
 - Benchmarks and structured logging of the product: they belong to a product, not to the charter.
 - Running the quality pass on a schedule; the developer may schedule it themselves.
-- Judging the style of code no story describes: the pass checks the code only against the stories.
+- Judging the style of code no story describes: the pass checks the code only against the stories and the guides that apply to it.

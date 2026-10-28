@@ -4,6 +4,7 @@ id: sdd-doctor
 description: Check that the repository's spec set is set up — settings, spec folder, every manifest answer — and offer the fix of each fault.
 triggers: ["sdd doctor", "check the sdd setup", "is the spec setup healthy"]
 rationale: sdd-concept
+mixins: ["sdd-voice"]
 ---
 
 Run `doctor` of [[sdd-specs]] and give its report as it printed it. Change

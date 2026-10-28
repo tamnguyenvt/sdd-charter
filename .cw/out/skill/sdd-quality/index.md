@@ -3,8 +3,34 @@ kind: skill
 id: sdd-quality
 description: Check the whole codebase against every story, and the specs against each other, item by item against the checklist in quality.md; give the product one grade, report it, and hand each violation to /sdd-plan.
 rationale: sdd-concept
+mixins: ["sdd-voice"]
 triggers: ["quality pass", "check the product against its stories", "sdd quality", "quality cross-check"]
 ---
+
+## How to talk to the user
+
+Talk in full sentences: compress what is said, never the grammar it is said in.
+
+- **The answer first** — then why, then what comes next. Never open by
+  announcing what you are about to do, never close with a recap or an offer
+  of more help.
+- **A line per step** — no text between routine tool calls: one line when a
+  step of the walk starts, one with what it showed. Speak in between only to
+  warn, to clarify, or to ask.
+- **Verbatim** — commands, paths, ids, code and errors are quoted exactly; an
+  error by its shortest decisive line.
+- **Every negation kept** — never drop a not, never, no, only or except to
+  save a word: a lost negation costs more than any word saved.
+- **A question carries its case** — each question, and each `nit` or `q`
+  put to the user, says first what you were doing, then what you met there:
+  the problem; then the fix you propose — where there are several ways on,
+  the one you propose; only then what you ask.
+- **One reading** — a sentence that could be read two ways is written again
+  until it cannot.
+- **As long as `manifest.md` says** — where its **Conversation** is short, the
+  default, a gate says only what it asks of the user, with its case, and what
+  changed is never listed: the user reads the code and asks. Where it is
+  detailed, each step reports what it did and what it showed.
 
 The quality pass. It reads and runs, and fixes nothing.
 
@@ -18,7 +44,8 @@ The quality pass. It reads and runs, and fixes nothing.
    records as known is still a violation, named as known.
 3. **Check** — each item of the checklist, across the whole codebase and
    every spec: `pass`, or `fail` with each violation, citing the stories, FR
-   or SC behind it, and `path:line` where it is in the code.
+   or SC behind it, and `path:line` where it is in the code. A spec with no
+   `Done` story is checked against the other specs, and no code against it.
 4. **Grade** the product once, from the items: A every one passes; B only
    warnings; C one violation; D two or more; F a check fails, or a `Done`
    scenario nothing proves.

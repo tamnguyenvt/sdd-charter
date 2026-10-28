@@ -113,9 +113,19 @@ for (const untracked of git("ls-files", "--others", "--exclude-standard", "-z").
 
 const order = (where) => where.replace(/:(\d+)$/, (_, number) => `:${number.padStart(9, "0")}`);
 findings.sort((a, b) => (order(a.where) < order(b.where) ? -1 : order(a.where) > order(b.where) ? 1 : 0));
-if (findings.length === 0) {
-  process.stdout.write(`clean: nothing left behind beyond ${target}\n`);
-  process.exit(0);
-}
-process.stdout.write(findings.map(({ where, kind, text }) => `${where}: ${kind}: ${text}\n`).join(""));
-process.exit(1);
+// The report is flushed before exiting, a pipe on macOS being asynchronous.
+// A reader that closes the pipe early ends the run, quietly.
+process.exitCode = findings.length === 0 ? 0 : 1;
+process.stdout.on("error", (error) => {
+  if (error.code !== "EPIPE") throw error;
+  process.exit();
+});
+await new Promise((resolve) =>
+  process.stdout.write(
+    findings.length === 0
+      ? `clean: nothing left behind beyond ${target}\n`
+      : findings.map(({ where, kind, text }) => `${where}: ${kind}: ${text}\n`).join(""),
+    resolve,
+  ),
+);
+process.exit();

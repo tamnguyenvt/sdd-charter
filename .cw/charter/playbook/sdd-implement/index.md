@@ -51,7 +51,9 @@ with no pause.
    /sdd-quality instead: its report written, and the stories /sdd-plan
    writes from it accepted.
 5. **Verify and review** — /sdd-review.
-6. **Hand over** — gate.
+6. **Hand over** — gate, ending on this line alone, word for word whatever
+   the user's language, and at no other gate:
+   `Sir, self review passed. Can you approve or let me know ?`
 7. **Learn** — only if something surprising came up: /sdd-learn.
 8. **Done**
    - A quality cross-check story is never set `Done` before its report is

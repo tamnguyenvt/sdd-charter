@@ -8,9 +8,9 @@ mixins: [sdd-voice, sdd-change-rules, sdd-iron-laws]
 ---
 
 The walk of one bug: `branch → understand → baseline → find the cause → report
-→ fix → verify and review → (learn) → finish`. The user is asked twice: once the
-cause and the fix are reported, and once the fix has passed its own checks —
-and at the baseline, only when it fails or finds no check.
+→ fix → verify and review → (learn) → finish`. The user is asked twice: to
+approve the reported cause and fix, and to accept the fix handed over — and at
+the baseline, only when it fails or finds no check.
 
 1. **Branch** — a bug is fixed on `fix/<slug>`, `<slug>` a few words of
    the bug, started from the development branch:
@@ -57,18 +57,21 @@ and at the baseline, only when it fails or finds no check.
    - **Definition of done** — what will be true once it is fixed, each
      checkable.
 
-   **Gate:** explicit approval of the fix.
+   **Gate:** explicit approval of the fix, with nothing of it written or run
+   before the yes.
 6. **Fix** — test first: a test that fails for the bug's own reason, then
    the smallest change that makes it pass, and nothing else.
 7. **Verify and review** — run /sdd-review, held to the definition of done
    instead of a story; its /sdd-verify runs with the known failures of the
    baseline, and the reproduction of step 4 run again among it, now showing
    the bug gone. A failure of either goes back to step 6.
-   **Gate:** only now hand the fix to the user — with **Conversation** short,
-   in one line: it is fixed and needs the user's review.
+   **Gate:** only now hand the fix to the user, ending on this line alone,
+   word for word whatever the user's language, and at no other gate:
+   `Sir, self review passed. Can you approve or let me know ?`
 8. **Learn** *(only if something surprising came up)* — run /sdd-learn.
-9. **Finish** — once the user accepts the fix, run /sdd-finish: it lands
-   `fix/<slug>` in the development branch, never in a phase branch.
+9. **Finish** — run /sdd-finish at once; the user accepting the fix is the
+   ask. It lands `fix/<slug>` in the development branch, never in a phase
+   branch.
 
 ## Iron laws (across every step)
 
