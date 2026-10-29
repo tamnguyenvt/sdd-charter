@@ -75,6 +75,22 @@ test("a note for no story fails", () => {
   assert.match(output, /specs\/handoff\/core-9\.md: a handoff note for no story/);
 });
 
+test("a bug fix's note, fix-<slug>.md, is not taken for a story's", () => {
+  specSetOf({ statuses: ["Todo", "Done"], notes: [["fix-ready-lists-done.md", "## Done\n"]] });
+  const { status, output } = check();
+  assert.equal(status, 0, output);
+});
+
+test("a FIX spec's story In Progress keeps its own note, fix-1.md", () => {
+  specSetOf({ statuses: ["Todo"], notes: [] });
+  writeFileSync(join(repositoryFolder, "specs", "spec-fix.md"), "### FIX Story 1 - Story 1 (Priority: P1)\n\n**Status**: In Progress\n\nText.\n");
+  writeFileSync(join(repositoryFolder, "specs", "spec-core.md"), "");
+  writeFileSync(join(repositoryFolder, "specs", "plan.json"), JSON.stringify({ stories: [{ id: "FIX Story 1", title: "Story 1", dependsOn: [] }] }));
+  writeFileSync(join(repositoryFolder, "specs", "handoff", "fix-1.md"), "## Done\n");
+  const { status, output } = check();
+  assert.equal(status, 0, output);
+});
+
 test("a note is not read as a spec: what it cites is not checked", () => {
   specSetOf({ statuses: ["In Progress", "Todo"], notes: [["core-1.md", "Waits on CORE Story 7.\n"]] });
   assert.equal(check().status, 0);
@@ -265,6 +281,13 @@ for (const [name, settingsText] of [["that are no JSON", "{"], ["naming a spec f
     assert.match(output, /^fail  settings +\.sdd\/settings\.json names no "specFolder" — fix: ask \/sdd-init's question on the spec folder$/m);
     assert.equal(stderr, "");
   });
+
+test("doctor fails a manifest with no Review answer, offering /sdd-init's question on it", () => {
+  setUpRepository({ leaveOut: ["Review"] });
+  const { status, output } = doctor();
+  assert.equal(status, 1);
+  assert.match(output, /^fail  manifest +specs\/manifest\.md has no \*\*Review\*\* — fix: ask \/sdd-init's question on \*\*Review\*\* and write the answer$/m);
+});
 
 test("doctor says the folder it checks is assumed when the settings name none", () => {
   setUpRepository();

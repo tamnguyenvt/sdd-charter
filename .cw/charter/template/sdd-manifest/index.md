@@ -25,6 +25,7 @@ by asking the user.
 ## Talking
 
 - **Conversation**: [short — a gate says only what it asks; what changed is never listed, the user reads the code and asks | detailed — each step reports what it did and what it showed]
+- **Review**: [strict — every `nit` and `q` the review leaves is put to the user at the hand-over | quick — a `nit` is not acted on but written to the handoff note; a `q` whose answer changes no FR, scenario or out of scope and touches only the changed files is settled and written there; neither is said in the chat, and every other `q` is asked]
 
 ## Committing
 

@@ -213,14 +213,21 @@ const visit = (id, path) => {
 for (const id of plannedById.keys()) visit(id, []);
 
 // A handoff note per story In Progress, handoff/core-3.md for CORE Story 3,
-// and none for any other: the next session resumes from it. Where the manifest
-// says notes are ignored, a clone on another machine has none, so none is
-// required.
+// and none for any other: the next session resumes from it. A bug fix's
+// note, handoff/fix-<slug>.md, is its own and not checked here, unless it is
+// a FIX spec's story note. Where the manifest says notes are ignored, a
+// clone on another machine has none, so none is required.
 const manifestFile = join(specFolder, "manifest.md");
 const handoffNotesIgnored = existsSync(manifestFile) && /^- \*\*Handoff notes\*\*: ignored\b/im.test(readFileSync(manifestFile, "utf8"));
 const handoffFolder = join(specFolder, "handoff");
 const handoffFileOf = (id) => join(handoffFolder, `${id.replace(" Story ", "-").toLowerCase()}.md`);
-const handoffFiles = existsSync(handoffFolder) ? readdirSync(handoffFolder).filter((name) => name.endsWith(".md")).map((name) => join(handoffFolder, name)) : [];
+const isStoryNote = (file) => [...storyById.keys()].some((id) => handoffFileOf(id) === file);
+const handoffFiles = existsSync(handoffFolder)
+  ? readdirSync(handoffFolder)
+      .filter((name) => name.endsWith(".md"))
+      .map((name) => join(handoffFolder, name))
+      .filter((file) => !basename(file).startsWith("fix-") || isStoryNote(file))
+  : [];
 for (const [id, story] of storyById)
   if (story.status === "In Progress" && !handoffNotesIgnored && !handoffFiles.includes(handoffFileOf(id)))
     faults.push(`${handoffFileOf(id)}: missing; ${id} is In Progress, so its handoff note says what is done, what remains, the decisions taken and what blocks it`);

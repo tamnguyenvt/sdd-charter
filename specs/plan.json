@@ -38,7 +38,8 @@
       "evidence": { "summary": "node --test: sdd-specs 37 and sdd-clean 17 pass, 0 fail (one unnamed sdd-clean failure in 62 runs, never again in 61); cw test 6 cases; sdd-clean pipes 6000 findings whole (65536 bytes before); in clones: quality pass graded A, a Vietnamese /sdd-bug-fix answered in Vietnamese and ended its hand-over on the set line, implement with notes ignored started from the story and its branch", "date": "2026-10-28" } },
     { "id": "CORE Story 19", "title": "Answer in the user's language after a slash command, and propose before asking", "dependsOn": ["CORE Story 11"],
       "evidence": { "summary": "node --test: sdd-specs 37, sdd-clean 17 pass, 0 fail; cw test 6 cases, sdd-voice always on; in clones on opus: slash commands with Vietnamese words reported in Vietnamese, questions gave their case and a proposal, a full /sdd-implement walk and a /sdd-bug-fix said nothing of passing steps and ended on approve ?; the review agent built with model opus", "date": "2026-10-29" } },
-    { "id": "CORE Story 20", "title": "Choose how strict the review is", "dependsOn": ["CORE Story 11"] },
+    { "id": "CORE Story 20", "title": "Choose how strict the review is", "dependsOn": ["CORE Story 11"],
+      "evidence": { "summary": "node --test: sdd-specs 40 (doctor fails a manifest with no Review; a fix's note fix-<slug>.md left alone; a FIX spec's note still checked), sdd-clean 17, 0 fail; in clones on opus: /sdd-doctor asked Review; quick bug fix kept its note and its nits in it, handing over approve ? alone; two quick walks settled a small q into the note; a q to ask held by the text alone", "date": "2026-10-29" } },
     { "id": "CORE Story 21", "title": "Keep the handoff note once the story is Done", "dependsOn": ["CORE Story 3", "CORE Story 4"] }
   ]
 }

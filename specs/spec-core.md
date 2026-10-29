@@ -15,6 +15,7 @@ Then: "Answer in my language even after a slash command, and propose before aski
 Then: "In short mode, say nothing for a step that passes: only a failure, a warning or a question."
 Then: "Pin the reviewing agent to the opus model."
 Then: "End the hand-over on `approve ?`."
+Then: "A bug fix is a task too: it keeps a handoff note."
 
 ## Overview
 
@@ -72,6 +73,7 @@ run the charter's commands and the agents that walk them.
 - Q: When is a `q` small enough for a quick review to settle without the developer? → A: when its answer changes no FR, scenario or out of scope, and touches only the files the story changed; any other `q` is asked ([CORE-FR-046](#core-fr-046)).
 - Q: Which model does the reviewing agent run on? → A: opus, pinned, whatever model the walk runs on ([CORE-FR-001](#core-fr-001)).
 - Q: Must a line the agent says while working, between tool calls, be in the developer's language too? → A: no: any language; every answer, report, gate, question and hand-over must ([CORE-FR-044](#core-fr-044)).
+- Q: Does a bug fix keep a handoff note, as a story does? → A: yes: a fix is a task too; it keeps one of its own from its branch on, and a quick review of it writes there ([CORE-FR-005](#core-fr-005)).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -544,7 +546,7 @@ command; the answer keeps the same voice.
 
 ### CORE Story 20 - Choose how strict the review is (Priority: P2)
 
-**Status**: Todo
+**Status**: Done
 
 /sdd-init asks the developer whether the review of a change is strict or
 quick, and writes the answer to the manifest. Strict hands every `nit` and `q`
@@ -567,6 +569,7 @@ both, with what was chosen.
 3. **Given** a quick review that leaves a `q` whose answer changes no FR, scenario or out of scope and touches only the files the story changed, **When** the change is handed over, **Then** the agent settles it, writes what it chose to the handoff note, and does not ask it ([CORE-FR-046](#core-fr-046)).
 4. **Given** a quick review that leaves any other `q`, **When** the change is handed over, **Then** it is asked ([CORE-FR-046](#core-fr-046)).
 5. **Given** a strict review, or a manifest with no answer on it, **When** the change is handed over, **Then** every `nit` and `q` is put to the developer, as before ([CORE-FR-045](#core-fr-045), [CORE-FR-046](#core-fr-046)).
+6. **Given** a bug fix, **When** /sdd-bug-fix opens its branch, **Then** the fix gets a handoff note of its own, brought up to date before every stop, and a quick review of the fix writes to it ([CORE-FR-005](#core-fr-005), [CORE-FR-046](#core-fr-046)).
 
 ---
 
@@ -622,7 +625,7 @@ landed commit, and the check and /sdd-finish pass.
 
 **Handoff**
 
-- <a id="core-fr-005"></a>**CORE-FR-005**: A story `In Progress` MUST have a handoff note of its own in the spec folder whenever a session stops on it.
+- <a id="core-fr-005"></a>**CORE-FR-005**: A story `In Progress`, and a bug fix not yet landed, MUST have a handoff note of its own in the spec folder whenever a session stops on it.
 - <a id="core-fr-006"></a>**CORE-FR-006**: A handoff note MUST say what is done, what remains, the decisions taken and what blocks the story, and nothing the spec already says.
 - <a id="core-fr-007"></a>**CORE-FR-007**: /sdd-init MUST ask whether handoff notes are committed or ignored, and record the answer in the manifest.
 - <a id="core-fr-008"></a>**CORE-FR-008**: /sdd-implement MUST read a story's handoff note before working on it again, and say where the note and the code differ, the code winning.
@@ -700,7 +703,7 @@ landed commit, and the check and /sdd-finish pass.
 **Review mode**
 
 - <a id="core-fr-045"></a>**CORE-FR-045**: /sdd-init MUST ask whether the review of a change is strict or quick and record the answer in the manifest; a manifest with no answer reads as strict.
-- <a id="core-fr-046"></a>**CORE-FR-046**: In a quick review, a `nit` MUST NOT be acted on but written to the story's handoff note; a `q` whose answer changes no FR, scenario or out of scope and touches only the files the story changed MUST be settled by the agent and written to the handoff note; neither is said in the chat, and every other `q` is asked. In a strict review every `nit` and `q` MUST be put to the developer.
+- <a id="core-fr-046"></a>**CORE-FR-046**: In a quick review, a `nit` MUST NOT be acted on but written to the handoff note of the story or fix; a `q` whose answer changes no FR, scenario or out of scope and touches only the files the story or fix changed MUST be settled by the agent and written to the handoff note; neither is said in the chat, and every other `q` is asked. In a strict review every `nit` and `q` MUST be put to the developer.
 
 **Coverage**
 
@@ -708,7 +711,7 @@ landed commit, and the check and /sdd-finish pass.
 
 ### Key Entities
 
-- **Handoff note**: where a story in progress stands — done, remaining, decisions, blockers. One per story, written while the story is `In Progress` and kept once it is `Done`.
+- **Handoff note**: where a story in progress, or a bug fix not yet landed, stands — done, remaining, decisions, blockers. One per story or fix, written while the story is `In Progress` and kept once it is `Done`, or until the fix lands.
 - **Evidence**: a one-line summary of what proved a `Done` story and when; part of the story's roadmap entry.
 - **Quality document**: the checklist a quality pass checks the code and the specs against, written from its template and kept and edited by the project, followed by the report of the last pass.
 - **Quality report**: each item of the checklist passed or failed, with its violations, and the overall grade; the last section of the quality document, rewritten by each pass.

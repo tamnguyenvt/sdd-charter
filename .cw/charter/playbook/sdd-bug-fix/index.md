@@ -21,6 +21,10 @@ the baseline, only when it fails or finds no check.
    - **Worktree** per story: leave the main worktree as it is, and add one for
      the fix, `git worktree add -b fix/<slug> <path>/fix-<slug>
      <development branch>`, under the path the manifest names.
+
+   Then write the fix's handoff note, `<spec folder>/handoff/fix-<slug>.md`,
+   from [[sdd-handoff]], and bring it up to date before every stop, as
+   /sdd-implement does a story's.
 2. **Understand** — restate the bug: what happens, what should happen
    instead, where, and the steps given to reproduce it, if any. Where the
    bug as told cannot be understood — what goes wrong, or where — ask the
@@ -70,9 +74,9 @@ the baseline, only when it fails or finds no check.
    word for word whatever the user's language, and at no other gate:
    `approve ?`
 8. **Learn** *(only if something surprising came up)* — run /sdd-learn.
-9. **Finish** — run /sdd-finish at once; the user accepting the fix is the
-   ask. It lands `fix/<slug>` in the development branch, never in a phase
-   branch.
+9. **Finish** — remove the fix's handoff note, then run /sdd-finish at once;
+   the user accepting the fix is the ask. It lands `fix/<slug>` in the
+   development branch, never in a phase branch.
 
 ## Iron laws (across every step)
 

@@ -81,11 +81,11 @@ the user takes with "yes":
    finished, so the user stages what they have read, or commit at each step
    that passes its checks, a linear history of small commits. Recommend
    unstaged, the default when the user names none.
-7. **Handoff notes** — the note a story `In Progress` keeps in
-   `<folder>/handoff/`: committed with the work, so a session on another
-   machine resumes from it, or ignored, so it stays on the machine that wrote
-   it. Recommend committed, the default when the user names none, and say
-   that an existing manifest without the line commits them.
+7. **Handoff notes** — the note a story `In Progress`, or a bug fix not yet
+   landed, keeps in `<folder>/handoff/`: committed with the work, so a session
+   on another machine resumes from it, or ignored, so it stays on the machine
+   that wrote it. Recommend committed, the default when the user names none,
+   and say that an existing manifest without the line commits them.
 8. **Commit message** — the convention, and whether to add a
    `Co-Authored-By` line for the agent.
 9. **Finishing** — merge, squash-merge or pull request, into which branch,
@@ -97,7 +97,14 @@ the user takes with "yes":
 11. **Conversation** — short or detailed. Short, the default: a gate says only
    what it asks, and what changed is never listed — the user reads the code
    and asks. Detailed: each step reports what it did and what it showed.
-12. **Quality cross-check** — after how many stories /sdd-plan adds a
+12. **Review** — strict or quick. Strict, the default: every `nit` and `q`
+   the review leaves is put to the user at the hand-over. Quick: a `nit` is
+   not acted on but written to the handoff note; a `q` whose answer changes
+   no FR, scenario or out of scope and touches only the changed files is
+   settled by the agent and written there; neither is said in the chat, and
+   every other `q` is asked. Say that an existing manifest without the line
+   reads as strict.
+13. **Quality cross-check** — after how many stories /sdd-plan adds a
    quality cross-check story, which runs /sdd-quality on them. Recommend 5,
    the default when the user names none, and say that an existing manifest
    without the line reads as 5.

@@ -19,6 +19,7 @@ by asking the user.
 ## Talking
 
 - **Conversation**: short — a gate says only what it asks; what changed is never listed, the user reads the code and asks
+- **Review**: strict — every `nit` and `q` the review leaves is put to the user at the hand-over
 
 ## Committing
 

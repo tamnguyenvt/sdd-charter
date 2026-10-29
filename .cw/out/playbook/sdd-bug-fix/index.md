@@ -15,13 +15,19 @@ decides the worktree, the order, the branches — the development branch
 where it says nothing about the case at hand, ask.
 
 - **Handed over only once checked.** The user is handed a change only after
-  /sdd-verify and /sdd-review have passed. With **Conversation** short, open
-  on each `nit` and `q` the review left for the user to decide; with it
-  detailed, say what changed and what each check showed, then each `nit` and
-  `q`. Either way, name each known failure the baseline recorded, where it
-  recorded any. Each change the user asks for then is made and checked the
-  same way again before it is handed back; a requested change is never
-  reported done on the edit alone.
+  /sdd-verify and /sdd-review have passed. With **Review** quick in the
+  manifest, a `nit` is not acted on but written to the handoff note, and a `q`
+  whose answer changes no FR, scenario or out of scope and touches only the
+  changed files is settled, what was chosen written there, and an edit it
+  brings is checked the same way again before the hand-over; neither is said
+  in the chat. With **Review** strict, or no answer, every `nit` and `q` is
+  left for the user. With **Conversation** short, open on each `nit` and `q`
+  left for the user to decide; with it detailed, say what changed and what
+  each check showed, then each `nit` and `q` left for the user. Either way,
+  name each known failure the baseline recorded, where it recorded any. Each
+  change the user asks for then is made and checked the same way again before
+  it is handed back; a requested change is never reported done on the edit
+  alone.
 
 The walk of one bug: `branch → understand → baseline → find the cause → report
 → fix → verify and review → (learn) → finish`. The user is asked twice: to
@@ -37,6 +43,10 @@ the baseline, only when it fails or finds no check.
    - **Worktree** per story: leave the main worktree as it is, and add one for
      the fix, `git worktree add -b fix/<slug> <path>/fix-<slug>
      <development branch>`, under the path the manifest names.
+
+   Then write the fix's handoff note, `<spec folder>/handoff/fix-<slug>.md`,
+   from [sdd-handoff](../../template/sdd-handoff/index.md), and bring it up to date before every stop, as
+   /sdd-implement does a story's.
 2. **Understand** — restate the bug: what happens, what should happen
    instead, where, and the steps given to reproduce it, if any. Where the
    bug as told cannot be understood — what goes wrong, or where — ask the
@@ -86,9 +96,9 @@ the baseline, only when it fails or finds no check.
    word for word whatever the user's language, and at no other gate:
    `approve ?`
 8. **Learn** *(only if something surprising came up)* — run /sdd-learn.
-9. **Finish** — run /sdd-finish at once; the user accepting the fix is the
-   ask. It lands `fix/<slug>` in the development branch, never in a phase
-   branch.
+9. **Finish** — remove the fix's handoff note, then run /sdd-finish at once;
+   the user accepting the fix is the ask. It lands `fix/<slug>` in the
+   development branch, never in a phase branch.
 
 ## Iron laws (across every step)
 

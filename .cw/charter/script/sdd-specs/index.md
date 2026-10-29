@@ -31,15 +31,16 @@ file whose prefix is not its own (`spec-core.md` defines `CORE-…` only); a
 story with no `**Status**: Todo | In Progress | Done` line right under its
 heading; a story missing from `plan.json`, or one there that no spec holds; a
 dependency on no story; a dependency cycle; a stale link; a story `In Progress`
-with no handoff note at `handoff/<prefix>-<n>.md` (`handoff/core-3.md` for
-CORE Story 3) — unless `manifest.md` says `**Handoff notes**: ignored` — or
-a note there for a story that is not `In Progress`; evidence on the
-`plan.json` entry of a story that is not `Done`, or evidence that is not
-`{ "summary": "<one line>", "date": "yyyy-mm-dd" }`. A `Done` story with no
+with no handoff note at `handoff/<prefix>-<n>.md` (`handoff/core-3.md` for CORE
+Story 3) — unless `manifest.md` says `**Handoff notes**: ignored` — or a note
+there for a story that is not `In Progress`; evidence on the `plan.json` entry
+of a story that is not `Done`, or evidence that is not `{ "summary": "<one
+line>", "date": "yyyy-mm-dd" }`. A bug fix's note, `handoff/fix-<slug>.md`, is
+left alone, unless it is a FIX spec's story note. A `Done` story with no
 evidence passes, as the stories landed before evidence was kept; with
-`--landing "<story id>"`, which /sdd-finish passes for the story it lands,
-that story with no evidence fails. Notes are not read as specs: what they
-cite is neither linked nor checked.
+`--landing "<story id>"`, which /sdd-finish passes for the story it lands, that
+story with no evidence fails. Notes are not read as specs: what they cite is
+neither linked nor checked.
 
 **doctor** prints a line per item, `pass` or `fail` with its reason, and for
 a fault its fix: `.sdd/settings.json` names a spec folder — where there is no

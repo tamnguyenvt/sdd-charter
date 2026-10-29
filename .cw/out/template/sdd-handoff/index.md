@@ -1,10 +1,10 @@
 ---
 kind: template
 id: sdd-handoff
-description: The skeleton of a handoff note, <spec folder>/handoff/<prefix>-<n>.md — where a story In Progress stands, for the next session to resume from.
+description: The skeleton of a handoff note, <spec folder>/handoff/<prefix>-<n>.md or fix-<slug>.md — where a story In Progress or a bug fix stands, for the next session to resume from.
 ---
 
-# [CORE Story 3] — handoff
+# [CORE Story 3, or fix/<slug>] — handoff
 
 **Updated**: [yyyy-mm-dd]
 
