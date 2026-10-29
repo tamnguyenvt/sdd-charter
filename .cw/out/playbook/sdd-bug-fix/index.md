@@ -96,9 +96,9 @@ the baseline, only when it fails or finds no check.
    word for word whatever the user's language, and at no other gate:
    `approve ?`
 8. **Learn** *(only if something surprising came up)* — run /sdd-learn.
-9. **Finish** — remove the fix's handoff note, then run /sdd-finish at once;
-   the user accepting the fix is the ask. It lands `fix/<slug>` in the
-   development branch, never in a phase branch.
+9. **Finish** — bring the fix's handoff note up to date, then run /sdd-finish
+   at once; the user accepting the fix is the ask. It lands `fix/<slug>` in
+   the development branch, never in a phase branch.
 
 ## Iron laws (across every step)
 

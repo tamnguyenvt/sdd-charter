@@ -75,6 +75,11 @@ run the charter's commands and the agents that walk them.
 - Q: Must a line the agent says while working, between tool calls, be in the developer's language too? → A: no: any language; every answer, report, gate, question and hand-over must ([CORE-FR-044](#core-fr-044)).
 - Q: Does a bug fix keep a handoff note, as a story does? → A: yes: a fix is a task too; it keeps one of its own from its branch on, and a quick review of it writes there ([CORE-FR-005](#core-fr-005)).
 
+### Session 2026-10-29
+
+- Q: Is a bug fix's note kept when the fix lands, as a story's is at `Done`? → A: yes ([CORE-FR-009](#core-fr-009)).
+- Q: Does a note for a story still `Todo` fail the check? → A: yes: nothing is started, so the note is a mistake ([CORE-FR-009](#core-fr-009)).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### CORE Story 1 - Review by an agent that did not write the change (Priority: P1)
@@ -575,7 +580,7 @@ both, with what was chosen.
 
 ### CORE Story 21 - Keep the handoff note once the story is Done (Priority: P2)
 
-**Status**: Todo
+**Status**: Done
 
 When a story is set to `Done`, its handoff note stays where it is: committed
 with the work where the manifest commits notes, left in the working tree where
@@ -629,7 +634,7 @@ landed commit, and the check and /sdd-finish pass.
 - <a id="core-fr-006"></a>**CORE-FR-006**: A handoff note MUST say what is done, what remains, the decisions taken and what blocks the story, and nothing the spec already says.
 - <a id="core-fr-007"></a>**CORE-FR-007**: /sdd-init MUST ask whether handoff notes are committed or ignored, and record the answer in the manifest.
 - <a id="core-fr-008"></a>**CORE-FR-008**: /sdd-implement MUST read a story's handoff note before working on it again, and say where the note and the code differ, the code winning.
-- <a id="core-fr-009"></a>**CORE-FR-009**: A story's handoff note MUST stay when the story is set to `Done`, committed or ignored as the manifest says.
+- <a id="core-fr-009"></a>**CORE-FR-009**: A story's or a bug fix's handoff note MUST stay when the story is set to `Done` or the fix lands, committed or ignored as the manifest says; a note for a story still `Todo` MUST fail the check of the spec set.
 - <a id="core-fr-026"></a>**CORE-FR-026**: Where handoff notes are ignored, /sdd-implement MUST start a story `In Progress` that has no note from the story and its branch.
 
 **Clean state**
@@ -711,7 +716,7 @@ landed commit, and the check and /sdd-finish pass.
 
 ### Key Entities
 
-- **Handoff note**: where a story in progress, or a bug fix not yet landed, stands — done, remaining, decisions, blockers. One per story or fix, written while the story is `In Progress` and kept once it is `Done`, or until the fix lands.
+- **Handoff note**: where a story in progress, or a bug fix not yet landed, stands — done, remaining, decisions, blockers. One per story or fix, written while the story is `In Progress` or the fix is not yet landed, and kept once it is `Done` or has landed.
 - **Evidence**: a one-line summary of what proved a `Done` story and when; part of the story's roadmap entry.
 - **Quality document**: the checklist a quality pass checks the code and the specs against, written from its template and kept and edited by the project, followed by the report of the last pass.
 - **Quality report**: each item of the checklist passed or failed, with its violations, and the overall grade; the last section of the quality document, rewritten by each pass.

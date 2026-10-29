@@ -18,7 +18,7 @@ A repository's specs live in one folder, the one `.sdd/settings.json` names
 | `ADR.md` | the decisions that change how every later story is built or written. |
 | `quality.md` | the checklist a quality pass (/sdd-quality) checks the code and the specs against, from [[sdd-quality-doc]]: written by /sdd-init, kept and edited by the project; under `## Last pass` at its end, the report of the last pass, rewritten by each. |
 | `report.html` | the roadmap drawn from `plan.json` and the statuses (/sdd-report); generated, never edited, and ignored by the folder's `.gitignore`. |
-| `handoff/` | one note per story `In Progress`, `<prefix>-<n>.md`, and per bug fix not yet landed, `fix-<slug>.md`, from [[sdd-handoff]]: what is done, what remains, the decisions taken, what blocks it — nothing the spec says. Removed once the story is `Done` or the fix lands; committed or ignored as `manifest.md` says. Never linked or checked as a spec. |
+| `handoff/` | one note per story `In Progress`, `<prefix>-<n>.md`, and per bug fix not yet landed, `fix-<slug>.md`, from [[sdd-handoff]]: what is done, what remains, the decisions taken, what blocks it — nothing the spec says. Kept once the story is `Done` or the fix lands; committed or ignored as `manifest.md` says. Never linked or checked as a spec. |
 | `mockup/` | designs, when there are any. |
 
 A part grows in its own spec, extended in place; a new part gets a new

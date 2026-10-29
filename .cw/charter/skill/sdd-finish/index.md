@@ -18,17 +18,16 @@ manifest or the history, and offer to write the answer into it.
    (/sdd-verify). Refuse otherwise, saying what is missing.
 
    On a story or a fix branch, before anything is committed, check that nothing
-   is left behind: run `check` of [[sdd-specs]] — a handoff note of a `Done`
-   story fails it; on a story branch, with `--landing "<story id>"`, so a story
-   landing with no evidence in `plan.json` fails it too — and [[sdd-clean]]
-   with the branch the change lands in: the target **Story** names for a story,
-   the development branch for a fix. On any finding, land nothing: name each
-   finding as it was printed, and ask the user to clean it or to accept it for
-   this change. Run both again until nothing is left but what the user
-   accepted: [[sdd-clean]] with each finding it printed and the user accepted
-   as `--accept <path>:<line>`, or `--accept <path>` for a file; `check`, which
-   takes no `--accept`, by setting aside each fault it printed that the user
-   accepted. An acceptance holds for this change only.
+   is left behind: run `check` of [[sdd-specs]] — on a story branch with
+   `--landing "<story id>"`, so a story landing with no evidence in `plan.json`
+   fails it — and [[sdd-clean]] with the branch the change lands in: the target
+   **Story** names for a story, the development branch for a fix. On any
+   finding, land nothing: name each finding as it was printed, and ask the user
+   to clean it or to accept it for this change. Run both again until nothing is
+   left but what the user accepted: [[sdd-clean]] with each finding it printed
+   and the user accepted as `--accept <path>:<line>`, or `--accept <path>` for
+   a file; `check`, which takes no `--accept`, by setting aside each fault it
+   printed that the user accepted. An acceptance holds for this change only.
 
    On a story branch, a change still in the working tree, staged or not, is
    the story's: being asked to finish is being asked to commit it. Stage every

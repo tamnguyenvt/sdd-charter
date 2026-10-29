@@ -54,11 +54,16 @@ test("a story In Progress with its note passes", () => {
   assert.equal(check().status, 0);
 });
 
-test("a note for a Done story fails", () => {
+test("a Done story keeps its note: check passes", () => {
   specSetOf({ statuses: ["Done", "Todo"], notes: [["core-1.md", "## Done\n"]] });
   const { status, output } = check();
-  assert.equal(status, 1);
-  assert.match(output, /specs\/handoff\/core-1\.md: a handoff note for CORE Story 1, which is Done/);
+  assert.equal(status, 0, output);
+});
+
+test("a Done story keeps its note: check --landing passes on it", () => {
+  specSetOf({ statuses: ["Done", "Todo"], notes: [["core-1.md", "## Done\n"]], evidence: [{ summary: "node --test: 1 pass", date: "2026-10-29" }] });
+  const { status, output } = check("--landing", "CORE Story 1");
+  assert.equal(status, 0, output);
 });
 
 test("a note for a Todo story fails", () => {
@@ -101,9 +106,9 @@ test("where notes are ignored, a story In Progress with no note passes", () => {
   assert.equal(check().status, 0);
 });
 
-test("where notes are ignored, a note for a Done story still fails", () => {
+test("where notes are ignored, a Done story's note still passes", () => {
   specSetOf({ statuses: ["Done", "Todo"], notes: [["core-1.md", "## Done\n"]], handoffNotes: "ignored" });
-  assert.equal(check().status, 1);
+  assert.equal(check().status, 0);
 });
 
 test("where notes are committed, a story In Progress with no note fails", () => {

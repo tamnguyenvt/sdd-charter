@@ -62,8 +62,8 @@ with no pause.
      wrote from it, or the pass found none.
    - Set the story `Done`, write the evidence into its `plan.json` entry —
      `"evidence": { "summary": "<one line>", "date": "yyyy-mm-dd" }`, the
-     line /sdd-verify ended on and the day it ran — remove its handoff note,
-     and run `check` of [[sdd-specs]].
+     line /sdd-verify ended on and the day it ran — bring its handoff note up
+     to date and keep it, and run `check` of [[sdd-specs]].
    - Commit or leave the change as **While working** says.
    - Run /sdd-finish at once; the user accepting the change is the ask.
 
@@ -75,7 +75,7 @@ what is done — the baseline with each known failure, the spec gate once it
 passed — what remains, from the step to go on at, the decisions taken and what
 blocks it, and nothing the spec already says. `check` refuses a story
 `In Progress` without one — except where notes are ignored — and a note for a
-story that is not.
+story `Todo`.
 
 ## Going back
 

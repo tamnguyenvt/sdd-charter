@@ -213,10 +213,11 @@ const visit = (id, path) => {
 for (const id of plannedById.keys()) visit(id, []);
 
 // A handoff note per story In Progress, handoff/core-3.md for CORE Story 3,
-// and none for any other: the next session resumes from it. A bug fix's
-// note, handoff/fix-<slug>.md, is its own and not checked here, unless it is
-// a FIX spec's story note. Where the manifest says notes are ignored, a
-// clone on another machine has none, so none is required.
+// kept once it is Done, and none for a story Todo: the next session resumes
+// from it. A bug fix's note, handoff/fix-<slug>.md, is its own and not
+// checked here, unless it is a FIX spec's story note. Where the manifest
+// says notes are ignored, a clone on another machine has none, so none is
+// required.
 const manifestFile = join(specFolder, "manifest.md");
 const handoffNotesIgnored = existsSync(manifestFile) && /^- \*\*Handoff notes\*\*: ignored\b/im.test(readFileSync(manifestFile, "utf8"));
 const handoffFolder = join(specFolder, "handoff");
@@ -234,7 +235,7 @@ for (const [id, story] of storyById)
 for (const file of handoffFiles) {
   const id = [...storyById.keys()].find((storyId) => handoffFileOf(storyId) === file);
   if (id === undefined) faults.push(`${file}: a handoff note for no story`);
-  else if (storyById.get(id).status !== "In Progress") faults.push(`${file}: a handoff note for ${id}, which is ${storyById.get(id).status}; remove it`);
+  else if (storyById.get(id).status === "Todo") faults.push(`${file}: a handoff note for ${id}, which is Todo; remove it`);
 }
 
 if (command === "report") {
