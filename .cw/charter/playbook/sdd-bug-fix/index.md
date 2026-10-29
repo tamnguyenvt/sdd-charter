@@ -4,7 +4,7 @@ id: sdd-bug-fix
 description: Fix one bug on a fix branch of its own — understand it, check the baseline, reproduce it with evidence, report the root cause and the fix for approval, fix it test first, verify and review, and finish into the development branch.
 triggers: ["fix bug", "fix this bug", "bug fix", "debug this"]
 rationale: sdd-concept
-mixins: [sdd-voice, sdd-change-rules, sdd-iron-laws]
+mixins: [sdd-change-rules, sdd-iron-laws]
 ---
 
 The walk of one bug: `branch → understand → baseline → find the cause → report
@@ -27,7 +27,8 @@ the baseline, only when it fails or finds no check.
    user before looking for its cause, rather than guessing.
 3. **Baseline** — before the fix's first change, and so before any test
    that reproduces the bug is written, run every test and static check the
-   project defines, as /sdd-verify finds them, and say whether they pass.
+   project defines, as /sdd-verify finds them; where **Conversation** is short,
+   say nothing of them when they pass.
    Where the project defines none, say so and ask whether to go on. A failure
    that is the bug as restated in step 2 is evidence for step 4, not a fault
    of the baseline. Any other failure stops the walk: quote each failure the
@@ -48,7 +49,7 @@ the baseline, only when it fails or finds no check.
 5. **Report** — in this order:
    - **Root cause** — one line.
    - **Flow** — the steps that reproduce it and what each showed, or the
-     prediction and why.
+     prediction and why; a baseline that passed is not one of them.
    - **Root cause in detail** — the code path and why it goes wrong, where
      known.
    - **Fix** — what will change, and where.
@@ -67,7 +68,7 @@ the baseline, only when it fails or finds no check.
    the bug gone. A failure of either goes back to step 6.
    **Gate:** only now hand the fix to the user, ending on this line alone,
    word for word whatever the user's language, and at no other gate:
-   `Sir, self review passed. Can you approve or let me know ?`
+   `approve ?`
 8. **Learn** *(only if something surprising came up)* — run /sdd-learn.
 9. **Finish** — run /sdd-finish at once; the user accepting the fix is the
    ask. It lands `fix/<slug>` in the development branch, never in a phase

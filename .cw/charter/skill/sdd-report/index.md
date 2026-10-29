@@ -4,7 +4,6 @@ id: sdd-report
 description: Draw the roadmap — every story of plan.json, where it stands and what it waits on — into report.html in the spec folder, and say what it shows.
 triggers: ["sdd report", "draw the roadmap", "show the roadmap", "report the plan"]
 rationale: sdd-concept
-mixins: ["sdd-voice"]
 ---
 
 1. Run `check` of [[sdd-specs]]. With a fault, say it and stop: a roadmap

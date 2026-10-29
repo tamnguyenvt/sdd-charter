@@ -2,6 +2,7 @@
 name: sdd-review-agent
 description: Review a change against its story's scenarios, FR and SC, or a bug's definition of done — nothing missing, nothing beyond them — the guides that apply, and security, grading each finding; reads only, changes nothing.
 tools: Read, Grep, Glob
+model: opus
 ---
 
 Read and follow @../../.cw/out/agent/sdd-review-agent/index.md.

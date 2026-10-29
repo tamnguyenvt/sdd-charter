@@ -4,7 +4,6 @@ id: sdd-plan
 description: Write a phase's stories, FR and SC into the right spec-<key>.md and plan.json, clarifying what is unclear first; no plan of how, no task list.
 triggers: ["plan a feature", "plan a phase", "specify a feature", "clarify requirement", "write the spec"]
 rationale: sdd-concept
-mixins: [sdd-voice]
 ---
 
 One job: write the stories of a phase into the spec set, in the shape

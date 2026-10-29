@@ -4,7 +4,7 @@ id: sdd-implement
 description: Implement a ready story of the spec set — pick it, baseline, spec gate, test first, verify and review — the way manifest.md says, and mark it Done.
 triggers: ["implement task", "implement next task", "implement the next story", "implement story"]
 rationale: sdd-concept
-mixins: [sdd-voice, sdd-change-rules, sdd-iron-laws]
+mixins: [sdd-change-rules, sdd-iron-laws]
 ---
 
 One story, from `Todo` to `Done`:
@@ -19,7 +19,7 @@ with no pause.
 ## Steps
 
 1. **Pick**
-   - Run /sdd-report.
+   - Run /sdd-report, saying nothing of it where **Conversation** is short.
    - With more than one spec and none named, ask which one.
    - Take the story the user names, else the first one already
      `In Progress` in that spec, in `plan.json` order, else the first `ready`
@@ -39,6 +39,7 @@ with no pause.
 2. **Baseline** — run every test and static check the project defines.
    - None defined: ask whether to go on.
    - Any fails: stop, and offer the two ways of **Known failures**.
+   - All pass: say nothing of it where **Conversation** is short.
 3. **Spec** — gate
    - Restate the story: intent, scenarios, the FR and SC it cites, and what
      is out of scope.
@@ -53,7 +54,7 @@ with no pause.
 5. **Verify and review** — /sdd-review.
 6. **Hand over** — gate, ending on this line alone, word for word whatever
    the user's language, and at no other gate:
-   `Sir, self review passed. Can you approve or let me know ?`
+   `approve ?`
 7. **Learn** — only if something surprising came up: /sdd-learn.
 8. **Done**
    - A quality cross-check story is never set `Done` before its report is

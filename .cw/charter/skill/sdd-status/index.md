@@ -3,7 +3,6 @@ kind: skill
 id: sdd-status
 description: List every story of the spec set with its status, and the stories that can be built now.
 triggers: ["spec status", "which stories are done", "what is the next story"]
-mixins: ["sdd-voice"]
 ---
 
 Read the spec folder from `.sdd/settings.json`. For each `spec-<key>.md`

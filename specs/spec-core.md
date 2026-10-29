@@ -2,7 +2,7 @@
 
 **Created**: 2026-10-26
 
-**Updated**: 2026-10-28
+**Updated**: 2026-10-29
 
 **Input**: User description: "Phase 1 of the charter is done. Enhance it: a review by an agent other than the author, a baseline before the first change, a handoff for a story in progress, a clean state before finishing, the evidence kept with a Done story, the runtime read while verifying, a quality grade per part, and a health check of the setup."
 Then: "When planning, add a quality cross-check story after about every five stories, so the quality pass is sure to run instead of being skipped."
@@ -12,6 +12,9 @@ Then: "Fix what the first quality pass found, as one story."
 Then: "Give every skill the voice too, so each reports in the right language."
 Then: "Always talk in my language, and give each question its context: what you were doing, the problem you met, then the fix you propose."
 Then: "Answer in my language even after a slash command, and propose before asking. Let /sdd-init ask whether the review is strict or quick: quick leaves each nit to the handoff note, settles a small q itself, writing what it settles to the handoff note and not to the chat. And stop removing the handoff note at Done."
+Then: "In short mode, say nothing for a step that passes: only a failure, a warning or a question."
+Then: "Pin the reviewing agent to the opus model."
+Then: "End the hand-over on `approve ?`."
 
 ## Overview
 
@@ -63,10 +66,12 @@ run the charter's commands and the agents that walk them.
 - Q: Does the checklist hold the code to the guides that apply to it? → A: yes: the pass checks the code against the stories and those guides, and nothing else ([CORE-FR-014](#core-fr-014)).
 - Q: Where are the commands phase 1 built described? → A: as `Done` stories of this spec, [CORE Story 12](#core-story-12---set-a-repository-up-for-spec-driven-development-priority-p1) on, with the FR they cite ([CORE-FR-028](#core-fr-028)).
 - Q: Is giving every skill the voice of the walks part of this story? → A: yes, written into it, not a change of its own ([CORE-FR-044](#core-fr-044)).
-- Q: What does a hand-over say, from /sdd-implement and /sdd-bug-fix alike? → A: each `nit` and `q`, each known failure the baseline recorded, then one line: `Sir, self review passed. Can you approve or let me know ?` ([CORE-FR-044](#core-fr-044)).
+- Q: What does a hand-over say, from /sdd-implement and /sdd-bug-fix alike? → A: each `nit` and `q`, each known failure the baseline recorded, then one line: `approve ?` ([CORE-FR-044](#core-fr-044)).
 - Q: Where do the `nit` a quick review leaves and the decisions the agent takes itself go? → A: into the story's handoff note alone, never the chat ([CORE-FR-046](#core-fr-046)).
 - Q: Is a story's handoff note removed when the story is `Done`? → A: no: it stays, committed or ignored as the manifest says; a project that wants its notes kept commits them ([CORE-FR-009](#core-fr-009)).
 - Q: When is a `q` small enough for a quick review to settle without the developer? → A: when its answer changes no FR, scenario or out of scope, and touches only the files the story changed; any other `q` is asked ([CORE-FR-046](#core-fr-046)).
+- Q: Which model does the reviewing agent run on? → A: opus, pinned, whatever model the walk runs on ([CORE-FR-001](#core-fr-001)).
+- Q: Must a line the agent says while working, between tool calls, be in the developer's language too? → A: no: any language; every answer, report, gate, question and hand-over must ([CORE-FR-044](#core-fr-044)).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -511,26 +516,29 @@ note appears in the inbox and the agent's memory is untouched.
 
 ### CORE Story 19 - Answer in the user's language after a slash command, and propose before asking (Priority: P2)
 
-**Status**: Todo
+**Status**: Done
 
 A developer types a slash command followed by a few words of their own
-language. Every message of the walk is in that language, though the command
-and the charter are written in another. Each question it asks says what it
+language. Every report, gate, question and hand-over of the walk is in that
+language, though the command and the charter are written in another; a line
+said while working may be in any. Each question it asks says what it
 was doing and the problem it met, proposes one way on, and only then asks.
 
 **Why this priority**: an answer in the wrong language, or a question with no
 proposal, leaves the developer to work out what is asked and what to answer.
 
 **Independent Test**: type a command followed by words of another language
-over a failing baseline; the walk answers in that language, and its question
-names the failure and proposes one of its ways on. Ask something outside any command; the answer
-keeps the same voice.
+over a failing baseline; the walk reports in that language, and its question
+names the failure and proposes one of its ways on. Ask something outside any
+command; the answer keeps the same voice.
 
 **Acceptance Scenarios**:
 
-1. **Given** a slash command followed by words in a language, **When** the command answers, **Then** every message is in that language ([CORE-FR-044](#core-fr-044)).
+1. **Given** a slash command followed by words in a language, **When** the command answers, **Then** every report, gate, question and hand-over is in that language, while a line said as it works may be in any ([CORE-FR-044](#core-fr-044)).
 2. **Given** a question with several ways on, **When** it is asked, **Then** it says what was being done and the problem met, proposes one way, and only then asks ([CORE-FR-044](#core-fr-044)).
 3. **Given** the developer writing outside any command of the spec set, **When** the agent answers, **Then** it talks in the same voice as the commands, from one source that is always on ([CORE-FR-044](#core-fr-044)).
+4. **Given** a change to review, **When** the reviewing agent is spawned, **Then** it runs on the opus model, whatever model the walk runs on ([CORE-FR-001](#core-fr-001)).
+5. **Given** a manifest whose **Conversation** is short, **When** a step of the walk passes, **Then** nothing is said of it; only a failure, a warning or a question is ([CORE-FR-044](#core-fr-044)).
 
 ---
 
@@ -601,7 +609,7 @@ landed commit, and the check and /sdd-finish pass.
 
 **Review**
 
-- <a id="core-fr-001"></a>**CORE-FR-001**: The review of a change MUST be made by an agent other than the one that wrote it, starting from the story, the FR and SC it cites, the guides that apply to the changed files, the change and the line its verify ended on, and nothing else.
+- <a id="core-fr-001"></a>**CORE-FR-001**: The review of a change MUST be made by an agent other than the one that wrote it, run on the opus model, starting from the story, the FR and SC it cites, the guides that apply to the changed files, the change and the line its verify ended on, and nothing else.
 - <a id="core-fr-002"></a>**CORE-FR-002**: That review MUST grade each finding `bug`, `risk`, `nit` or `q`, and fail on any `bug` or `risk`.
 - <a id="core-fr-021"></a>**CORE-FR-021**: The review step MUST verify the change first, and stop before any review is made when verify fails.
 - <a id="core-fr-022"></a>**CORE-FR-022**: The review MUST count a scenario proven by a test that would fail without it or by the line verify ended on, and fail on a scenario proven by neither.
@@ -687,7 +695,7 @@ landed commit, and the check and /sdd-finish pass.
 
 **Voice**
 
-- <a id="core-fr-044"></a>**CORE-FR-044**: Every command of the spec set, and the agent between them, MUST talk to the developer in the language the developer writes in, in every message but the hand-over's closing line, in the voice the walks share; each question it asks MUST first say what it was doing, the problem it met there, and the fix it proposes; a hand-over MUST end on the line the developer set, word for word.
+- <a id="core-fr-044"></a>**CORE-FR-044**: Every command of the spec set, and the agent between them, MUST report to the developer in the language the developer writes in — every answer, report, gate, question and hand-over but its closing line, a line said while working left free — in the voice the walks share; each question it asks MUST first say what it was doing, the problem it met there, and the fix it proposes; where the manifest's **Conversation** is short, a step that passes MUST say nothing; a hand-over MUST end on the line the developer set, word for word.
 
 **Review mode**
 

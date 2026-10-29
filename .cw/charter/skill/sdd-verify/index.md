@@ -4,7 +4,6 @@ id: sdd-verify
 description: Prove the change works with evidence produced this turn — tests, static checks, and a manual run of what the story describes.
 triggers: ["verify changes"]
 disable-user-invocation: true
-mixins: ["sdd-voice"]
 ---
 
 1. Run the full test suite and every static check the project defines —
@@ -27,6 +26,8 @@ mixins: ["sdd-voice"]
 
 Report what was run and what it showed, quoting the decisive output, and end
 on one line that sums it up — what was run, what it showed — the evidence a
-`Done` story keeps. No claim of "works" or "passes" without that evidence from
-this turn. A failure of any step is reported, never fixed here: nothing is
-changed, and the walk goes back to the change.
+`Done` story keeps. Where **Conversation** is short and every step passed, the
+report and its line go to the review, and to the handoff note where the walk
+keeps one, not the chat. No claim of "works" or "passes" without that evidence
+from this turn. A failure of any step is reported, never fixed here: nothing
+is changed, and the walk goes back to the change.

@@ -4,7 +4,6 @@ id: sdd-quality
 description: Check the whole codebase against every story, and the specs against each other, item by item against the checklist in quality.md; give the product one grade, report it, and hand each violation to /sdd-plan.
 triggers: ["quality pass", "check the product against its stories", "sdd quality", "quality cross-check"]
 rationale: sdd-concept
-mixins: ["sdd-voice"]
 ---
 
 The quality pass. It reads and runs, and fixes nothing.

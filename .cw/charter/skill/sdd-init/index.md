@@ -4,7 +4,6 @@ id: sdd-init
 description: Set a repository up for spec-driven development — find the specs it already has and offer to refactor them into a spec set, ask how work is carried out and finished, then write .sdd/settings.json, the spec folder and its manifest.md.
 triggers: ["sdd init", "set up spec driven development", "set up the specs", "integrate sdd into this repo"]
 rationale: sdd-concept
-mixins: ["sdd-voice"]
 ---
 
 Nothing is written until the user has said yes to it. Where

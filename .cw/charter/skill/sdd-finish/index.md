@@ -5,7 +5,6 @@ description: Finish the story, bug fix or phase you stand on exactly as manifest
 triggers: ["finish the story", "finish the task", "merge branch", "finish the phase"]
 disable-user-invocation: true
 rationale: sdd-concept
-mixins: ["sdd-voice"]
 ---
 
 Read `<spec folder>/manifest.md` (the folder is in `.sdd/settings.json`). Do

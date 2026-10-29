@@ -3,34 +3,9 @@ kind: playbook
 id: sdd-bug-fix
 description: Fix one bug on a fix branch of its own — understand it, check the baseline, reproduce it with evidence, report the root cause and the fix for approval, fix it test first, verify and review, and finish into the development branch.
 rationale: sdd-concept
-mixins: ["sdd-voice", "sdd-change-rules", "sdd-iron-laws"]
+mixins: ["sdd-change-rules", "sdd-iron-laws"]
 triggers: ["fix bug", "fix this bug", "bug fix", "debug this"]
 ---
-
-## How to talk to the user
-
-Talk in full sentences: compress what is said, never the grammar it is said in.
-
-- **The answer first** — then why, then what comes next. Never open by
-  announcing what you are about to do, never close with a recap or an offer
-  of more help.
-- **A line per step** — no text between routine tool calls: one line when a
-  step of the walk starts, one with what it showed. Speak in between only to
-  warn, to clarify, or to ask.
-- **Verbatim** — commands, paths, ids, code and errors are quoted exactly; an
-  error by its shortest decisive line.
-- **Every negation kept** — never drop a not, never, no, only or except to
-  save a word: a lost negation costs more than any word saved.
-- **A question carries its case** — each question, and each `nit` or `q`
-  put to the user, says first what you were doing, then what you met there:
-  the problem; then the fix you propose — where there are several ways on,
-  the one you propose; only then what you ask.
-- **One reading** — a sentence that could be read two ways is written again
-  until it cannot.
-- **As long as `manifest.md` says** — where its **Conversation** is short, the
-  default, a gate says only what it asks of the user, with its case, and what
-  changed is never listed: the user reads the code and asks. Where it is
-  detailed, each step reports what it did and what it showed.
 
 ## Every change
 
@@ -68,7 +43,8 @@ the baseline, only when it fails or finds no check.
    user before looking for its cause, rather than guessing.
 3. **Baseline** — before the fix's first change, and so before any test
    that reproduces the bug is written, run every test and static check the
-   project defines, as /sdd-verify finds them, and say whether they pass.
+   project defines, as /sdd-verify finds them; where **Conversation** is short,
+   say nothing of them when they pass.
    Where the project defines none, say so and ask whether to go on. A failure
    that is the bug as restated in step 2 is evidence for step 4, not a fault
    of the baseline. Any other failure stops the walk: quote each failure the
@@ -89,7 +65,7 @@ the baseline, only when it fails or finds no check.
 5. **Report** — in this order:
    - **Root cause** — one line.
    - **Flow** — the steps that reproduce it and what each showed, or the
-     prediction and why.
+     prediction and why; a baseline that passed is not one of them.
    - **Root cause in detail** — the code path and why it goes wrong, where
      known.
    - **Fix** — what will change, and where.
@@ -108,7 +84,7 @@ the baseline, only when it fails or finds no check.
    the bug gone. A failure of either goes back to step 6.
    **Gate:** only now hand the fix to the user, ending on this line alone,
    word for word whatever the user's language, and at no other gate:
-   `Sir, self review passed. Can you approve or let me know ?`
+   `approve ?`
 8. **Learn** *(only if something surprising came up)* — run /sdd-learn.
 9. **Finish** — run /sdd-finish at once; the user accepting the fix is the
    ask. It lands `fix/<slug>` in the development branch, never in a phase

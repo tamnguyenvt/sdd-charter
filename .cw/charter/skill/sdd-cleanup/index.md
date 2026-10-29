@@ -5,7 +5,6 @@ description: List the story and phase branches whose work has already landed, an
 triggers: ["sdd cleanup", "clean up branches", "delete merged branches", "prune branches"]
 disable-user-invocation: true
 rationale: sdd-concept
-mixins: ["sdd-voice"]
 ---
 
 Read `<spec folder>/manifest.md` (the folder is in `.sdd/settings.json`): its
