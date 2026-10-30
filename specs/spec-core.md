@@ -16,6 +16,7 @@ Then: "In short mode, say nothing for a step that passes: only a failure, a warn
 Then: "Pin the reviewing agent to the opus model."
 Then: "End the hand-over on `approve ?`."
 Then: "A bug fix is a task too: it keeps a handoff note."
+Then: "The checks you ran by hand to prove the charter right are not yet cases cw eval can run: write them."
 
 ## Overview
 
@@ -79,6 +80,10 @@ run the charter's commands and the agents that walk them.
 
 - Q: Is a bug fix's note kept when the fix lands, as a story's is at `Done`? → A: yes ([CORE-FR-009](#core-fr-009)).
 - Q: Does a note for a story still `Todo` fail the check? → A: yes: nothing is started, so the note is a mistake ([CORE-FR-009](#core-fr-009)).
+- Q: When must the cases put to the real agent run? → A: whenever the developer asks, and in every quality cross-check, its result written into that story's evidence; no other story must run them ([CORE-FR-047](#core-fr-047)).
+- Q: What does a case that fails lead to? → A: nothing this spec decides: the phase writes the cases, and what is done with a result is the eval's own ([CORE-FR-047](#core-fr-047)).
+- Q: Does a case hold the agent to a ceiling of tokens? → A: no: a case fails only when the agent did not invoke the command or follow the guide it names; the charter's cost is measured apart ([CORE-FR-048](#core-fr-048)).
+- Q: How many cases does each command get? → A: one, asked in plain English words of its triggers; the voice gets two in Vietnamese, one after a slash command and one without ([CORE-FR-049](#core-fr-049)).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -600,6 +605,53 @@ landed commit, and the check and /sdd-finish pass.
 
 ---
 
+### CORE Story 22 - Put the charter's promises to the real agent (Priority: P2)
+
+**Status**: Todo
+
+The checks run by hand in clones to prove the charter right become cases the
+developer can run again against the real agent after any change to the charter:
+each command of the spec set asked for in plain words, the voice asked in
+Vietnamese, a correction to keep, and an edit of a spec. Walks across gates,
+and checks that need a broken state set up first, stay checks by hand.
+
+**Why this priority**: a change to one primitive can stop the agent from
+reaching a command or following a guide, and nothing run again today says so.
+
+**Independent Test**: run the cases on the last commit; each command of the
+spec set is invoked from its case, and each guide's case is graded as followed.
+
+**Acceptance Scenarios**:
+
+1. **Given** the cases, **When** they are run, **Then** each command of the spec set has one case asking for it in plain English words of its triggers, passing when the agent invokes that command ([CORE-FR-048](#core-fr-048), [CORE-FR-049](#core-fr-049), [CORE-SC-006](#core-sc-006)).
+2. **Given** a request in Vietnamese, one after a slash command and one without, **When** each is run, **Then** its case passes when the agent answered in Vietnamese the way the voice says ([CORE-FR-044](#core-fr-044), [CORE-FR-049](#core-fr-049)).
+3. **Given** a request to remember a correction, **When** it is run, **Then** its case passes when the agent wrote it as a note in the learning inbox and not into its own memory ([CORE-FR-043](#core-fr-043), [CORE-FR-049](#core-fr-049)).
+4. **Given** a request to add an edge case to a spec, **When** it is run, **Then** its case passes when the agent wrote it in the spec format ([CORE-FR-049](#core-fr-049)).
+5. **Given** any case, **When** it is run, **Then** it expects only an invocation or a guide followed, and no ceiling of tokens ([CORE-FR-048](#core-fr-048)).
+
+---
+
+### CORE Story 23 - Quality cross-check of CORE Stories 11 and 19–22 (Priority: P3)
+
+**Status**: Todo
+
+Once CORE Stories 11 and 19–22 are `Done`, /sdd-quality checks the code and
+every spec against the checklist of the quality document, and each violation
+it reports becomes a story; the cases put to the real agent are run, and how
+many passed and failed is written into this story's evidence.
+
+**Why this priority**: five stories have landed since the last quality pass.
+
+**Independent Test**: once its stories are `Done`, build this story; the
+quality document ends with the new report, and its evidence names the cases
+run.
+
+**Acceptance Scenarios**:
+
+1. **Given** CORE Stories 11 and 19–22 `Done`, **When** this story is built, **Then** /sdd-quality checks the code and every spec against the checklist of the quality document, each violation it reports becomes a story, and the cases put to the real agent are run, their count of passed and failed in this story's evidence ([CORE-FR-014](#core-fr-014), [CORE-FR-020](#core-fr-020), [CORE-FR-047](#core-fr-047)).
+
+---
+
 ### Edge Cases
 
 - A story picked up again whose handoff note disagrees with the code — the code wins; the agent says where they differ before going on.
@@ -610,6 +662,7 @@ landed commit, and the check and /sdd-finish pass.
 - A spec with no `Done` story yet — no code is checked against it, and it is still checked against the other specs ([CORE-FR-027](#core-fr-027)).
 - A quality cross-check story whose stories are split across specs — its pass checks every spec of the set, as every pass does ([CORE-FR-024](#core-fr-024)).
 - A story set back from `Done` — its evidence is removed with the status.
+- A command whose case stops at its first gate, with no one there to answer — the case passes on the invocation alone; what follows the gate is still checked by hand.
 
 ## Requirements *(mandatory)*
 
@@ -656,6 +709,8 @@ landed commit, and the check and /sdd-finish pass.
 - <a id="core-fr-015"></a>**CORE-FR-015**: Each item that fails MUST name its violation, citing the stories, FR or SC behind it; the report of a pass — each item and the grade — MUST go at the end of the quality document, in place of the report of the pass before, leaving the checklist as it is.
 - <a id="core-fr-019"></a>**CORE-FR-019**: /sdd-plan MUST add a quality cross-check story after every five stories it adds — the number the manifest names, where it names one — depending on those stories, and carry the stories left over to the next phase's count.
 - <a id="core-fr-020"></a>**CORE-FR-020**: A quality cross-check story MUST run the quality pass and hand the violations it reports to /sdd-plan, which adds a story to fix each; it fixes nothing itself — but for [CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3), which fixes the four findings of the pass it ran before the quality document held a checklist — and MUST NOT be set to `Done` before the developer has accepted those stories, or the pass found none.
+- <a id="core-fr-047"></a>**CORE-FR-047**: Where the repository holds cases put to the real agent, a quality cross-check story MUST run every one of them and write how many passed and failed into its evidence; no other story is held to run them.
+- <a id="core-fr-048"></a>**CORE-FR-048**: A case put to the real agent MUST expect only that the agent invoked a command of the spec set or followed a guide of the charter, and MUST NOT hold it to a ceiling of tokens.
 - <a id="core-fr-024"></a>**CORE-FR-024**: A quality pass MUST check every spec of the set, whichever stories the cross-check waits on.
 - <a id="core-fr-025"></a>**CORE-FR-025**: The quality document MUST hold the checklist the quality pass checks against: /sdd-init writes it from its template, the project may edit it, and a pass that finds none writes it the same way first.
 - <a id="core-fr-027"></a>**CORE-FR-027**: A quality pass MUST check a spec with no `Done` story against the other specs, and no code against it.
@@ -713,6 +768,7 @@ landed commit, and the check and /sdd-finish pass.
 **Coverage**
 
 - <a id="core-fr-028"></a>**CORE-FR-028**: Every command the charter offers MUST be described by a `Done` story of the spec set and the FR it cites.
+- <a id="core-fr-049"></a>**CORE-FR-049**: The cases put to the real agent MUST hold one case for each command of the spec set, asked in plain English words of its triggers; two in Vietnamese held to the voice, one after a slash command and one without; one held to where learnings go; and one held to the spec format.
 
 ### Key Entities
 
@@ -730,6 +786,7 @@ landed commit, and the check and /sdd-finish pass.
 - <a id="core-sc-003"></a>**CORE-SC-003**: Every `Done` story landed after this phase carries evidence in the roadmap.
 - <a id="core-sc-004"></a>**CORE-SC-004**: A failure present before a story started is never reported as caused by it.
 - <a id="core-sc-005"></a>**CORE-SC-005**: Once this phase is done, no more stories in a row than the number the manifest names — five where it names none — land without a quality pass between them.
+- <a id="core-sc-006"></a>**CORE-SC-006**: Every command the charter offers is the subject of at least one case put to the real agent.
 
 ## Assumptions
 
@@ -737,9 +794,13 @@ landed commit, and the check and /sdd-finish pass.
 - An existing manifest without the handoff answer is read as "committed".
 - The health check runs when the developer asks. The quality pass runs in each quality cross-check story, and whenever the developer asks.
 - A phase that adds fewer stories than the manifest's number — five where it names none — adds no quality cross-check story; its stories count toward the next.
+- The cases put to the real agent run on the last commit, on whatever the agent is signed in with, and the agent there runs no shell command.
 
 ## Out of Scope
 
 - Benchmarks and structured logging of the product: they belong to a product, not to the charter.
 - Running the quality pass on a schedule; the developer may schedule it themselves.
+- Cases that walk past a gate, or that need a broken state set up before they run: they stay checks by hand.
+- What is done with the result of a case put to the real agent: it is the eval's own.
+- Running the cases put to the real agent in continuous integration: each run spends real tokens.
 - Judging the style of code no story describes: the pass checks the code only against the stories and the guides that apply to it.
