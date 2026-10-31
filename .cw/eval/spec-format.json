@@ -1,0 +1,6 @@
+{
+  "description": "An edit of a spec keeps the spec format.",
+  "cases": [
+    { "prompt": "Add an edge case to the Core spec: a case put to the real agent that stops before it answers is reported as failed, with why.", "expect": { "follow": "sdd-spec-format" } }
+  ]
+}

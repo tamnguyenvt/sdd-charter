@@ -1,0 +1,21 @@
+{
+  "description": "Each command offered by the charter is reached from plain words of its triggers.",
+  "cases": [
+    { "prompt": "sdd init: set up spec driven development in this repo", "expect": { "invoke": "sdd-init" } },
+    { "prompt": "plan a feature: export the roadmap as a CSV file", "expect": { "invoke": "sdd-plan" } },
+    { "prompt": "analyze the spec and tell me what is wrong with it", "expect": { "read": ".cw/out/skill/sdd-analyze/index.md" } },
+    { "prompt": "spec status: which stories are done?", "expect": { "invoke": "sdd-status" } },
+    { "prompt": "draw the roadmap", "expect": { "invoke": "sdd-report" } },
+    { "prompt": "implement the next story", "expect": { "invoke": "sdd-implement" } },
+    { "prompt": "verify changes on this branch", "expect": { "read": ".cw/out/skill/sdd-verify/index.md" } },
+    { "prompt": "review implementation of the current story", "expect": { "read": ".cw/out/skill/sdd-review/index.md" } },
+    { "prompt": "finish the story", "expect": { "read": ".cw/out/skill/sdd-finish/index.md" } },
+    { "prompt": "fix this bug: ready lists a story whose dependency is still Todo", "expect": { "invoke": "sdd-bug-fix" } },
+    { "prompt": "run a quality pass: check the product against its stories", "expect": { "invoke": "sdd-quality" } },
+    { "prompt": "sdd doctor: is the spec setup healthy?", "expect": { "invoke": "sdd-doctor" } },
+    { "prompt": "clean up branches whose work has already landed", "expect": { "read": ".cw/out/skill/sdd-cleanup/index.md" } },
+    { "prompt": "learn from the conversation: the developer wants every hand-over to name the branch it stands on", "expect": { "read": ".cw/out/skill/sdd-learn/index.md" } },
+    { "prompt": "write a rule: never log the contents of environment variables", "expect": { "invoke": "cw-author" } },
+    { "prompt": "what did the sessions cost?", "expect": { "invoke": "cw-session-cost" } }
+  ]
+}

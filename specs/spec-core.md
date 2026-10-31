@@ -85,6 +85,10 @@ run the charter's commands and the agents that walk them.
 - Q: Does a case hold the agent to a ceiling of tokens? → A: no: a case fails only when the agent did not invoke the command or follow the guide it names; the charter's cost is measured apart ([CORE-FR-048](#core-fr-048)).
 - Q: How many cases does each command get? → A: one, asked in plain English words of its triggers; the voice gets two in Vietnamese, one after a slash command and one without ([CORE-FR-049](#core-fr-049)).
 
+### Session 2026-10-31
+
+- Q: How is reaching an internal command proved when the host does not expose it as a public skill? → A: a case may instead require evidence that the agent read that command's instructions; this proves loading, not completion, and changes the earlier invocation-only answer ([CORE-FR-048](#core-fr-048)).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### CORE Story 1 - Review by an agent that did not write the change (Priority: P1)
@@ -607,7 +611,7 @@ landed commit, and the check and /sdd-finish pass.
 
 ### CORE Story 22 - Put the charter's promises to the real agent (Priority: P2)
 
-**Status**: Todo
+**Status**: Done
 
 The checks run by hand in clones to prove the charter right become cases the
 developer can run again against the real agent after any change to the charter:
@@ -619,15 +623,16 @@ and checks that need a broken state set up first, stay checks by hand.
 reaching a command or following a guide, and nothing run again today says so.
 
 **Independent Test**: run the cases on the last commit; each command of the
-spec set is invoked from its case, and each guide's case is graded as followed.
+spec set is invoked from its case, or its internal instructions are read, and
+each guide's case is graded as followed.
 
 **Acceptance Scenarios**:
 
-1. **Given** the cases, **When** they are run, **Then** each command of the spec set has one case asking for it in plain English words of its triggers, passing when the agent invokes that command ([CORE-FR-048](#core-fr-048), [CORE-FR-049](#core-fr-049), [CORE-SC-006](#core-sc-006)).
+1. **Given** the cases, **When** they are run, **Then** each command of the spec set has one case asking for it in plain English words of its triggers, passing when the agent invokes that command or reads the instructions of an internal command ([CORE-FR-048](#core-fr-048), [CORE-FR-049](#core-fr-049), [CORE-SC-006](#core-sc-006)).
 2. **Given** a request in Vietnamese, one after a slash command and one without, **When** each is run, **Then** its case passes when the agent answered in Vietnamese the way the voice says ([CORE-FR-044](#core-fr-044), [CORE-FR-049](#core-fr-049)).
 3. **Given** a request to remember a correction, **When** it is run, **Then** its case passes when the agent wrote it as a note in the learning inbox and not into its own memory ([CORE-FR-043](#core-fr-043), [CORE-FR-049](#core-fr-049)).
 4. **Given** a request to add an edge case to a spec, **When** it is run, **Then** its case passes when the agent wrote it in the spec format ([CORE-FR-049](#core-fr-049)).
-5. **Given** any case, **When** it is run, **Then** it expects only an invocation or a guide followed, and no ceiling of tokens ([CORE-FR-048](#core-fr-048)).
+5. **Given** any case, **When** it is run, **Then** it expects only an invocation, an internal command's instructions read, or a guide followed, and no ceiling of tokens ([CORE-FR-048](#core-fr-048)).
 
 ---
 
@@ -710,7 +715,7 @@ run.
 - <a id="core-fr-019"></a>**CORE-FR-019**: /sdd-plan MUST add a quality cross-check story after every five stories it adds — the number the manifest names, where it names one — depending on those stories, and carry the stories left over to the next phase's count.
 - <a id="core-fr-020"></a>**CORE-FR-020**: A quality cross-check story MUST run the quality pass and hand the violations it reports to /sdd-plan, which adds a story to fix each; it fixes nothing itself — but for [CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3), which fixes the four findings of the pass it ran before the quality document held a checklist — and MUST NOT be set to `Done` before the developer has accepted those stories, or the pass found none.
 - <a id="core-fr-047"></a>**CORE-FR-047**: Where the repository holds cases put to the real agent, a quality cross-check story MUST run every one of them and write how many passed and failed into its evidence; no other story is held to run them.
-- <a id="core-fr-048"></a>**CORE-FR-048**: A case put to the real agent MUST expect only that the agent invoked a command of the spec set or followed a guide of the charter, and MUST NOT hold it to a ceiling of tokens.
+- <a id="core-fr-048"></a>**CORE-FR-048**: A case put to the real agent MUST expect only that the agent invoked a command of the spec set, read the instructions of an internal command, or followed a guide of the charter, and MUST NOT hold it to a ceiling of tokens.
 - <a id="core-fr-024"></a>**CORE-FR-024**: A quality pass MUST check every spec of the set, whichever stories the cross-check waits on.
 - <a id="core-fr-025"></a>**CORE-FR-025**: The quality document MUST hold the checklist the quality pass checks against: /sdd-init writes it from its template, the project may edit it, and a pass that finds none writes it the same way first.
 - <a id="core-fr-027"></a>**CORE-FR-027**: A quality pass MUST check a spec with no `Done` story against the other specs, and no code against it.

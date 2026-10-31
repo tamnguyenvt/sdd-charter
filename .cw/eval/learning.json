@@ -1,0 +1,6 @@
+{
+  "description": "A correction worth keeping goes to the learning inbox, never to the agent's own memory.",
+  "cases": [
+    { "prompt": "Remember this from now on: never paste a whole stack trace into a hand-over, quote its decisive line only.", "expect": { "follow": "sdd-learnings-go-to-the-inbox" } }
+  ]
+}

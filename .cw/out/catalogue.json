@@ -18,12 +18,6 @@
     "file": ".cw/out/script/cw-session-tokens-counter/index.md"
   },
   {
-    "kind": "sensor",
-    "id": "cw-session-tokens-counter-on-stop",
-    "description": "Count the session's tokens each time the agent stops.",
-    "file": ".cw/out/sensor/cw-session-tokens-counter-on-stop/index.md"
-  },
-  {
     "kind": "skill",
     "id": "sdd-analyze",
     "description": "Check the spec set for gaps, contradictions and format faults, and report each by id with its fix; changes nothing.",

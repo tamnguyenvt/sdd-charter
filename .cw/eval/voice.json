@@ -1,0 +1,7 @@
+{
+  "description": "A request in Vietnamese is answered in Vietnamese, after a slash command or without one.",
+  "cases": [
+    { "prompt": "/sdd-status cho tôi biết story nào làm được tiếp", "expect": { "follow": "sdd-voice" } },
+    { "prompt": "story nào trong spec đã xong, và story nào làm được ngay bây giờ?", "expect": { "follow": "sdd-voice" } }
+  ]
+}
