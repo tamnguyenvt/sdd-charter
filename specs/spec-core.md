@@ -2,7 +2,7 @@
 
 **Created**: 2026-10-26
 
-**Updated**: 2026-10-29
+**Updated**: 2026-11-02
 
 **Input**: User description: "Phase 1 of the charter is done. Enhance it: a review by an agent other than the author, a baseline before the first change, a handoff for a story in progress, a clean state before finishing, the evidence kept with a Done story, the runtime read while verifying, a quality grade per part, and a health check of the setup."
 Then: "When planning, add a quality cross-check story after about every five stories, so the quality pass is sure to run instead of being skipped."
@@ -17,6 +17,7 @@ Then: "Pin the reviewing agent to the opus model."
 Then: "End the hand-over on `approve ?`."
 Then: "A bug fix is a task too: it keeps a handoff note."
 Then: "The checks you ran by hand to prove the charter right are not yet cases cw eval can run: write them."
+Then: "Write a refactor walk that checks the whole source code against the rules: the rules forbid touching lines a task does not concern, so the lines that were wrong in an existing repository are otherwise never fixed. Keep the quality pass as it is; make it /sdd-code-smell, run by hand: a snapshot of the files with a hash each, assessed file by file with a history kept, reported for review where findings can be skipped, then planned through /sdd-plan; a file whose hash is unchanged is not assessed again unless a rescan is asked for; /sdd-report shows the record."
 
 ## Overview
 
@@ -35,6 +36,13 @@ behind when a story lands, the proof that a story works is kept, and the whole
 product is checked against its stories on a regular beat and given one grade,
 what it finds becoming stories on the roadmap. It serves the developers who
 run the charter's commands and the agents that walk them.
+
+A change touches only what its task concerns, so a line that broke the rules
+before the charter came, or before a rule was new, is never fixed by the work
+of a story or a bug. /sdd-code-smell is the walk that goes looking for those
+lines: started by hand on a product the charter was not applied to before, or
+under a new charter, it assesses the code file by file against the coding
+rules, and what the developer agrees to becomes refactoring on the roadmap.
 
 ## Clarifications
 
@@ -88,6 +96,18 @@ run the charter's commands and the agents that walk them.
 ### Session 2026-10-31
 
 - Q: How is reaching an internal command proved when the host does not expose it as a public skill? → A: a case may instead require evidence that the agent read that command's instructions; this proves loading, not completion, and changes the earlier invocation-only answer ([CORE-FR-048](#core-fr-048)).
+
+### Session 2026-11-02
+
+- Q: How does code written before the charter get brought under its rules, when no story may touch lines beside it? → A: through /sdd-code-smell, a new walk of its own; the quality pass stays as it is. It is for a product the charter was not applied to before, or a charter that is new.
+- Q: How does /sdd-code-smell go through the code? → A: it takes a snapshot of the files with a hash of each, like a read snapshot of a database, assesses them file by file, and keeps the history in a record.
+- Q: Which rules does it assess the code against? → A: the coding rules alone: it first lists the charter's rules and drops those that do not concern code.
+- Q: What happens to what it finds? → A: it reports them for the developer to review at a gate, where any can be skipped; what is agreed goes to /sdd-plan, which plans the refactoring.
+- Q: Who starts /sdd-code-smell? → A: the developer, by hand; an agent never invokes it on its own.
+- Q: Does a run assess a file again? → A: not while its hash is unchanged, a new charter included; a file assessed good stays skipped until the developer asks for a rescan in so many words when starting /sdd-code-smell, or its entry is deleted from the record.
+- Q: Does the roadmap report show the code smell record? → A: yes, /sdd-report reads and displays it.
+- Q: How do the agreed findings become stories? → A: one story per rule, gathering every file that breaks it; a rule with too many files for one reviewable change is split.
+- Q: Which files does the snapshot hold? → A: the agent judges which files to leave out, and notes each with why in the record; no fixed list decides it.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -615,7 +635,7 @@ landed commit, and the check and /sdd-finish pass.
 
 The checks run by hand in clones to prove the charter right become cases the
 developer can run again against the real agent after any change to the charter:
-each command of the spec set asked for in plain words, the voice asked in
+each command of the spec set the agent may invoke on its own asked for in plain words, the voice asked in
 Vietnamese, a correction to keep, and an edit of a spec. Walks across gates,
 and checks that need a broken state set up first, stay checks by hand.
 
@@ -623,12 +643,12 @@ and checks that need a broken state set up first, stay checks by hand.
 reaching a command or following a guide, and nothing run again today says so.
 
 **Independent Test**: run the cases on the last commit; each command of the
-spec set is invoked from its case, or its internal instructions are read, and
+spec set the agent may invoke on its own is invoked from its case, or its internal instructions are read, and
 each guide's case is graded as followed.
 
 **Acceptance Scenarios**:
 
-1. **Given** the cases, **When** they are run, **Then** each command of the spec set has one case asking for it in plain English words of its triggers, passing when the agent invokes that command or reads the instructions of an internal command ([CORE-FR-048](#core-fr-048), [CORE-FR-049](#core-fr-049), [CORE-SC-006](#core-sc-006)).
+1. **Given** the cases, **When** they are run, **Then** each command of the spec set the agent may invoke on its own has one case asking for it in plain English words of its triggers, passing when the agent invokes that command or reads the instructions of an internal command ([CORE-FR-048](#core-fr-048), [CORE-FR-049](#core-fr-049), [CORE-SC-006](#core-sc-006)).
 2. **Given** a request in Vietnamese, one after a slash command and one without, **When** each is run, **Then** its case passes when the agent answered in Vietnamese the way the voice says ([CORE-FR-044](#core-fr-044), [CORE-FR-049](#core-fr-049)).
 3. **Given** a request to remember a correction, **When** it is run, **Then** its case passes when the agent wrote it as a note in the learning inbox and not into its own memory ([CORE-FR-043](#core-fr-043), [CORE-FR-049](#core-fr-049)).
 4. **Given** a request to add an edge case to a spec, **When** it is run, **Then** its case passes when the agent wrote it in the spec format ([CORE-FR-049](#core-fr-049)).
@@ -657,6 +677,82 @@ run.
 
 ---
 
+### CORE Story 24 - Find the code smells of a repository (Priority: P2)
+
+**Status**: Todo
+
+A developer brings the charter to a product it was not applied to before, or
+takes a new charter, and starts /sdd-code-smell by hand. It lists the rules
+that concern code, takes a snapshot of the files with a hash of each, assesses
+them one by one against those rules, and keeps what it found in the code smell
+record. Run again, it goes on from what the record already holds.
+
+**Why this priority**: a change touches only what its task concerns, so
+nothing else ever goes looking for a line that was wrong before.
+
+**Independent Test**: in a repository holding one file that breaks a coding
+rule and one that breaks none, run /sdd-code-smell; the record holds both with
+their hashes and names the broken rule, and a second run assesses neither.
+
+**Acceptance Scenarios**:
+
+1. **Given** a charter, **When** /sdd-code-smell starts, **Then** it lists the charter's rules and drops those that do not concern code, naming each one dropped ([CORE-FR-050](#core-fr-050)).
+2. **Given** a repository, **When** the snapshot is taken, **Then** it holds each file to assess with its hash, and each file left out is noted in the record with why ([CORE-FR-051](#core-fr-051)).
+3. **Given** a snapshot, **When** a file has been assessed, **Then** the record holds its hash, when it was assessed, whether it is good, and each finding by rule and line, and no code has changed ([CORE-FR-052](#core-fr-052), [CORE-FR-053](#core-fr-053)).
+4. **Given** a record, **When** /sdd-code-smell runs again on files whose hash is unchanged, under the same charter or a new one, **Then** it does not assess them again, and it assesses each file that is new or changed ([CORE-FR-054](#core-fr-054)).
+5. **Given** a file skipped for an unchanged hash, **When** the developer asks for a rescan in so many words when starting the command, or deletes its entry from the record, **Then** it is assessed again ([CORE-FR-054](#core-fr-054)).
+6. **Given** a run that stopped halfway, **When** /sdd-code-smell runs again, **Then** the files already assessed are kept and only the others are assessed ([CORE-FR-052](#core-fr-052), [CORE-FR-054](#core-fr-054)).
+7. **Given** a conversation in which the developer did not start it, **When** the agent works, **Then** /sdd-code-smell is not invoked ([CORE-FR-055](#core-fr-055)).
+
+---
+
+### CORE Story 25 - Review the code smells and plan the refactoring (Priority: P2)
+
+**Status**: Todo
+
+The assessment over, the developer reviews what was found, grouped by rule,
+and skips what they do not want fixed. What they agree to goes to /sdd-plan,
+which writes the refactoring as stories on the roadmap.
+
+**Why this priority**: findings nobody decided on and nobody planned fix
+nothing; and the developer, not the agent, says what is worth the change.
+
+**Independent Test**: on a record with findings under two rules, skip one
+rule's at the gate; /sdd-plan writes one story, for the other rule, and the
+skipped findings do not come back on the next run.
+
+**Acceptance Scenarios**:
+
+1. **Given** an assessment over, **When** it is reported, **Then** the developer gets the findings grouped by rule with their files, and nothing is planned before the developer's yes ([CORE-FR-056](#core-fr-056)).
+2. **Given** the report, **When** the developer skips a finding, **Then** the record marks it skipped, it goes into no story, and it stays skipped while the file's hash is unchanged ([CORE-FR-057](#core-fr-057)).
+3. **Given** findings agreed, **When** the plan step runs, **Then** /sdd-plan writes one story per rule gathering every file that breaks it, and splits a rule too big for one reviewable change ([CORE-FR-058](#core-fr-058)).
+4. **Given** a refactoring story so planned, **When** it is read, **Then** its scenarios hold that the product behaves as it did before ([CORE-FR-059](#core-fr-059)).
+5. **Given** an assessment with no finding left to agree, **When** it is reported, **Then** it says so and /sdd-plan is not run ([CORE-FR-056](#core-fr-056)).
+
+---
+
+### CORE Story 26 - See the code smells in the roadmap report (Priority: P3)
+
+**Status**: Todo
+
+A developer draws the roadmap and sees, beside the stories, what the code
+smell record holds: how many files were assessed, left out and good, and the
+findings by rule, agreed or skipped.
+
+**Why this priority**: useful once the record exists, and the record can be
+read without it.
+
+**Independent Test**: with a record present, run /sdd-report; the report shows
+it. Remove the record and run it again; the roadmap is drawn as before.
+
+**Acceptance Scenarios**:
+
+1. **Given** a code smell record, **When** /sdd-report runs, **Then** the report shows its files and findings by rule ([CORE-FR-060](#core-fr-060)).
+2. **Given** no code smell record, **When** /sdd-report runs, **Then** the roadmap is drawn and the report says no code smell has been assessed ([CORE-FR-060](#core-fr-060)).
+3. **Given** a record that cannot be read, **When** /sdd-report runs, **Then** the roadmap is still drawn and the report says the record could not be read ([CORE-FR-060](#core-fr-060)).
+
+---
+
 ### Edge Cases
 
 - A story picked up again whose handoff note disagrees with the code — the code wins; the agent says where they differ before going on.
@@ -668,6 +764,9 @@ run.
 - A quality cross-check story whose stories are split across specs — its pass checks every spec of the set, as every pass does ([CORE-FR-024](#core-fr-024)).
 - A story set back from `Done` — its evidence is removed with the status.
 - A command whose case stops at its first gate, with no one there to answer — the case passes on the invocation alone; what follows the gate is still checked by hand.
+- A file that changes after the snapshot — its entry keeps the hash of what was assessed, so the next run assesses it again.
+- A file deleted since the last run — its entry is dropped from the record, and a finding on it is not planned.
+- A file that a refactoring story changed — its hash no longer matches, so the next run assesses it again.
 
 ## Requirements *(mandatory)*
 
@@ -773,7 +872,21 @@ run.
 **Coverage**
 
 - <a id="core-fr-028"></a>**CORE-FR-028**: Every command the charter offers MUST be described by a `Done` story of the spec set and the FR it cites.
-- <a id="core-fr-049"></a>**CORE-FR-049**: The cases put to the real agent MUST hold one case for each command of the spec set, asked in plain English words of its triggers; two in Vietnamese held to the voice, one after a slash command and one without; one held to where learnings go; and one held to the spec format.
+- <a id="core-fr-049"></a>**CORE-FR-049**: The cases put to the real agent MUST hold one case for each command of the spec set the agent may invoke on its own, asked in plain English words of its triggers; two in Vietnamese held to the voice, one after a slash command and one without; one held to where learnings go; and one held to the spec format.
+
+**Code smell**
+
+- <a id="core-fr-050"></a>**CORE-FR-050**: /sdd-code-smell MUST assess the code against the charter's coding rules alone, first listing the rules and naming each one it drops for not concerning code.
+- <a id="core-fr-051"></a>**CORE-FR-051**: /sdd-code-smell MUST take a snapshot of the files to assess with a hash of each; the agent judges which files to leave out, and MUST note each with why in the code smell record.
+- <a id="core-fr-052"></a>**CORE-FR-052**: /sdd-code-smell MUST assess the snapshot file by file and write each file's result to the code smell record, kept in the spec folder, as soon as the file is assessed: the hash of what was assessed, the date, whether it is good, and each finding by rule and line.
+- <a id="core-fr-053"></a>**CORE-FR-053**: /sdd-code-smell MUST NOT change any code; fixing what it finds is the work of the stories planned from it.
+- <a id="core-fr-054"></a>**CORE-FR-054**: A run MUST NOT assess again a file whose hash matches its entry, whatever the charter, unless the developer asks for a rescan in so many words when starting the command or the entry was deleted; a file that is new or changed MUST be assessed, and the entry of a file that is gone MUST be dropped.
+- <a id="core-fr-055"></a>**CORE-FR-055**: /sdd-code-smell MUST run only when the developer starts it; the agent MUST NOT invoke it on its own.
+- <a id="core-fr-056"></a>**CORE-FR-056**: /sdd-code-smell MUST report its findings grouped by rule with their files for the developer's review, and plan nothing before the yes; with no finding left to agree it MUST say so and not run /sdd-plan.
+- <a id="core-fr-057"></a>**CORE-FR-057**: The developer MUST be able to skip any finding at that review; a skipped finding MUST be marked in the code smell record, go into no story, and stay skipped while the file's hash is unchanged.
+- <a id="core-fr-058"></a>**CORE-FR-058**: The findings agreed MUST go to /sdd-plan as one story per rule, gathering every file that breaks it, and a rule too big for one reviewable change MUST be split.
+- <a id="core-fr-059"></a>**CORE-FR-059**: A story planned from the findings MUST hold in its scenarios that the product behaves as it did before.
+- <a id="core-fr-060"></a>**CORE-FR-060**: /sdd-report MUST show the code smell record beside the roadmap: its files and its findings by rule, agreed or skipped; with no record, or one it cannot read, it MUST still draw the roadmap and say so.
 
 ### Key Entities
 
@@ -781,6 +894,7 @@ run.
 - **Evidence**: a one-line summary of what proved a `Done` story and when; part of the story's roadmap entry.
 - **Quality document**: the checklist a quality pass checks the code and the specs against, written from its template and kept and edited by the project, followed by the report of the last pass.
 - **Quality report**: each item of the checklist passed or failed, with its violations, and the overall grade; the last section of the quality document, rewritten by each pass.
+- **Code smell record**: what /sdd-code-smell has assessed, one entry per file — its hash, the date, whether it is good, its findings by rule and line and whether each was skipped — and the files left out with why; the history a run reads to know what it need not assess again.
 
 ## Success Criteria *(mandatory)*
 
@@ -791,7 +905,9 @@ run.
 - <a id="core-sc-003"></a>**CORE-SC-003**: Every `Done` story landed after this phase carries evidence in the roadmap.
 - <a id="core-sc-004"></a>**CORE-SC-004**: A failure present before a story started is never reported as caused by it.
 - <a id="core-sc-005"></a>**CORE-SC-005**: Once this phase is done, no more stories in a row than the number the manifest names — five where it names none — land without a quality pass between them.
-- <a id="core-sc-006"></a>**CORE-SC-006**: Every command the charter offers is the subject of at least one case put to the real agent.
+- <a id="core-sc-006"></a>**CORE-SC-006**: Every command the charter offers, but one only the developer may start, is the subject of at least one case put to the real agent.
+- <a id="core-sc-007"></a>**CORE-SC-007**: A second run of /sdd-code-smell on an unchanged repository assesses 0 files.
+- <a id="core-sc-008"></a>**CORE-SC-008**: Every finding of a finished assessment ends either in a story on the roadmap or marked skipped: 0 are left undecided.
 
 ## Assumptions
 
@@ -800,9 +916,12 @@ run.
 - The health check runs when the developer asks. The quality pass runs in each quality cross-check story, and whenever the developer asks.
 - A phase that adds fewer stories than the manifest's number — five where it names none — adds no quality cross-check story; its stories count toward the next.
 - The cases put to the real agent run on the last commit, on whatever the agent is signed in with, and the agent there runs no shell command.
+- A new charter does not by itself bring unchanged files back to /sdd-code-smell: the developer asks for a rescan when that is wanted.
 
 ## Out of Scope
 
+- Running /sdd-code-smell on a schedule, on every story or from the quality pass, whose checks stay as they are.
+- Assessing a file again on the rule that changed alone: a rescan assesses the whole file.
 - Benchmarks and structured logging of the product: they belong to a product, not to the charter.
 - Running the quality pass on a schedule; the developer may schedule it themselves.
 - Cases that walk past a gate, or that need a broken state set up before they run: they stay checks by hand.
