@@ -789,7 +789,7 @@ it. Remove the record and run it again; the roadmap is drawn as before.
 
 ### CORE Story 27 - Talk to each developer in the language they chose, and write the documents in the repository's (Priority: P2)
 
-**Status**: Todo
+**Status**: Done
 
 At /sdd-init a developer says which language the agent talks to them in. The
 answer is kept on their machine, never in the repository, and every walk reads

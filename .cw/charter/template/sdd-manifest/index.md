@@ -12,6 +12,7 @@ by asking the user.
 
 ## Specs
 
+- **Document language**: [English, unless the user chooses another language]
 - **Folder**: `[spec folder, from the repository's root]`
 - **Quality cross-check**: every [5, unless the user names another number] stories
 

@@ -214,7 +214,7 @@
   {
     "kind": "guide",
     "id": "sdd-voice",
-    "description": "How the agent talks to the user, in and out of the spec set's commands: in the user's language, the answer first, no chatter between steps, every name and error verbatim, each question with its case.",
+    "description": "How the agent talks to the user, in and out of the spec set's commands: in the chosen local language or the user's own words, the answer first, no chatter between steps, every name and error verbatim, each question with its case.",
     "file": ".cw/out/guide/sdd-voice/index.md"
   },
   {

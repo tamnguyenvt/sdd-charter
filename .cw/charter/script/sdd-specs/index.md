@@ -14,7 +14,7 @@ node .cw/out/script/sdd-specs/specs.mjs link    # anchor every definition, link 
 node .cw/out/script/sdd-specs/specs.mjs check   # change nothing; exit 1 on any fault
 node .cw/out/script/sdd-specs/specs.mjs check --landing "CORE Story 3"   # and on that story with no evidence
 node .cw/out/script/sdd-specs/specs.mjs ready   # stories not Done whose dependencies are all Done
-node .cw/out/script/sdd-specs/specs.mjs report  # write <spec folder>/report.html, the roadmap drawn
+node .cw/out/script/sdd-specs/specs.mjs report [--labels <file>]  # write <spec folder>/report.html, the roadmap drawn
 node .cw/out/script/sdd-specs/specs.mjs doctor  # whether settings, spec folder and manifest are set up; change nothing; exit 1 on any fault
 ```
 
@@ -71,3 +71,32 @@ then each finding by rule, waiting, skipped or agreed, with its reason; with no
 record, or one it cannot read, it says so and the roadmap is drawn as before.
 The record is only read. The file is generated, so `report` adds
 `report.html` to the spec folder's `.gitignore` when it is not there.
+
+## Report labels
+
+For a non-English **Document language** in the manifest, `report` requires
+`--labels <file>` and refuses to overwrite a report without complete labels.
+The agent prepares this temporary JSON outside the repository, translated
+into the document language. `language` must match the manifest exactly;
+`lang` is an HTML language code. `messages` holds every key below (the values
+shown are English); placeholders are required unchanged. With no manifest
+answer, English is used. Existing story titles and findings are kept.
+
+```json
+{
+  "language": "English", "lang": "en",
+  "messages": {
+    "roadmap": "Roadmap", "smells": "Code smells", "todo": "Todo", "done": "Done", "active": "In Progress",
+    "ready": "Ready", "blocked": "Waiting", "waiting": "waiting", "skipped": "skipped", "agreed": "agreed",
+    "missingStory": "not in the specs", "after": "after {stories}", "aria": "Roadmap of {count} stories",
+    "noSmells": "No code smell has been assessed: there is no {path}.",
+    "unreadableSmells": "The code smell record {path} could not be read: {why}.",
+    "smellCounts": "{files} files assessed, {good} good; findings: {waiting} waiting, {skipped} skipped, {agreed} agreed."
+  }
+}
+```
+
+`doctor` reads `.sdd/settings.local.json` for a nonempty `language`; missing
+or unreadable preferences produce only a hint pointing to /sdd-init. It never
+reads machine-wide SDD settings or writes personal settings. An absent
+**Document language** is accepted as English for older manifests.

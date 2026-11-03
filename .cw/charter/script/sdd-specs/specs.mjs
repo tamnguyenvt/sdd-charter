@@ -33,9 +33,22 @@ const STATUSES = ["Todo", "In Progress", "Done"];
 // exit 1 on any fail.
 function doctor() {
   const report = [];
+  const localFile = join(".sdd", "settings.local.json");
+  let language;
+  let unreadable = false;
+  try {
+    const local = JSON.parse(readFileSync(localFile, "utf8"));
+    if (!local || typeof local !== "object" || Array.isArray(local)) throw new Error("invalid settings");
+    if (local.language != null && typeof local.language !== "string") throw new Error("invalid language");
+    language = local.language?.trim();
+  } catch (error) {
+    unreadable = error.code !== "ENOENT";
+  }
+
   const pass = (item, reason) => report.push(`pass  ${item.padEnd(11)} ${reason}`);
   const fail = (item, reason, fix) => report.push(`fail  ${item.padEnd(11)} ${reason} — fix: ${fix}`);
   const print = () => {
+    if (!language) report.push(`hint  language    ${unreadable ? `could not read ${localFile}; ` : `no language in ${localFile}; `}run /sdd-init to choose a conversation language`);
     console.log(report.join("\n"));
     return report.some((line) => line.startsWith("fail")) ? 1 : 0;
   };
@@ -85,6 +98,7 @@ function doctor() {
         field === "Folder"
           ? "ask /sdd-init's question on the spec folder"
           : `ask /sdd-init's question on **${Object.hasOwn(questions, field) ? questions[field] : field}** and write the answer`;
+      if (answer === undefined && field === "Document language") continue;
       if (answer === undefined) fail("manifest", `${shown(manifestFile)} has no **${field}**`, fix);
       else if (answer.replace(/[`\s]/g, "") === "" || answer === text || placeholders.some((placeholder) => answer.includes(placeholder)))
         fail("manifest", `${shown(manifestFile)} leaves **${field}** unanswered`, fix);
@@ -325,6 +339,35 @@ function codeSmellOf(file) {
 // box per story coloured by where it stands, an arrow from each story to every
 // story waiting on it; then the code smell record, its findings by rule.
 function reportHtmlOf(plannedStories, storyById, targetById, codeSmell) {
+  const english = {
+    roadmap: "Roadmap", smells: "Code smells", todo: "Todo", done: "Done", active: "In Progress",
+    ready: "Ready", blocked: "Waiting", waiting: "waiting", skipped: "skipped", agreed: "agreed",
+    missingStory: "not in the specs", after: "after {stories}",
+    aria: "Roadmap of {count} stories",
+    noSmells: "No code smell has been assessed: there is no {path}.",
+    unreadableSmells: "The code smell record {path} could not be read: {why}.",
+    smellCounts: "{files} files assessed, {good} good; findings: {waiting} waiting, {skipped} skipped, {agreed} agreed.",
+  };
+  const manifest = existsSync(manifestFile) ? readFileSync(manifestFile, "utf8") : "";
+  const language = /^- \*\*Document language\*\*:\s*(.+)$/m.exec(manifest)?.[1].trim() || "English";
+  let messages = english, lang = "en";
+  const labelsAt = flags.indexOf("--labels");
+  if (labelsAt !== -1) {
+    const supplied = JSON.parse(readFileSync(flags[labelsAt + 1], "utf8"));
+    if (supplied.language !== language || !/^[a-z]{2,3}(?:-[a-zA-Z0-9]{2,8})*$/.test(supplied.lang))
+      throw new Error("report labels must name the manifest's language and a valid HTML lang code");
+    for (const [key, value] of Object.entries(english)) {
+      const translated = supplied.messages?.[key];
+      if (typeof translated !== "string" || !translated.trim() ||
+          JSON.stringify((translated.match(/\{\w+\}/g) ?? []).sort()) !== JSON.stringify((value.match(/\{\w+\}/g) ?? []).sort()))
+        throw new Error(`report labels missing or invalid: ${key}`);
+    }
+    messages = supplied.messages;
+    lang = supplied.lang;
+  } else if (!/^(english|en(?:-us|-gb)?)$/i.test(language)) {
+    throw new Error(`document language is ${language}; report requires --labels <translated-labels.json>`);
+  }
+  const t = (key, values = {}) => messages[key].replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
   const escapeHtml = (text) => String(text).replace(/[&<>"']/g, (character) => `&#${character.charCodeAt(0)};`);
   const plannedById = new Map(plannedStories.map((one) => [one.id, one]));
   const statusOf = (id) => storyById.get(id)?.status ?? "Todo";
@@ -380,7 +423,7 @@ function reportHtmlOf(plannedStories, storyById, targetById, codeSmell) {
     const href = target ? `${relative(specFolder, target.file)}#${target.fragment}` : "";
     const shortTitle = title.length > 26 ? `${title.slice(0, 25)}…` : title;
     return `<a href="${escapeHtml(href)}"><g class="story ${state}" transform="translate(${x},${y})">
-  <title>${escapeHtml(`${planned.id} — ${title}\n${story?.status ?? "not in the specs"}${planned.dependsOn?.length ? `\nafter ${planned.dependsOn.join(", ")}` : ""}`)}</title>
+  <title>${escapeHtml(`${planned.id} — ${title}\n${story ? t(story.status === "Done" ? "done" : story.status === "In Progress" ? "active" : "todo") : t("missingStory")}${planned.dependsOn?.length ? `\n${t("after", { stories: planned.dependsOn.join(", ") })}` : ""}`)}</title>
   <rect width="${BOX_WIDTH}" height="${BOX_HEIGHT}" rx="10"/>
   <text class="label" x="14" y="23">${escapeHtml(prefix)} ${escapeHtml(number)}</text>${state === "active" ? `\n  <circle class="dot" cx="${BOX_WIDTH - 16}" cy="18" r="4.5"/>` : ""}
   <text class="title" x="14" y="41">${escapeHtml(shortTitle)}</text>
@@ -391,8 +434,8 @@ function reportHtmlOf(plannedStories, storyById, targetById, codeSmell) {
   for (const planned of plannedStories) counts[stateOf(planned.id)]++;
 
   let codeSmellHtml;
-  if (codeSmell.missing) codeSmellHtml = `<p class="note">No code smell has been assessed: there is no ${escapeHtml(codeSmell.missing)}.</p>`;
-  else if (codeSmell.unreadable) codeSmellHtml = `<p class="note">The code smell record ${escapeHtml(codeSmell.unreadable)} could not be read: ${escapeHtml(codeSmell.why)}.</p>`;
+  if (codeSmell.missing) codeSmellHtml = `<p class="note">${escapeHtml(t("noSmells", { path: codeSmell.missing }))}</p>`;
+  else if (codeSmell.unreadable) codeSmellHtml = `<p class="note">${escapeHtml(t("unreadableSmells", { path: codeSmell.unreadable, why: codeSmell.why }))}</p>`;
   else {
     const entries = Object.entries(codeSmell.files);
     const findingsByRule = new Map();
@@ -403,19 +446,19 @@ function reportHtmlOf(plannedStories, storyById, targetById, codeSmell) {
       const items = findings.sort((one, other) => one.path.localeCompare(other.path) || one.line - other.line).map((finding) => {
         const status = ["skipped", "agreed"].includes(finding.status) ? finding.status : "waiting";
         findingCounts[status]++;
-        return `<li><code>${escapeHtml(`${finding.path}:${finding.line}`)}</code> ${escapeHtml(finding.says ?? "")} <span class="status ${status}">${status}</span>${finding.reason ? ` <span class="reason">— ${escapeHtml(finding.reason)}</span>` : ""}</li>`;
+        return `<li><code>${escapeHtml(`${finding.path}:${finding.line}`)}</code> ${escapeHtml(finding.says ?? "")} <span class="status ${status}">${escapeHtml(t(status))}</span>${finding.reason ? ` <span class="reason">— ${escapeHtml(finding.reason)}</span>` : ""}</li>`;
       });
       return `<h2>${escapeHtml(rule)} · ${findings.length}</h2>\n  <ul>\n    ${items.join("\n    ")}\n  </ul>`;
     });
     const good = entries.filter(([, entry]) => entry.good).length;
-    codeSmellHtml = `<p class="note">${entries.length} files assessed, ${good} good; findings: ${findingCounts.waiting} waiting, ${findingCounts.skipped} skipped, ${findingCounts.agreed} agreed.</p>${rules.length ? `\n  ${rules.join("\n  ")}` : ""}`;
+    codeSmellHtml = `<p class="note">${escapeHtml(t("smellCounts", { files: entries.length, good, ...findingCounts }))}</p>${rules.length ? `\n  ${rules.join("\n  ")}` : ""}`;
   }
   return `<!doctype html>
-<html lang="en">
+<html lang="${lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Roadmap</title>
+<title>${escapeHtml(t("roadmap"))}</title>
 <style>
   :root { --bg: #ffffff; --panel: #fbfbfc; --line: #e4e6ec; --text: #2b2d33; --muted: #9a9ca3; --edge: #9a9ca3;
     --done-bg: #f2f2f3; --done-text: #3f9d58; --active-bg: #fcebec; --active-line: #e3a1a8; --active-text: #b0283a; --dot: #57b96b; }
@@ -452,13 +495,13 @@ function reportHtmlOf(plannedStories, storyById, targetById, codeSmell) {
 </head>
 <body>
 <div class="panel">
-  <h1>ROADMAP</h1>
+  <h1>${escapeHtml(t("roadmap").toUpperCase())}</h1>
   <div class="legend">
-    <span class="done">Done · ${counts.done}</span><span class="active">In Progress · ${counts.active}</span>
-    <span class="ready">Ready · ${counts.ready}</span><span class="blocked">Waiting · ${counts.blocked}</span>
+    <span class="done">${escapeHtml(t("done"))} · ${counts.done}</span><span class="active">${escapeHtml(t("active"))} · ${counts.active}</span>
+    <span class="ready">${escapeHtml(t("ready"))} · ${counts.ready}</span><span class="blocked">${escapeHtml(t("blocked"))} · ${counts.blocked}</span>
   </div>
   <div class="scroll">
-    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Roadmap of ${plannedStories.length} stories">
+    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(t("aria", { count: plannedStories.length }))}">
       <defs>
         <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="var(--edge)" stroke-width="1.8"/></marker>
         <marker id="arrow-blocked" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="var(--line)" stroke-width="1.8"/></marker>
@@ -469,7 +512,7 @@ function reportHtmlOf(plannedStories, storyById, targetById, codeSmell) {
   </div>
 </div>
 <div class="panel smells">
-  <h1>CODE SMELLS</h1>
+  <h1>${escapeHtml(t("smells").toUpperCase())}</h1>
   ${codeSmellHtml}
 </div>
 </body>

@@ -1,7 +1,24 @@
 {
-  "description": "A request in Vietnamese is answered in Vietnamese, after a slash command or without one.",
+  "description": "Conversation follows the repository-local personal language, falling back to the developer words when none is chosen.",
   "cases": [
-    { "prompt": "/sdd-status cho tôi biết story nào làm được tiếp", "expect": { "follow": "sdd-voice" } },
-    { "prompt": "story nào trong spec đã xong, và story nào làm được ngay bây giờ?", "expect": { "follow": "sdd-voice" } }
+    {
+      "prompt": "/sdd-status cho tôi biết story nào làm được tiếp",
+      "expect": {
+        "follow": "sdd-voice"
+      }
+    },
+    {
+      "prompt": "story nào trong spec đã xong, và story nào làm được ngay bây giờ?",
+      "expect": {
+        "follow": "sdd-voice"
+      }
+    },
+    {
+      "prompt": "In this evaluation repository, save my accepted personal language choice as {\"language\":\"Tiếng Việt\"} in .sdd/settings.local.json, ignored by .sdd/.gitignore. Then tell me which stories can be built next. This request is in English; use my saved conversation preference for the answer.",
+      "expect": {
+        "follow": "sdd-voice",
+        "read": ".sdd/settings.local.json"
+      }
+    }
   ]
 }

@@ -281,7 +281,7 @@ test("doctor passes each item of a repository set up in full, with its reason, a
   const { status, output } = doctor();
   assert.equal(status, 0, output);
   for (const item of ["settings", "spec folder", "manifest"]) assert.match(output, new RegExp(`^pass  ${item} +\\S`, "m"));
-  assert.equal(output.trim().split("\n").length, 3);
+  assert.equal(output.trim().split("\n").length, 4);
 });
 
 test("doctor fails a manifest missing an answer, and offers the one question that writes it", () => {
@@ -307,7 +307,7 @@ test("every question doctor offers is one /sdd-init asks", () => {
   const asked = [...questionList.matchAll(/^\d+\. \*\*(.+?)\*\*/gm)].map((match) => match[1].toLowerCase());
   setUpRepository({ leaveOut: manifestFields });
   const offered = [...doctor().output.matchAll(/question on (?:\*\*(.+?)\*\*|the (spec folder))/g)].map((match) => (match[1] ?? match[2]).toLowerCase());
-  assert.equal(offered.length, manifestFields.length);
+  assert.equal(offered.length, manifestFields.length - 1);
   for (const question of offered) assert.ok(asked.includes(question), `/sdd-init asks no question on ${question}`);
 });
 
@@ -401,3 +401,67 @@ function snapshotOf(folder) {
     return statSync(path).isFile() ? [name, readFileSync(path, "utf8")] : [name];
   });
 }
+
+test("doctor hints at local language without failing or requiring document language", () => {
+  setUpRepository({ leaveOut: ["Document language"] });
+  const { status, output } = doctor();
+  assert.equal(status, 0, output);
+  assert.match(output, /hint  language +.*settings\.local\.json.*\/sdd-init/);
+});
+
+test("doctor reads language only from this repository and leaves local settings untouched", () => {
+  setUpRepository();
+  const file = join(repositoryFolder, ".sdd", "settings.local.json");
+  const text = '{"language":"Tiếng Việt","other":true}\n';
+  writeFileSync(file, text);
+  const { status, output } = doctor();
+  assert.equal(status, 0, output);
+  assert.doesNotMatch(output, /hint  language/);
+  assert.equal(readFileSync(file, "utf8"), text);
+});
+
+test("doctor treats malformed local settings as no language and reports it once", () => {
+  setUpRepository();
+  writeFileSync(join(repositoryFolder, ".sdd", "settings.local.json"), '{broken');
+  const { status, output } = doctor();
+  assert.equal(status, 0, output);
+  assert.equal((output.match(/could not read/g) ?? []).length, 1);
+  assert.match(output, /\/sdd-init/);
+});
+
+test("a non-English roadmap requires translated labels rather than silently using English", () => {
+  specSetOf({ statuses: ["Todo"] });
+  writeFileSync(join(repositoryFolder, "specs", "manifest.md"), '- **Document language**: Tiếng Việt\n');
+  const run = spawnSync(process.execPath, [specsScript, "report"], { cwd: repositoryFolder, encoding: "utf8" });
+  assert.equal(run.status, 1);
+  assert.match(run.stderr, /--labels/);
+  assert.equal(readdirSync(join(repositoryFolder, "specs")).includes("report.html"), false);
+});
+
+test("roadmap translates generated prose, escapes labels and keeps story ids and earlier content", () => {
+  specSetOf({ statuses: ["Todo"] });
+  writeFileSync(join(repositoryFolder, "specs", "manifest.md"), '- **Document language**: Tiếng Việt\n');
+  const labelsFile = join(repositoryFolder, "labels.json");
+  const labels = { language: "Tiếng Việt", lang: "vi", messages: {
+    roadmap: "Lộ trình <dự án>", smells: "Mùi mã", todo: "Chưa làm", done: "Đã xong", active: "Đang làm",
+    ready: "Sẵn sàng", blocked: "Đang chờ", waiting: "chờ", skipped: "bỏ qua", agreed: "đồng ý",
+    missingStory: "không có trong đặc tả", after: "sau {stories}", aria: "Lộ trình của {count} story",
+    noSmells: "Chưa đánh giá mùi mã: không có {path}.",
+    unreadableSmells: "Không đọc được {path}: {why}.",
+    smellCounts: "{files} tệp đã đánh giá, {good} tốt; {waiting} chờ, {skipped} bỏ qua, {agreed} đồng ý.",
+  } };
+  writeFileSync(labelsFile, JSON.stringify(labels));
+  const run = () => spawnSync(process.execPath, [specsScript, "report", "--labels", labelsFile], { cwd: repositoryFolder, encoding: "utf8" });
+  assert.equal(run().status, 0);
+  const html = readFileSync(join(repositoryFolder, "specs", "report.html"), "utf8");
+  assert.match(html, /<html lang="vi">/);
+  assert.match(html, /Lộ trình &#60;dự án&#62;/);
+  assert.match(html, /Chưa đánh giá mùi mã/);
+  assert.match(html, /Story 1\nChưa làm/);
+  assert.match(html, /CORE Story 1/);
+  assert.match(html, /Story 1/);
+  delete labels.messages.ready;
+  writeFileSync(labelsFile, JSON.stringify(labels));
+  assert.equal(run().status, 1);
+  assert.equal(readFileSync(join(repositoryFolder, "specs", "report.html"), "utf8"), html);
+});

@@ -6,8 +6,14 @@ triggers: ["sdd doctor", "check the sdd setup", "is the spec setup healthy"]
 rationale: sdd-concept
 ---
 
-Run `doctor` of [[sdd-specs]] and give its report as it printed it. Change
+Run `doctor` of [[sdd-specs]] and give its report in the developer's conversation
+language, preserving commands, paths and quoted errors exactly. Change
 nothing until the user picks a fix.
+
+The `hint` for a missing personal language is informational: it never fails
+the setup check, and points to /sdd-init. A missing **Document language**
+answer means English and does not fail either. Do not create personal settings
+until the developer chooses a language.
 
 Then offer each fix the `fail` lines name, one at a time, each once:
 
@@ -20,4 +26,4 @@ Then offer each fix the `fail` lines name, one at a time, each once:
   **Folder**.
 - **/sdd-init** — offer to run it.
 
-Run `doctor` again after the fixes, and end on its report.
+Run `doctor` again after the fixes, and end on its report in that same language.
