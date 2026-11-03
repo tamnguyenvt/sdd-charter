@@ -44,6 +44,8 @@ its severity one of:
   swallowed error.
 - `nit` — a name, a style, a micro-optimisation; it may be left as it is.
 - `q` — a real question, asked where the answer decides whether it is wrong.
+  Never a `q` where the story, its FR and SC, the guides or the repository
+  already give the answer: grade the finding by that answer.
 
 Never hedge ("maybe", "I think", "consider"): what is unsure is a `q`. The fix
 is concrete — the guard to add, the name to use — never "refactor this". The

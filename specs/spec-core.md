@@ -24,6 +24,7 @@ Then: "Make snapshot read-only; save assessment results only when explicitly rec
 
 Then: "Fix what the second quality pass found, as one story."
 Then: "A spec may name what the code does where it is the developer's own review of the code turned into a task."
+Then: "Make the reviewer ask only what needs asking; what is obvious is not asked."
 
 ## Overview
 
@@ -128,6 +129,8 @@ the whole repository shares.
 
 - Q: May a skipped finding carry a reason? → A: "findings <id> skip [reason] , nếu có reason thì ghi vô" ([CORE-FR-057](#core-fr-057)).
 
+- Q: Which review findings are asked of the developer as a `q`? → A: "những thứ cần hỏi thì mới phải hỏi. những thứ hiển nhiên ko cần hỏi thì khỏi hỏi" ([CORE-FR-002](#core-fr-002)).
+
 - Q: How should the developer identify a finding to skip? → A: "cho mỗi finding 1 id, bỏ lệnh skip thay bằng findings [id] skip" ([CORE-FR-057](#core-fr-057)).
 
 - Q: How should listing files again use the previous assessment? → A: "hàm snapshot đổi thành scan. --rescan đổi thành --again; hàm này chỉ trả ra danh sách file chưa được scan; --again tức là bỏ qua thằng code smell cũ và đưa ra hết danh sách" ([CORE-FR-051](#core-fr-051), [CORE-FR-054](#core-fr-054)).
@@ -165,6 +168,7 @@ scenario; the review, made by a separate agent, reports the miss.
 
 1. **Given** a verified change, **When** the review step runs, **Then** it is made by an agent spawned for it, holding only the story, the FR and SC it cites, the guides that apply to the changed files, the change, and the line its verify ended on ([CORE-FR-001](#core-fr-001)).
 2. **Given** that review, **When** it finishes, **Then** the walk receives each finding graded `bug`, `risk`, `nit` or `q`, and a `bug` or `risk` fails the review as before ([CORE-FR-002](#core-fr-002)).
+3. **Given** a change whose evidence names one of two runs that each prove a part of a scenario, **When** the review finds the other run unnamed, **Then** it asks no `q` about which run to name: its finding names the other run as the fix ([CORE-FR-002](#core-fr-002)).
 
 ---
 
@@ -882,7 +886,7 @@ the violations the pass of [CORE Story 23](#core-story-23---quality-cross-check-
 **Review**
 
 - <a id="core-fr-001"></a>**CORE-FR-001**: The review of a change MUST be made by an agent other than the one that wrote it, run on the opus model, starting from the story, the FR and SC it cites, the guides that apply to the changed files, the change and the line its verify ended on, and nothing else.
-- <a id="core-fr-002"></a>**CORE-FR-002**: That review MUST grade each finding `bug`, `risk`, `nit` or `q`, and fail on any `bug` or `risk`.
+- <a id="core-fr-002"></a>**CORE-FR-002**: That review MUST grade each finding `bug`, `risk`, `nit` or `q`, and fail on any `bug` or `risk`; a `q` MUST be only a question whose answer decides whether the change is wrong and that the story, its FR and SC, the guides and the repository leave open; a question they answer MUST be graded by that answer.
 - <a id="core-fr-021"></a>**CORE-FR-021**: The review step MUST verify the change first, and stop before any review is made when verify fails.
 - <a id="core-fr-022"></a>**CORE-FR-022**: The review MUST count a scenario proven by a test that would fail without it or by the line verify ended on, and fail on a scenario proven by neither.
 - <a id="core-fr-023"></a>**CORE-FR-023**: Verify MUST report a failing check without changing anything itself; the walk goes back to the change.

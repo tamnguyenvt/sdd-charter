@@ -15,7 +15,7 @@
     { "id": "CORE Story 18", "title": "Keep what a session learned", "dependsOn": [],
       "evidence": { "summary": "learning/inbox notes written by /sdd-learn here turned into rules (f94fa66); cw test: sdd-learnings-go-to-the-inbox comes up every turn", "date": "2026-10-28" } },
     { "id": "CORE Story 1", "title": "Review by an agent that did not write the change", "dependsOn": [],
-      "evidence": { "summary": "by hand on CORE Story 9: a review agent spawned with only the story id, the diff path and the verify line gathered the story, FR, SC and guides itself and graded each finding bug, risk, nit or q, failing on the bug and risks", "date": "2026-10-27" } },
+      "evidence": { "summary": "by hand on CORE Story 9: a review agent spawned with only the story id, the diff path and the verify line gathered the story, FR, SC and guides itself and graded each finding bug, risk, nit or q, failing on the bug and risks, on 2026-10-27. Scenario 3 on 2026-11-03: the reviewer, replayed in scratch clone runE on a change whose evidence named run D and not run B (session 776cb80f-29c8-4d97-849d-c7914a55e653), asked no q, its finding naming run B as the fix; the reviewer before the change asked it as a q.", "date": "2026-11-03" } },
     { "id": "CORE Story 2", "title": "Check the baseline before the first change", "dependsOn": [],
       "evidence": { "summary": "by hand in a clone with one test broken: the baseline stopped before any change, quoted not ok 36, offered /sdd-bug-fix or known; recorded as known, verify passed naming it known, and the hand-over named it", "date": "2026-10-27" } },
     { "id": "CORE Story 3", "title": "Hand a story in progress over to the next session", "dependsOn": [],
