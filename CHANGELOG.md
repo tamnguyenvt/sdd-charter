@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.14 — 2026-11-03
+
+- `/sdd-code-smell` assesses a repository's files one by one against the charter's coding rules and keeps what it finds in `code-smell.json` in the spec folder; it changes no code and runs only when you start it.
+- `/sdd-code-smell` shows its findings for review, lets you skip each one with a reason, and hands the rest to `/sdd-plan` as one story per rule that keeps the product's behaviour; findings are marked agreed only once you accept those stories.
+- `/sdd-report` shows the code smell record below the roadmap: files assessed and good, and each finding by rule, waiting, skipped or agreed.
+- The roadmap keeps every `Done` story left of every story not `Done`.
+- Each developer chooses the language they are talked to in; `/sdd-init` saves it in `.sdd/settings.local.json`, kept out of git, and asks the repository's document language, written to `manifest.md` as `Document language`. A manifest without that line reads as English.
+- Specs, roadmap labels, handoff notes, quality reports and learning notes are written in the document language; `/sdd-doctor` reports in your own language.
+- `/sdd-plan` places a phase's new stories after every unfinished quality cross-check, so none can start before it is `Done`.
+- A spec may name the command, flag or output that your own review of the code names, and no other implementation detail.
+
 ## 0.1.13 — 2026-10-31
 
 - Changes are reviewed by an independent `sdd-review-agent`, using the story, its requirements, the applicable guides and fresh verification evidence; bugs, risks and unproven scenarios block completion.
