@@ -38,35 +38,30 @@ this comment; leave that section to it. -->
 
 ## Last pass
 
-**Date**: 2026-10-27, [CORE Story 9](spec-core.md#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3)
+**Date**: 2026-11-03, [CORE Story 23](spec-core.md#core-story-23---quality-cross-check-of-core-stories-11-and-1922-priority-p3)
 
-Run: `node --test` of `sdd-specs` and `sdd-clean`, twice: 52 pass, 0 fail, 0 skipped each time; `cw test` 5 cases passed; `cw doctor` nothing to fix; `check` and `doctor` of `sdd-specs` pass.
+Run: `node --test` of `sdd-specs`, `sdd-clean` and `sdd-smell`, twice: 105 pass, 0 fail, 0 skipped each time; `cw test` 6 cases passed; `cw doctor` nothing to fix; `check` and `doctor` of `sdd-specs` pass; `cw eval --agent claude`: 20 cases, 20 passed, 0 failed.
 
 ### Code against the stories
 
 - Every scenario of a `Done` story is held: **fail**
-  - [CORE Story 4](spec-core.md#core-story-4---refuse-to-finish-on-an-unclean-state-priority-p2) has no evidence in `plan.json` (`specs/plan.json:9`), so only tests can hold it, and none holds scenario 1 or the "nothing lands" of scenario 2 — /sdd-finish running the checks before landing (`.cw/charter/skill/sdd-finish/index.md:18-28`) — nor scenario 3: the one twice-run test is on a state with findings, and the clean state is run once (`.cw/charter/script/sdd-clean/clean.test.mjs:166-176`, `:46-52`); [CORE-FR-010](spec-core.md#core-fr-010), [CORE-SC-002](spec-core.md#core-sc-002).
-  - [CORE Story 7](spec-core.md#core-story-7---check-the-product-against-its-stories-over-time-priority-p3) scenario 2 — the report in place of the pass before, the checklist unchanged — is named by no evidence (`specs/plan.json:14`) and no test; [CORE-FR-015](spec-core.md#core-fr-015) (proven in [CORE Story 9](spec-core.md#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3) since; its evidence names it).
-  - [CORE Story 10](spec-core.md#core-story-10---review-with-the-proof-verify-produced-priority-p2) scenario 3, its first half — a scenario the verify line proves counted proven — is named by no evidence (`specs/plan.json:18`, the failing half only) and no test; [CORE-FR-022](spec-core.md#core-fr-022).
+  - [CORE Story 25](spec-core.md#core-story-25---review-the-code-smells-and-plan-the-refactoring-priority-p2) scenario 1, its "nothing planned before the yes", and scenario 4 are held by no test, and its evidence (`specs/plan.json:49`) names no run of them — "workflows pass"; the runs that hold them are recorded in its handoff note alone (`specs/handoff/core-25.md:16`, `:27`); [CORE-FR-011](spec-core.md#core-fr-011), [CORE-FR-056](spec-core.md#core-fr-056), [CORE-FR-059](spec-core.md#core-fr-059).
 - Every test and static check passes twice, none skipped: pass
 - The code of each `Done` story does what its FR say: **fail**
-  - /sdd-bug-fix hands a fix over "in one line: it is fixed and needs the user's review" (`.cw/charter/playbook/sdd-bug-fix/index.md:67-68`): a line saying the change is done and waiting, which `sdd-change-rules` now forbids, and it names no known failure (`.cw/charter/mixin/sdd-change-rules/index.md:15-19`); [CORE Story 2](spec-core.md#core-story-2---check-the-baseline-before-the-first-change-priority-p1) scenario 3, [CORE-FR-004](spec-core.md#core-fr-004).
-  - `sdd-clean` writes its findings and exits at once (`.cw/charter/script/sdd-clean/clean.mjs:120-121`); on a macOS pipe stdout is cut at 128 KB, so a long list is not named in full, as `doctor` already guards against (`.cw/charter/script/sdd-specs/specs.mjs:22-25`); [CORE-FR-010](spec-core.md#core-fr-010).
-- No code does what no FR asks for: **fail**
-  - Phase 1 is built but described by no story or FR (`specs/spec-core.md:19-21`): `link`, `ready` and `report` (`.cw/charter/script/sdd-specs/specs.mjs:233-293`, `:299-417`), the sensor `sdd-specs-on-stop`, /sdd-plan (`.cw/charter/playbook/sdd-plan/index.md:10-48`, `:59-72`), /sdd-implement's pick, spec gate and test first (`.cw/charter/playbook/sdd-implement/index.md:21-49`), /sdd-finish's landing (`.cw/charter/skill/sdd-finish/index.md:36-67`), /sdd-bug-fix but its baseline, /sdd-status, /sdd-report, /sdd-analyze, /sdd-cleanup, /sdd-learn, `sdd-locator`, the guide `sdd-learnings-go-to-the-inbox`, the templates `sdd-spec`, `sdd-spec-index`, `sdd-manifest`.
-  - The checklist template holds the code to the guides (`.cw/charter/template/sdd-quality-doc/index.md:23`), where the out of scope says the pass checks the code only against the stories (`specs/spec-core.md:432`); [CORE-FR-014](spec-core.md#core-fr-014).
+  - /sdd-plan (`.cw/charter/playbook/sdd-plan/index.md:48-52`) does not place a phase's stories after a quality cross-check not yet `Done`, as [CORE-FR-019](spec-core.md#core-fr-019) now requires, so phase 4 put CORE Stories 24–26 before [CORE Story 23](spec-core.md#core-story-23---quality-cross-check-of-core-stories-11-and-1922-priority-p3) (`specs/plan.json:47-51`) and eight stories — CORE Stories 11, 19–22 and 24–26 — landed without a quality pass between them, against [CORE-SC-005](spec-core.md#core-sc-005).
+  - The "Never in a spec" of the `sdd-spec-format` guide (`.cw/charter/guide/sdd-spec-format/index.md:102-105`), the iron law of /sdd-plan that a file name in a spec is a defect (`.cw/charter/playbook/sdd-plan/index.md:67-68`), and the error /sdd-analyze reports for implementation in the spec (`.cw/charter/skill/sdd-analyze/index.md:25-26`) hold no exception for what [CORE-FR-030](spec-core.md#core-fr-030) allows since 2026-11-03: what a spec writes from the developer's own review of the code; [CORE Story 12](spec-core.md#core-story-12---set-a-repository-up-for-spec-driven-development-priority-p1), [CORE-FR-030](spec-core.md#core-fr-030).
+- No code does what no FR asks for: pass
 - The code keeps the guides that apply to it: pass
 
 ### Specs against each other
 
 - **Consistent**: **fail**
-  - "health" names the setup health check ([CORE-FR-017](spec-core.md#core-fr-017)) and the quality grade: "the health of each part is graded on a regular beat" (`specs/spec-core.md:27-28`).
-- **Complete**: **fail**
-  - No FR answers the edge cases of a session finding no handoff note where notes are ignored (`specs/spec-core.md:338`), or of a spec with no `Done` story, whose code is not checked (`specs/spec-core.md:342`).
+  - The developer's request to assess every file again is called "an explicitly requested full scan" in [CORE-FR-051](spec-core.md#core-fr-051) (`specs/spec-core.md:997`) and an edge case (`:860`), and "a rescan" in [CORE-FR-054](spec-core.md#core-fr-054), [CORE Story 24](spec-core.md#core-story-24---find-the-code-smells-of-a-repository-priority-p2) scenario 5, two clarifications, an edge case, an assumption and the out of scope (`:118`, `:138`, `:737`, `:873`, `:1039`, `:1047`).
+- **Complete**: pass — warning: [CORE-SC-007](spec-core.md#core-sc-007) and [CORE-SC-008](spec-core.md#core-sc-008) are cited by no scenario.
 - **No conflict**: **fail**
-  - The Overview grades each part and sends the next session where to clean first (`specs/spec-core.md:27-28`), against one overall grade and `CORE-FR-016` dropped ([CORE-FR-014](spec-core.md#core-fr-014); clarifications, `specs/spec-core.md:52`, `:55`).
-  - A cross-check after every five stories, fixed: [CORE Story 7](spec-core.md#core-story-7---check-the-product-against-its-stories-over-time-priority-p3) (`specs/spec-core.md:208-209`), [CORE-SC-005](spec-core.md#core-sc-005) and the assumption on short phases (`specs/spec-core.md:419`, `:426`), against [CORE-FR-019](spec-core.md#core-fr-019), which takes the manifest's number where it names one.
+  - [CORE Story 25](spec-core.md#core-story-25---review-the-code-smells-and-plan-the-refactoring-priority-p2)'s Independent Test skips "one rule's" findings at the gate (`specs/spec-core.md:754`), against its scenario 2 and [CORE-FR-057](spec-core.md#core-fr-057), which skip exactly one finding by its id.
 - **Roadmap**: pass
-- **Format**: pass — `spec.md` lacks the `quality.md` line `sdd-spec-index` now gives (warning).
+- **Format**: **fail** — the clarification naming the code smell script's commands and flag (`specs/spec-core.md:133`) and what [CORE-FR-051](spec-core.md#core-fr-051) says a listing prints come from the developer's own review of the code, which [CORE-FR-030](spec-core.md#core-fr-030) allows, so they are not counted here. The missing exception is reported once, under the code item above. One violation remains:
+  - `ADR.md` holds ADR-001 to ADR-004 (`specs/ADR.md:3`, `:20`, `:38`, `:53`), decisions CORE Stories 24 and 25 alone need, which the `sdd-spec-format` guide keeps in the code and this repository's rule keeps out of `ADR.md` ([CORE-FR-030](spec-core.md#core-fr-030)).
 
-**Grade**: F — Done scenarios nothing proves.
+**Grade**: F — a `Done` scenario nothing proves: [CORE Story 25](spec-core.md#core-story-25---review-the-code-smells-and-plan-the-refactoring-priority-p2) scenarios 1 and 4; six violations.

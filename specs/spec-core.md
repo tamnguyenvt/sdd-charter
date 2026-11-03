@@ -22,6 +22,9 @@ Then: "Ask each developer at /sdd-init which language to talk to them in, kept o
 
 Then: "Make snapshot read-only; save assessment results only when explicitly recorded, with no saved exclusions."
 
+Then: "Fix what the second quality pass found, as one story."
+Then: "A spec may name what the code does where it is the developer's own review of the code turned into a task."
+
 ## Overview
 
 This project was split from Cherry Works to build one charter for
@@ -119,6 +122,8 @@ the whole repository shares.
 
 ### Session 2026-11-03
 
+- Q: Are the violations the second quality pass found fixed in one story or several? → A: "1 story thôi" ([CORE Story 28](#core-story-28---fix-what-the-second-quality-pass-found-priority-p2)).
+- Q: May a spec name a command, a flag or what the code prints? → A: "nếu bản thân spec là code review của user được chuyển thành task , thì đó sẽ được cho phép" ([CORE-FR-030](#core-fr-030)).
 - Q: Should agreement also select a finding by id and accept a reason? → A: "tương tự cho aggree" ([CORE-FR-058](#core-fr-058)).
 
 - Q: May a skipped finding carry a reason? → A: "findings <id> skip [reason] , nếu có reason thì ghi vô" ([CORE-FR-057](#core-fr-057)).
@@ -687,7 +692,7 @@ each guide's case is graded as followed.
 
 ### CORE Story 23 - Quality cross-check of CORE Stories 11 and 19–22 (Priority: P3)
 
-**Status**: Todo
+**Status**: Done
 
 Once CORE Stories 11 and 19–22 are `Done`, /sdd-quality checks the code and
 every spec against the checklist of the quality document, and each violation
@@ -824,6 +829,32 @@ agent talks in the developer's own.
 
 ---
 
+### CORE Story 28 - Fix what the second quality pass found (Priority: P2)
+
+**Status**: Todo
+
+The second quality pass, run by [CORE Story 23](#core-story-23---quality-cross-check-of-core-stories-11-and-1922-priority-p3), failed five items of the
+checklist with six violations. This story fixes each, so that the next pass
+finds them passing.
+
+**Why this priority**: a cross-check placed behind the stories it should
+follow lets them land unchecked, and a spec that contradicts itself, or a
+guide behind its FR, misleads every story built on it.
+
+**Independent Test**: run the quality pass once this story is `Done`; none of
+the violations the pass of [CORE Story 23](#core-story-23---quality-cross-check-of-core-stories-11-and-1922-priority-p3) named is reported again.
+
+**Acceptance Scenarios**:
+
+1. **Given** a roadmap holding a quality cross-check not yet `Done`, **When** /sdd-plan adds a phase's stories, **Then** each goes after it on the roadmap, so the cross-check is built before them ([CORE-FR-019](#core-fr-019), [CORE-SC-005](#core-sc-005)).
+2. **Given** [CORE Story 25](#core-story-25---review-the-code-smells-and-plan-the-refactoring-priority-p2), **When** the next quality pass runs, **Then** its Independent Test skips one finding by its id, as its scenario 2 does ([CORE-FR-057](#core-fr-057)).
+3. **Given** what a spec writes from the developer's own review of the code, **When** the spec format guide, /sdd-plan or /sdd-analyze checks the spec, **Then** it may name the command, the flag or the output that review names, and nothing else in a spec names any ([CORE-FR-030](#core-fr-030)).
+4. **Given** the decisions file, **When** the next quality pass runs, **Then** it holds no decision, and what its four decisions said is in the handoff notes of CORE Stories 24 and 25 ([CORE-FR-030](#core-fr-030)).
+5. **Given** [CORE Story 25](#core-story-25---review-the-code-smells-and-plan-the-refactoring-priority-p2), **When** the next quality pass runs, **Then** its evidence names the runs that hold its scenario 1 and its scenario 4 ([CORE-FR-011](#core-fr-011)).
+6. **Given** this spec, **When** the next quality pass runs, **Then** the developer's request to assess every file again is called by one term throughout ([CORE-FR-054](#core-fr-054)).
+
+---
+
 ### Edge Cases
 
 - An old code smell record cannot be read: an explicitly requested full scan still lists every assessable file without reading or modifying that record.
@@ -887,7 +918,7 @@ agent talks in the developer's own.
 
 - <a id="core-fr-014"></a>**CORE-FR-014**: A quality pass MUST check the whole codebase against every story the spec set holds, and the specs against each other — consistent, complete, and with no conflict — item by item against the checklist of the quality document, and give the product one overall grade A–F.
 - <a id="core-fr-015"></a>**CORE-FR-015**: Each item that fails MUST name its violation, citing the stories, FR or SC behind it; the report of a pass — each item and the grade — MUST go at the end of the quality document, in place of the report of the pass before, leaving the checklist as it is.
-- <a id="core-fr-019"></a>**CORE-FR-019**: /sdd-plan MUST add a quality cross-check story after every five stories it adds — the number the manifest names, where it names one — depending on those stories, and carry the stories left over to the next phase's count.
+- <a id="core-fr-019"></a>**CORE-FR-019**: /sdd-plan MUST add a quality cross-check story after every five stories it adds — the number the manifest names, where it names one — depending on those stories, and carry the stories left over to the next phase's count; a phase's stories MUST go on the roadmap after every quality cross-check not yet `Done`.
 - <a id="core-fr-020"></a>**CORE-FR-020**: A quality cross-check story MUST run the quality pass and hand the violations it reports to /sdd-plan, which adds a story to fix each; it fixes nothing itself — but for [CORE Story 9](#core-story-9---quality-cross-check-of-core-stories-18-and-10-priority-p3), which fixes the four findings of the pass it ran before the quality document held a checklist — and MUST NOT be set to `Done` before the developer has accepted those stories, or the pass found none.
 - <a id="core-fr-047"></a>**CORE-FR-047**: Where the repository holds cases put to the real agent, a quality cross-check story MUST run every one of them and write how many passed and failed into its evidence; no other story is held to run them.
 - <a id="core-fr-048"></a>**CORE-FR-048**: A case put to the real agent MUST expect only that the agent invoked a command of the spec set, read the instructions of an internal command, or followed a guide of the charter, and MUST NOT hold it to a ceiling of tokens.
@@ -903,7 +934,7 @@ agent talks in the developer's own.
 **Setup**
 
 - <a id="core-fr-029"></a>**CORE-FR-029**: /sdd-init MUST survey the specs and the habits the repository already has, propose how they become a spec set, and ask how work is carried out and finished, writing the settings, the spec folder, its index and its manifest only once the developer says yes.
-- <a id="core-fr-030"></a>**CORE-FR-030**: A spec set MUST keep one shape — an index of specs, one spec per part with its ids under the part's prefix, a roadmap of every story, the manifest, the decisions, the quality document — saying what and why, never how, and that shape MUST come up whenever a file of it is touched.
+- <a id="core-fr-030"></a>**CORE-FR-030**: A spec set MUST keep one shape — an index of specs, one spec per part with its ids under the part's prefix, a roadmap of every story, the manifest, the decisions, the quality document — saying what and why, never how, and that shape MUST come up whenever a file of it is touched; what a spec writes from the developer's own review of the code MAY name the command, the flag or the output that review names.
 
 **Planning**
 
