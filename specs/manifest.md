@@ -6,6 +6,7 @@ by asking the user.
 
 ## Specs
 
+- **Document language**: English
 - **Folder**: `specs`
 - **Quality cross-check**: every 5 stories
 
