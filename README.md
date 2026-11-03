@@ -29,6 +29,7 @@ request — with recommendations drawn from your history, and writes it down.
 | `/sdd-status` | Every story with its status, and which can be built now. |
 | `/sdd-quality` | Checks the whole codebase against every story, and the specs against each other — consistent, complete, no conflict — item by item against the checklist in `quality.md`; gives the product one grade, reports it, and hands each violation to `/sdd-plan` to become a story. |
 | `/sdd-doctor` | Checks the spec set is set up — settings, spec folder, every answer the manifest needs today — each passing or failing with why, and offers the fix of each fault. The engine's own health is `cw doctor`'s. |
+| `/sdd-code-smell` | Started by you alone: takes a snapshot of the files with a hash each, assesses them one by one against the charter's coding rules, and keeps the findings in `code-smell.json`, changing no code. A file whose hash is unchanged is not assessed again unless you ask for a rescan. |
 | `/sdd-report` | Draws the roadmap into `report.html`: what is done, in progress, ready and waiting, and what waits on what. |
 
 ![The roadmap /sdd-report draws into report.html: Done stories grey with green ids, In Progress pink with a green dot, ready with a solid border, waiting dashed, and an arrow from each story to the ones waiting on it](docs/report.png)
@@ -45,6 +46,7 @@ specs/
 ├── manifest.md           how work is carried out and finished here
 ├── handoff/core-3.md     where a story In Progress stands, for the next session
 ├── quality.md            the checklist the quality pass checks against
+├── code-smell.json       what /sdd-code-smell assessed and found
 └── ADR.md                decisions that shape every later story
 ```
 
@@ -90,13 +92,13 @@ specs/
 
 - Playbooks: `sdd-plan`, `sdd-implement`, `sdd-bug-fix`.
 - Skills: `sdd-init`, `sdd-finish`, `sdd-cleanup`, `sdd-status`, `sdd-report`,
-  `sdd-analyze`, `sdd-verify`, `sdd-review`, `sdd-quality`, `sdd-doctor`,
-  `sdd-learn`.
+  `sdd-analyze`, `sdd-verify`, `sdd-review`, `sdd-quality`, `sdd-code-smell`,
+  `sdd-doctor`, `sdd-learn`.
 - Agents: `sdd-locator` (where a story's code lives), `sdd-review-agent` (the
   review, by an agent that did not write the change).
 - Guides: `sdd-spec-format` (on the spec set's files),
   `sdd-learnings-go-to-the-inbox`.
 - Sensor `sdd-specs-on-stop`; script `sdd-specs` (`link`, `check`, `ready`, `report`, `doctor`;
   Node 20+, no dependencies); script `sdd-clean` (what a change would leave
-  behind); templates `sdd-spec-index`, `sdd-spec`,
-  `sdd-manifest`, `sdd-quality-doc`.
+  behind); script `sdd-smell` (the code smell record); templates
+  `sdd-spec-index`, `sdd-spec`, `sdd-manifest`, `sdd-quality-doc`.

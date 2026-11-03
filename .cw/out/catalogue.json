@@ -48,6 +48,12 @@
     "file": ".cw/out/skill/sdd-cleanup/index.md"
   },
   {
+    "kind": "skill",
+    "id": "sdd-code-smell",
+    "description": "Assess a repository's files one by one against the charter's coding rules, keeping what it finds in the code smell record; changes no code. Only the developer starts it.",
+    "file": ".cw/out/skill/sdd-code-smell/index.md"
+  },
+  {
     "kind": "corpus",
     "id": "sdd-concept",
     "description": "Why specs are split by part with a status per story, why a roadmap sits beside them, why they hold no how, and why every phase stops at a gate.",
@@ -148,6 +154,12 @@
     "id": "sdd-review-agent",
     "description": "Review a change against its story's scenarios, FR and SC, or a bug's definition of done — nothing missing, nothing beyond them — the guides that apply, and security, grading each finding; reads only, changes nothing.",
     "file": ".cw/out/agent/sdd-review-agent/index.md"
+  },
+  {
+    "kind": "script",
+    "id": "sdd-smell",
+    "description": "Keep the code smell record — take the snapshot of what is left to assess, note a file left out, write a file's result; changes no other file.",
+    "file": ".cw/out/script/sdd-smell/index.md"
   },
   {
     "kind": "template",

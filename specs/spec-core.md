@@ -2,7 +2,7 @@
 
 **Created**: 2026-10-26
 
-**Updated**: 2026-11-02
+**Updated**: 2026-11-03
 
 **Input**: User description: "Phase 1 of the charter is done. Enhance it: a review by an agent other than the author, a baseline before the first change, a handoff for a story in progress, a clean state before finishing, the evidence kept with a Done story, the runtime read while verifying, a quality grade per part, and a health check of the setup."
 Then: "When planning, add a quality cross-check story after about every five stories, so the quality pass is sure to run instead of being skipped."
@@ -108,6 +108,11 @@ rules, and what the developer agrees to becomes refactoring on the roadmap.
 - Q: Does the roadmap report show the code smell record? → A: yes, /sdd-report reads and displays it.
 - Q: How do the agreed findings become stories? → A: one story per rule, gathering every file that breaks it; a rule with too many files for one reviewable change is split.
 - Q: Which files does the snapshot hold? → A: the agent judges which files to leave out, and notes each with why in the record; no fixed list decides it.
+
+### Session 2026-11-03
+
+- Q: Are the files the repository ignores files left out, each noted with why? → A: no: the snapshot holds the files the repository versions or would version, and only those the agent leaves out of it are noted ([CORE-FR-051](#core-fr-051)).
+- Q: Does a rescan stopped halfway go on with only the others? → A: no: run again without a rescan, the files it did not reach keep their earlier entries; with one, every file is assessed again.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -679,7 +684,7 @@ run.
 
 ### CORE Story 24 - Find the code smells of a repository (Priority: P2)
 
-**Status**: Todo
+**Status**: Done
 
 A developer brings the charter to a product it was not applied to before, or
 takes a new charter, and starts /sdd-code-smell by hand. It lists the rules
@@ -766,6 +771,7 @@ it. Remove the record and run it again; the roadmap is drawn as before.
 - A command whose case stops at its first gate, with no one there to answer — the case passes on the invocation alone; what follows the gate is still checked by hand.
 - A file that changes after the snapshot — its entry keeps the hash of what was assessed, so the next run assesses it again.
 - A file deleted since the last run — its entry is dropped from the record, and a finding on it is not planned.
+- A rescan stopped halfway — run again without a rescan, the files it did not reach keep their earlier entries; with one, every file is assessed again.
 - A file that a refactoring story changed — its hash no longer matches, so the next run assesses it again.
 
 ## Requirements *(mandatory)*
@@ -877,7 +883,7 @@ it. Remove the record and run it again; the roadmap is drawn as before.
 **Code smell**
 
 - <a id="core-fr-050"></a>**CORE-FR-050**: /sdd-code-smell MUST assess the code against the charter's coding rules alone, first listing the rules and naming each one it drops for not concerning code.
-- <a id="core-fr-051"></a>**CORE-FR-051**: /sdd-code-smell MUST take a snapshot of the files to assess with a hash of each; the agent judges which files to leave out, and MUST note each with why in the code smell record.
+- <a id="core-fr-051"></a>**CORE-FR-051**: /sdd-code-smell MUST take a snapshot of the files the repository versions or would version, not those it ignores, with a hash of each; the agent judges which of them to leave out, and MUST note each with why in the code smell record.
 - <a id="core-fr-052"></a>**CORE-FR-052**: /sdd-code-smell MUST assess the snapshot file by file and write each file's result to the code smell record, kept in the spec folder, as soon as the file is assessed: the hash of what was assessed, the date, whether it is good, and each finding by rule and line.
 - <a id="core-fr-053"></a>**CORE-FR-053**: /sdd-code-smell MUST NOT change any code; fixing what it finds is the work of the stories planned from it.
 - <a id="core-fr-054"></a>**CORE-FR-054**: A run MUST NOT assess again a file whose hash matches its entry, whatever the charter, unless the developer asks for a rescan in so many words when starting the command or the entry was deleted; a file that is new or changed MUST be assessed, and the entry of a file that is gone MUST be dropped.
