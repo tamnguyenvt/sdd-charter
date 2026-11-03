@@ -18,6 +18,7 @@ Then: "End the hand-over on `approve ?`."
 Then: "A bug fix is a task too: it keeps a handoff note."
 Then: "The checks you ran by hand to prove the charter right are not yet cases cw eval can run: write them."
 Then: "Write a refactor walk that checks the whole source code against the rules: the rules forbid touching lines a task does not concern, so the lines that were wrong in an existing repository are otherwise never fixed. Keep the quality pass as it is; make it /sdd-code-smell, run by hand: a snapshot of the files with a hash each, assessed file by file with a history kept, reported for review where findings can be skipped, then planned through /sdd-plan; a file whose hash is unchanged is not assessed again unless a rescan is asked for; /sdd-report shows the record."
+Then: "Ask each developer at /sdd-init which language to talk to them in, kept on their machine and ignored by git, loaded on every walk; with none chosen, the voice as it is. The documents the walks write follow a language of their own, a manifest answer: two languages, the chat's and the documents'."
 
 ## Overview
 
@@ -43,6 +44,11 @@ of a story or a bug. /sdd-code-smell is the walk that goes looking for those
 lines: started by hand on a product the charter was not applied to before, or
 under a new charter, it assesses the code file by file against the coding
 rules, and what the developer agrees to becomes refactoring on the roadmap.
+
+Two languages are kept apart: the one the agent talks to a developer in,
+chosen by each developer at /sdd-init and kept on their machine alone, and the
+one the walks write the repository's documents in, an answer of the manifest
+the whole repository shares.
 
 ## Clarifications
 
@@ -113,6 +119,12 @@ rules, and what the developer agrees to becomes refactoring on the roadmap.
 
 - Q: Are the files the repository ignores files left out, each noted with why? → A: no: the snapshot holds the files the repository versions or would version, and only those the agent leaves out of it are noted ([CORE-FR-051](#core-fr-051)).
 - Q: Does a rescan stopped halfway go on with only the others? → A: no: run again without a rescan, the files it did not reach keep their earlier entries; with one, every file is assessed again.
+- Q: Is the language the agent talks in set for the whole repository, or per developer? → A: per developer, kept on their machine and never shared; no language is set for the repository.
+- Q: When is a developer asked their language? → A: at /sdd-init; a developer who names none is talked to as the voice says today, in the language of their own words.
+- Q: How is a developer who joins a repository already set up asked? → A: /sdd-init run again keeps every answer the repository holds and asks only the language, where their machine holds none; /sdd-doctor points to it as a hint, never a fault.
+- Q: A developer who chose a language writes in another: which is answered? → A: the language they chose, always; the language of their words is followed only where they chose none.
+- Q: Does the chosen language reach what the walks write into the repository? → A: no: it governs only what the agent says to the developer; the language of the documents the walks write is the repository's, an answer of `manifest.md`.
+- Q: Which documents does the document language cover, and with no answer? → A: the specs, the roadmap, the handoff notes, the quality report and the learning notes; not the code, nor the commit messages, which **Message** governs; /sdd-init asks it, and a manifest with no answer means English.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -758,6 +770,48 @@ it. Remove the record and run it again; the roadmap is drawn as before.
 
 ---
 
+### CORE Story 27 - Talk to each developer in the language they chose, and write the documents in the repository's (Priority: P2)
+
+**Status**: Todo
+
+At /sdd-init a developer says which language the agent talks to them in. The
+answer is kept on their machine, never in the repository, and every walk reads
+it: whatever language they write in, they are answered in the one they chose.
+A developer who joins a repository already set up runs /sdd-init and is asked
+only that. One who chooses none is talked to as before, in the language of
+their own words. /sdd-init also asks the language of the repository's
+documents and records it in the manifest: the specs, the roadmap, the handoff
+notes, the quality report and the learning notes the walks write are in it,
+whatever language each developer is talked to in. A manifest with no answer
+means English, as every repository has been until now.
+
+**Why this priority**: guessing the language from each message goes wrong
+where a message holds no words of the developer's own, or mixes two; a choice
+made once ends the guessing; and a team that works in one language wants
+its documents in it, whoever reads the chat.
+
+**Independent Test**: choose a language at /sdd-init, then write a command in
+another; the walk reports in the one chosen. Remove the choice; it reports in
+the language of the words again. Answer a document language other than
+English and plan a story: the spec and the roadmap entry are in it, while the
+agent talks in the developer's own.
+
+**Acceptance Scenarios**:
+
+1. **Given** a repository not yet set up, **When** /sdd-init runs, **Then** it asks the developer which language to talk to them in and keeps the answer in their own settings, which version control ignores ([CORE-FR-061](#core-fr-061)).
+2. **Given** a repository already set up, and a developer whose machine holds no language, **When** /sdd-init runs, **Then** it changes no answer the repository holds and asks only the language ([CORE-FR-062](#core-fr-062)).
+3. **Given** a developer who chose a language, **When** they write a command, or any message, in another, **Then** every answer, report, gate, question and hand-over is in the language chosen ([CORE-FR-044](#core-fr-044), [CORE-FR-063](#core-fr-063), [CORE-SC-009](#core-sc-009)).
+4. **Given** a developer who chose none, **When** a command runs, **Then** the agent talks in the language of their own words, as before ([CORE-FR-044](#core-fr-044)).
+5. **Given** two developers of one repository who chose two languages, **When** each runs a command, **Then** each is answered in their own, and neither choice reaches the repository ([CORE-FR-061](#core-fr-061), [CORE-FR-063](#core-fr-063)).
+6. **Given** a developer whose machine holds no language, **When** /sdd-doctor runs, **Then** it points to /sdd-init as a hint and fails nothing for it ([CORE-FR-064](#core-fr-064)).
+7. **Given** the cases put to the real agent, **When** they are read, **Then** one holds a developer who chose a language to it while writing in another ([CORE-FR-049](#core-fr-049), [CORE-SC-009](#core-sc-009)).
+8. **Given** /sdd-init, **When** it asks how work is carried out, **Then** it asks the document language and records the answer in the manifest ([CORE-FR-065](#core-fr-065)).
+9. **Given** a manifest naming a document language, **When** a walk writes a spec, a roadmap entry, a handoff note, the quality report or a learning note, **Then** it is written in that language, while what the agent says follows the developer's own ([CORE-FR-063](#core-fr-063), [CORE-FR-066](#core-fr-066)).
+10. **Given** a manifest with no document language, **When** a walk writes a document, **Then** it is written in English, and /sdd-doctor fails nothing for the missing answer ([CORE-FR-065](#core-fr-065)).
+11. **Given** a document language, **When** a walk writes code or a commit message, **Then** neither follows it: the commit message keeps the manifest's **Message** answer ([CORE-FR-066](#core-fr-066)).
+
+---
+
 ### Edge Cases
 
 - A story picked up again whose handoff note disagrees with the code — the code wins; the agent says where they differ before going on.
@@ -773,6 +827,8 @@ it. Remove the record and run it again; the roadmap is drawn as before.
 - A file deleted since the last run — its entry is dropped from the record, and a finding on it is not planned.
 - A rescan stopped halfway — run again without a rescan, the files it did not reach keep their earlier entries; with one, every file is assessed again.
 - A file that a refactoring story changed — its hash no longer matches, so the next run assesses it again.
+- A developer's own settings that cannot be read — the agent talks as if no language were chosen, and says once that it could not read them ([CORE-FR-063](#core-fr-063)).
+- A document language changed after documents were written — the documents already written stay as they are; only what is written next follows the new answer ([CORE-FR-066](#core-fr-066)).
 
 ## Requirements *(mandatory)*
 
@@ -868,7 +924,17 @@ it. Remove the record and run it again; the roadmap is drawn as before.
 
 **Voice**
 
-- <a id="core-fr-044"></a>**CORE-FR-044**: Every command of the spec set, and the agent between them, MUST report to the developer in the language the developer writes in — every answer, report, gate, question and hand-over but its closing line, a line said while working left free — in the voice the walks share; each question it asks MUST first say what it was doing, the problem it met there, and the fix it proposes; where the manifest's **Conversation** is short, a step that passes MUST say nothing; a hand-over MUST end on the line the developer set, word for word.
+- <a id="core-fr-044"></a>**CORE-FR-044**: Every command of the spec set, and the agent between them, MUST report to the developer in the language the developer chose, or where they chose none in the language they write in — every answer, report, gate, question and hand-over but its closing line, a line said while working left free — in the voice the walks share; each question it asks MUST first say what it was doing, the problem it met there, and the fix it proposes; where the manifest's **Conversation** is short, a step that passes MUST say nothing; a hand-over MUST end on the line the developer set, word for word.
+
+- <a id="core-fr-061"></a>**CORE-FR-061**: /sdd-init MUST ask the developer which language the agent talks to them in, and keep the answer in settings of their own, on their machine, which version control ignores and no other developer reads.
+- <a id="core-fr-062"></a>**CORE-FR-062**: /sdd-init run on a repository already set up MUST keep every answer the repository holds and ask only the language, where the developer's machine holds none.
+- <a id="core-fr-063"></a>**CORE-FR-063**: Every command of the spec set, and the agent between them, MUST read the developer's own settings each time it starts, and talk in the language chosen there whatever language the developer writes in; with none chosen, or settings it cannot read, it MUST talk as [CORE-FR-044](#core-fr-044) says, saying once that it could not read them.
+- <a id="core-fr-064"></a>**CORE-FR-064**: /sdd-doctor MUST point a developer whose machine holds no language to /sdd-init as a hint, and MUST NOT fail the check for it.
+
+**Document language**
+
+- <a id="core-fr-065"></a>**CORE-FR-065**: /sdd-init MUST ask the language of the repository's documents and record it in the manifest; a manifest with no answer reads as English, and /sdd-doctor MUST NOT fail it for the missing answer.
+- <a id="core-fr-066"></a>**CORE-FR-066**: The specs, the roadmap, the handoff notes, the quality report and the learning notes a walk writes MUST be written in the manifest's document language; code and commit messages MUST NOT follow it; documents written before the answer changed MUST be left as they are.
 
 **Review mode**
 
@@ -878,7 +944,7 @@ it. Remove the record and run it again; the roadmap is drawn as before.
 **Coverage**
 
 - <a id="core-fr-028"></a>**CORE-FR-028**: Every command the charter offers MUST be described by a `Done` story of the spec set and the FR it cites.
-- <a id="core-fr-049"></a>**CORE-FR-049**: The cases put to the real agent MUST hold one case for each command of the spec set the agent may invoke on its own, asked in plain English words of its triggers; two in Vietnamese held to the voice, one after a slash command and one without; one held to where learnings go; and one held to the spec format.
+- <a id="core-fr-049"></a>**CORE-FR-049**: The cases put to the real agent MUST hold one case for each command of the spec set the agent may invoke on its own, asked in plain English words of its triggers; two in Vietnamese held to the voice, one after a slash command and one without; one held to where learnings go; one in which a developer who chose a language writes in another, held to the language chosen; and one held to the spec format.
 
 **Code smell**
 
@@ -900,6 +966,7 @@ it. Remove the record and run it again; the roadmap is drawn as before.
 - **Evidence**: a one-line summary of what proved a `Done` story and when; part of the story's roadmap entry.
 - **Quality document**: the checklist a quality pass checks the code and the specs against, written from its template and kept and edited by the project, followed by the report of the last pass.
 - **Quality report**: each item of the checklist passed or failed, with its violations, and the overall grade; the last section of the quality document, rewritten by each pass.
+- **Developer settings**: the answers of one developer alone — the language the agent talks to them in — kept on their machine, never versioned or shared.
 - **Code smell record**: what /sdd-code-smell has assessed, one entry per file — its hash, the date, whether it is good, its findings by rule and line and whether each was skipped — and the files left out with why; the history a run reads to know what it need not assess again.
 
 ## Success Criteria *(mandatory)*
@@ -914,6 +981,7 @@ it. Remove the record and run it again; the roadmap is drawn as before.
 - <a id="core-sc-006"></a>**CORE-SC-006**: Every command the charter offers, but one only the developer may start, is the subject of at least one case put to the real agent.
 - <a id="core-sc-007"></a>**CORE-SC-007**: A second run of /sdd-code-smell on an unchanged repository assesses 0 files.
 - <a id="core-sc-008"></a>**CORE-SC-008**: Every finding of a finished assessment ends either in a story on the roadmap or marked skipped: 0 are left undecided.
+- <a id="core-sc-009"></a>**CORE-SC-009**: In the cases put to the real agent, 100% of the answers to a developer who chose a language are in it, whatever language the request is written in.
 
 ## Assumptions
 
@@ -922,9 +990,13 @@ it. Remove the record and run it again; the roadmap is drawn as before.
 - The health check runs when the developer asks. The quality pass runs in each quality cross-check story, and whenever the developer asks.
 - A phase that adds fewer stories than the manifest's number — five where it names none — adds no quality cross-check story; its stories count toward the next.
 - The cases put to the real agent run on the last commit, on whatever the agent is signed in with, and the agent there runs no shell command.
+- An existing manifest without the document language is read as English; a developer with no settings of their own is talked to as before.
 - A new charter does not by itself bring unchanged files back to /sdd-code-smell: the developer asks for a rescan when that is wanted.
 
 ## Out of Scope
+
+- A language the agent talks in set for the whole repository: each developer chooses their own.
+- Translating documents already written when the document language changes.
 
 - Running /sdd-code-smell on a schedule, on every story or from the quality pass, whose checks stay as they are.
 - Assessing a file again on the rule that changed alone: a rescan assesses the whole file.
