@@ -134,6 +134,60 @@ test("report draws every Done story left of every story not Done, the ready ones
   assert.ok(columnOf(4) > columnOf(3) && columnOf(6) > columnOf(4));
 });
 
+// The report of a two-story spec set, with the code smell record written as
+// given beside it; none where none is given.
+function reportWith(codeSmellRecord) {
+  specSetOf({ statuses: ["Done", "Todo"] });
+  if (codeSmellRecord !== undefined) writeFileSync(join(repositoryFolder, "specs", "code-smell.json"), codeSmellRecord);
+  const run = spawnSync("node", [specsScript, "report"], { cwd: repositoryFolder, encoding: "utf8" });
+  assert.equal(run.status, 0, run.stderr);
+  return readFileSync(join(repositoryFolder, "specs", "report.html"), "utf8");
+}
+
+test("report shows the code smell record's files and its findings by rule, agreed or skipped", () => {
+  const html = reportWith(
+    JSON.stringify({
+      files: {
+        "src/a.mjs": { hash: "1", assessed: "2026-11-03", good: true, findings: [] },
+        "src/b.mjs": {
+          hash: "2",
+          assessed: "2026-11-03",
+          good: false,
+          findings: [
+            { id: "f1", rule: "no-magic-number", line: 3, says: "42 has <no> name", status: "skipped", reason: "kept on purpose" },
+            { id: "f2", rule: "no-magic-number", line: 9, says: "7 has no name", status: "agreed" },
+            { id: "f3", rule: "small-functions", line: 20, says: "too long" },
+          ],
+        },
+      },
+    }),
+  );
+  assert.match(html, /<svg/);
+  assert.match(html, /2 files assessed, 1 good/);
+  assert.match(html, /no-magic-number[\s\S]*src\/b\.mjs:3[\s\S]*42 has &#60;no&#62; name[\s\S]*skipped[\s\S]*kept on purpose[\s\S]*src\/b\.mjs:9[\s\S]*agreed[\s\S]*small-functions[\s\S]*src\/b\.mjs:20[\s\S]*waiting/);
+});
+
+test("report files a finding under its record entry's path, whatever path the finding itself carries", () => {
+  const html = reportWith(JSON.stringify({ files: { "src/c.mjs": { hash: "3", assessed: "2026-11-03", good: false, findings: [{ rule: "r", line: 1, path: 5 }] } } }));
+  assert.match(html, /<svg/);
+  assert.match(html, /src\/c\.mjs:1/);
+});
+
+test("report with no code smell record draws the roadmap and says none has been assessed", () => {
+  const html = reportWith();
+  assert.match(html, /<svg/);
+  assert.match(html, /No code smell has been assessed/);
+});
+
+test("report with a code smell record it cannot read draws the roadmap and says so", () => {
+  for (const record of ["{ not json", '{ "files": [1] }']) {
+    const html = reportWith(record);
+    assert.match(html, /<svg/);
+    assert.match(html, /could not be read/);
+    rmSync(repositoryFolder, { recursive: true, force: true });
+  }
+});
+
 const proof ={ summary: "node --test: 30 pass, 0 fail; check of sdd-specs passed", date: "2026-10-27" };
 
 test("evidence on a Done story's roadmap entry passes", () => {

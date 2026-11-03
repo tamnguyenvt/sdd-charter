@@ -240,7 +240,7 @@ for (const file of handoffFiles) {
 
 if (command === "report") {
   const reportFile = join(specFolder, "report.html");
-  writeFileSync(reportFile, reportHtmlOf(plannedStories, storyById, targetById));
+  writeFileSync(reportFile, reportHtmlOf(plannedStories, storyById, targetById, codeSmellOf(join(specFolder, "code-smell.json"))));
   // Generated, so never committed: the spec folder's .gitignore says so.
   const gitignoreFile = join(specFolder, ".gitignore");
   const gitignoreText = existsSync(gitignoreFile) ? readFileSync(gitignoreFile, "utf8") : "";
@@ -304,10 +304,27 @@ for (const fault of faults) console.error(fault);
 if (command === "link") console.log(`linked ${staleFiles} file(s)`);
 if (faults.length > 0) process.exit(1);
 
+// The code smell record /sdd-code-smell keeps: { files } where it reads,
+// { missing } where there is none, { unreadable } with why where it cannot be
+// read. Read only.
+function codeSmellOf(file) {
+  if (!existsSync(file)) return { missing: file };
+  try {
+    const { files } = JSON.parse(readFileSync(file, "utf8"));
+    const isFinding = (finding) => finding !== null && typeof finding === "object" && typeof finding.rule === "string" && Number.isInteger(finding.line);
+    const isEntry = (entry) => entry !== null && typeof entry === "object" && typeof entry.good === "boolean" && (entry.findings ?? []).every?.(isFinding);
+    if (files === null || typeof files !== "object" || Array.isArray(files) || !Object.values(files).every(isEntry))
+      return { unreadable: file, why: 'not { "files": { "<path>": { "good": …, "findings": [{ "rule": …, "line": … }] } } }' };
+    return { files };
+  } catch (error) {
+    return { unreadable: file, why: error.message };
+  }
+}
+
 // The roadmap as one self-contained page: a column per depth of dependency, a
 // box per story coloured by where it stands, an arrow from each story to every
-// story waiting on it.
-function reportHtmlOf(plannedStories, storyById, targetById) {
+// story waiting on it; then the code smell record, its findings by rule.
+function reportHtmlOf(plannedStories, storyById, targetById, codeSmell) {
   const escapeHtml = (text) => String(text).replace(/[&<>"']/g, (character) => `&#${character.charCodeAt(0)};`);
   const plannedById = new Map(plannedStories.map((one) => [one.id, one]));
   const statusOf = (id) => storyById.get(id)?.status ?? "Todo";
@@ -372,6 +389,27 @@ function reportHtmlOf(plannedStories, storyById, targetById) {
 
   const counts = { done: 0, active: 0, ready: 0, blocked: 0 };
   for (const planned of plannedStories) counts[stateOf(planned.id)]++;
+
+  let codeSmellHtml;
+  if (codeSmell.missing) codeSmellHtml = `<p class="note">No code smell has been assessed: there is no ${escapeHtml(codeSmell.missing)}.</p>`;
+  else if (codeSmell.unreadable) codeSmellHtml = `<p class="note">The code smell record ${escapeHtml(codeSmell.unreadable)} could not be read: ${escapeHtml(codeSmell.why)}.</p>`;
+  else {
+    const entries = Object.entries(codeSmell.files);
+    const findingsByRule = new Map();
+    for (const [path, entry] of entries.sort(([one], [other]) => one.localeCompare(other)))
+      for (const finding of entry.findings ?? []) (findingsByRule.get(finding.rule) ?? findingsByRule.set(finding.rule, []).get(finding.rule)).push({ ...finding, path });
+    const findingCounts = { waiting: 0, skipped: 0, agreed: 0 };
+    const rules = [...findingsByRule].sort(([one], [other]) => one.localeCompare(other)).map(([rule, findings]) => {
+      const items = findings.sort((one, other) => one.path.localeCompare(other.path) || one.line - other.line).map((finding) => {
+        const status = ["skipped", "agreed"].includes(finding.status) ? finding.status : "waiting";
+        findingCounts[status]++;
+        return `<li><code>${escapeHtml(`${finding.path}:${finding.line}`)}</code> ${escapeHtml(finding.says ?? "")} <span class="status ${status}">${status}</span>${finding.reason ? ` <span class="reason">— ${escapeHtml(finding.reason)}</span>` : ""}</li>`;
+      });
+      return `<h2>${escapeHtml(rule)} · ${findings.length}</h2>\n  <ul>\n    ${items.join("\n    ")}\n  </ul>`;
+    });
+    const good = entries.filter(([, entry]) => entry.good).length;
+    codeSmellHtml = `<p class="note">${entries.length} files assessed, ${good} good; findings: ${findingCounts.waiting} waiting, ${findingCounts.skipped} skipped, ${findingCounts.agreed} agreed.</p>${rules.length ? `\n  ${rules.join("\n  ")}` : ""}`;
+  }
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -403,6 +441,13 @@ function reportHtmlOf(plannedStories, storyById, targetById) {
   .story.blocked rect { fill: none; stroke-dasharray: 6 5; } .story.blocked .label, .story.blocked .title { fill: var(--muted); }
   .dot { fill: var(--dot); }
   a:hover .story rect { stroke: var(--edge); }
+  .smells { margin-top: 16px; }
+  .smells .note { margin: 8px 0 0; color: var(--muted); }
+  .smells h2 { margin: 14px 0 4px; font-size: 14px; }
+  .smells ul { margin: 0; padding-left: 18px; }
+  .smells code { font-size: 12.5px; overflow-wrap: anywhere; }
+  .status { font-size: 12px; color: var(--muted); } .status.agreed { color: var(--done-text); } .status.waiting { color: var(--active-text); }
+  .reason { color: var(--muted); }
 </style>
 </head>
 <body>
@@ -422,6 +467,10 @@ function reportHtmlOf(plannedStories, storyById, targetById) {
       ${boxes.join("\n      ")}
     </svg>
   </div>
+</div>
+<div class="panel smells">
+  <h1>CODE SMELLS</h1>
+  ${codeSmellHtml}
 </div>
 </body>
 </html>

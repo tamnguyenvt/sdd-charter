@@ -762,7 +762,7 @@ skipped findings do not come back on the next run.
 
 ### CORE Story 26 - See the code smells in the roadmap report (Priority: P3)
 
-**Status**: Todo
+**Status**: Done
 
 A developer draws the roadmap and sees, beside the stories, what the code
 smell record holds: how many files were assessed and good, and the

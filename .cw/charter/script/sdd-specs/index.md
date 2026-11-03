@@ -65,5 +65,9 @@ no script, light and dark. A column per depth of dependency, a box per story —
 `Done` grey with green text, `In Progress` pink with a green dot, ready with a
 solid border, waiting dashed — and an arrow from each story to every story
 waiting on it. A box links to its story in its spec; hovering it shows the
-full title, status and dependencies. The file is generated, so `report` adds
+full title, status and dependencies. Below it, the code smell record,
+`code-smell.json` in the spec folder: how many files were assessed and good,
+then each finding by rule, waiting, skipped or agreed, with its reason; with no
+record, or one it cannot read, it says so and the roadmap is drawn as before.
+The record is only read. The file is generated, so `report` adds
 `report.html` to the spec folder's `.gitignore` when it is not there.

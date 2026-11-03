@@ -17,7 +17,7 @@ A repository's specs live in one folder, the one `.sdd/settings.json` names
 | `manifest.md` | how work is carried out and finished here, as the user chose it (/sdd-init). |
 | `ADR.md` | the decisions that change how every later story is built or written. |
 | `quality.md` | the checklist a quality pass (/sdd-quality) checks the code and the specs against, from [sdd-quality-doc](../../template/sdd-quality-doc/index.md): written by /sdd-init, kept and edited by the project; under `## Last pass` at its end, the report of the last pass, rewritten by each. |
-| `report.html` | the roadmap drawn from `plan.json` and the statuses (/sdd-report); generated, never edited, and ignored by the folder's `.gitignore`. |
+| `report.html` | the roadmap drawn from `plan.json` and the statuses, and below it the code smell record (/sdd-report); generated, never edited, and ignored by the folder's `.gitignore`. |
 | `handoff/` | one note per story `In Progress`, `<prefix>-<n>.md`, and per bug fix not yet landed, `fix-<slug>.md`, from [sdd-handoff](../../template/sdd-handoff/index.md): what is done, what remains, the decisions taken, what blocks it — nothing the spec says. Kept once the story is `Done` or the fix lands; committed or ignored as `manifest.md` says. Never linked or checked as a spec. |
 | `code-smell.json` | the code smell record, when /sdd-code-smell has run: only files assessed and their findings agreed or skipped; exclusions are not saved, kept by [sdd-smell](../../script/sdd-smell/index.md) and committed; never edited by hand but to delete an entry. |
 | `mockup/` | designs, when there are any. |
