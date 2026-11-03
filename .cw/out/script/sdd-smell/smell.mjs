@@ -3,8 +3,7 @@
 // knows what it need not assess again. Changes no file but the record, and the
 // temporary file it is written through.
 //
-//   node smell.mjs snapshot [--rescan]             print "<hash>  <path>" of each file to assess
-//   node smell.mjs leave <path> <why>              note a file left out, with why
+//   node smell.mjs scan [--again]             print "<hash>  <path>" of each file to assess
 //   node smell.mjs record <path> <hash> [-]        write a file's result, with -, its findings as JSON on stdin
 //
 // The spec folder is read from .sdd/settings.json ("specFolder"), from the
@@ -50,8 +49,20 @@ function refuse(reason) {
   process.exitCode = 2;
 }
 
+// Identity follows the assessed content and location; repeated findings remain distinct.
+function withIds(path, hash, findings) {
+  const occurrences = new Map();
+  return findings.map((finding) => {
+    const location = JSON.stringify([finding.rule, finding.line]);
+    const occurrence = occurrences.get(location) ?? 0;
+    occurrences.set(location, occurrence + 1);
+    const id = createHash("sha256").update(JSON.stringify([path, hash, finding.rule, finding.line, occurrence])).digest("hex");
+    return { ...finding, id };
+  });
+}
+
 function readRecord() {
-  if (!existsSync(recordFile)) return { leftOut: Object.create(null), files: Object.create(null) };
+  if (!existsSync(recordFile)) return { files: Object.create(null) };
   let record;
   try {
     record = JSON.parse(readFileSync(recordFile, "utf8"));
@@ -59,16 +70,21 @@ function readRecord() {
     throw new Error(`${recordFile} cannot be read: ${error.message}`);
   }
   const isEntries = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
-  if (!isEntries(record) || !isEntries(record.leftOut) || !isEntries(record.files)) throw new Error(`${recordFile} cannot be read: it is no code smell record`);
+  if (!isEntries(record) || !isEntries(record.files)) throw new Error(`${recordFile} cannot be read: it is no code smell record`);
   // No prototype, for a file named `constructor` or `__proto__` is a file like any other.
-  return { leftOut: Object.assign(Object.create(null), record.leftOut), files: Object.assign(Object.create(null), record.files) };
+  const files = Object.assign(Object.create(null), record.files);
+  for (const [path, entry] of Object.entries(files)) entry.findings = withIds(path, entry.hash, entry.findings);
+  return { files };
 }
 
 // Written whole and renamed, so that a run stopped here leaves the record whole.
 function writeRecord(record) {
+  // Reconcile saved decisions only when a caller explicitly writes a result.
+  const present = new Set(repositoryFiles().files.filter((path) => lstatSync(path).isFile()));
+  for (const path of Object.keys(record.files)) if (!present.has(path)) delete record.files[path];
   mkdirSync(specFolder, { recursive: true });
   const sorted = (entries) => Object.fromEntries(Object.entries(entries).sort(([a], [b]) => (a < b ? -1 : 1)));
-  const text = `${JSON.stringify({ leftOut: sorted(record.leftOut), files: sorted(record.files) }, null, 2)}\n`;
+  const text = `${JSON.stringify({ files: sorted(record.files) }, null, 2)}\n`;
   // Never through what stands at that path: the repository may hold a link there.
   rmSync(`${recordFile}.tmp`, { force: true });
   writeFileSync(`${recordFile}.tmp`, text, { flag: "wx" });
@@ -85,7 +101,7 @@ function statOf(path) {
   }
 }
 
-// What git tracks or would add, and the names no line of the snapshot can hold,
+// What git tracks or would add, and the names no line of the scan can hold,
 // each with why. A file deleted but still tracked is gone.
 function repositoryFiles() {
   const listed = execFileSync("git", ["ls-files", "-z", "--cached", "--others", "--exclude-standard"], { maxBuffer: 1 << 28 });
@@ -101,51 +117,26 @@ function repositoryFiles() {
   return { files: [...names].filter((path) => statOf(path)).sort(), unlisted };
 }
 
-// Written as the snapshot writes it, so that the next snapshot finds its entry.
+// Written as the scan writes it, so that the next scan finds its entry.
 const isListed = (path) => repositoryFiles().files.includes(path);
 
 const hashOf = (path) => createHash("sha256").update(readFileSync(path)).digest("hex");
 
-function snapshot(flags) {
-  if (flags.some((flag) => flag !== "--rescan")) return refuse("usage: node smell.mjs snapshot [--rescan]");
-  const rescan = flags.includes("--rescan");
-  const record = readRecord();
+function scan(flags) {
+  if (flags.some((flag) => flag !== "--again")) return refuse("usage: node smell.mjs scan [--again]");
+  const again = flags.includes("--again");
+  const record = again ? { files: Object.create(null) } : readRecord();
   const recordPath = recordFile.split("\\").join("/");
   // A run killed mid-write leaves its temporary file, which is not the repository's.
   const listed = repositoryFiles();
   const files = listed.files.filter((path) => path !== `${recordPath}.tmp`);
-  const present = new Set([...files, ...listed.unlisted.keys()]);
-  for (const path of Object.keys(record.files)) if (!present.has(path)) delete record.files[path];
-  for (const path of Object.keys(record.leftOut)) if (!present.has(path)) delete record.leftOut[path];
-  record.leftOut[recordPath] = { why: "the code smell record itself" };
-  for (const path of files) {
-    if (lstatSync(path).isFile()) continue;
-    delete record.files[path];
-    record.leftOut[path] = { why: "a link or a submodule, no text to assess" };
-  }
-  for (const [path, why] of listed.unlisted) {
-    delete record.files[path];
-    record.leftOut[path] = { why };
-  }
+  const assessable = files.filter((path) => path !== recordPath && lstatSync(path).isFile());
   const lines = [];
-  for (const path of files) {
-    if (path === recordPath || !lstatSync(path).isFile()) continue;
+  for (const path of assessable) {
     const hash = hashOf(path);
-    const left = record.leftOut[path];
-    if (left ? left.hash !== hash : rescan || record.files[path]?.hash !== hash) lines.push(`${hash}  ${path}`);
+    if (again || record.files[path]?.hash !== hash) lines.push(`${hash}  ${path}`);
   }
-  writeRecord(record);
   if (lines.length > 0) process.stdout.write(`${lines.join("\n")}\n`);
-  console.error(`${lines.length} to assess, ${Object.keys(record.files).length} in the record, ${Object.keys(record.leftOut).length} left out`);
-}
-
-function leave([path, why]) {
-  if (!path || !why) return refuse("usage: node smell.mjs leave <path> <why>");
-  if (!isListed(path)) return refuse(`${path} is no file of the snapshot`);
-  const record = readRecord();
-  delete record.files[path];
-  record.leftOut[path] = { why, hash: hashOf(path) };
-  writeRecord(record);
 }
 
 function parseFindings(json) {
@@ -161,17 +152,59 @@ function parseFindings(json) {
 
 function recordResult([path, hash, source]) {
   if (!path || !/^[0-9a-f]{64}$/.test(hash ?? "") || ![undefined, "-"].includes(source)) return refuse("usage: node smell.mjs record <path> <hash> [-]");
-  const findings = parseFindings(source === "-" ? readFileSync(0, "utf8") : "[]");
+  let findings = parseFindings(source === "-" ? readFileSync(0, "utf8") : "[]");
   if (findings === null) return refuse('findings must be a JSON list of { "rule", "line", "says" }');
-  if (!isListed(path)) return refuse(`${path} is no file of the snapshot`);
+  if (!isListed(path)) return refuse(`${path} is no file of the scan`);
   const record = readRecord();
-  delete record.leftOut[path];
+  const previous = record.files[path];
+  findings = withIds(path, hash, findings);
+  for (const finding of findings) {
+    // Review decisions belong to the assessed content, never to caller-supplied marks.
+    delete finding.status;
+    delete finding.reason;
+    const kept = previous?.hash === hash && previous.findings.find((old) => old.id === finding.id);
+    if (["skipped", "agreed"].includes(kept?.status)) finding.status = kept.status;
+    if (["skipped", "agreed"].includes(kept?.status) && typeof kept.reason === "string") finding.reason = kept.reason;
+  }
   record.files[path] = { hash, assessed: new Date().toISOString().slice(0, 10), good: findings.length === 0, findings };
   writeRecord(record);
 }
 
-const commands = { snapshot, leave, record: recordResult };
-if (!Object.hasOwn(commands, command ?? "")) refuse("usage: node smell.mjs snapshot|leave|record");
+function findings(flags) {
+  if (flags.length) {
+    if (![2, 3].includes(flags.length) || !["skip", "agree"].includes(flags[1])) return refuse("usage: node smell.mjs findings [<id> skip|agree [reason]]");
+    const record = readRecord();
+    const matches = Object.entries(record.files).flatMap(([path, entry]) => entry.findings.filter((finding) => finding.id === flags[0]).map((finding) => ({ path, entry, finding })));
+    if (matches.length !== 1) return refuse(`${flags[0]}: no unique matching finding`);
+    const { path, entry, finding } = matches[0];
+    if (!isListed(path) || !lstatSync(path).isFile() || hashOf(path) !== entry.hash) return refuse(`${path} has no current assessment`);
+    const status = flags[1] === "skip" ? "skipped" : "agreed";
+    if (status === "agreed" && finding.status === "skipped") return refuse(`${flags[0]} is skipped`);
+    if (finding.status !== status) delete finding.reason;
+    finding.status = status;
+    if (flags[2] !== undefined) finding.reason = flags[2];
+    writeRecord(record);
+    return;
+  }
+  const record = readRecord();
+  const grouped = new Map();
+  let waiting = 0, skipped = 0, agreed = 0;
+  for (const [path, entry] of Object.entries(record.files)) {
+    for (const finding of entry.findings) {
+      if (finding.status === "skipped") { skipped++; continue; }
+      if (finding.status === "agreed") { agreed++; continue; }
+      waiting++;
+      if (!grouped.has(finding.rule)) grouped.set(finding.rule, []);
+      grouped.get(finding.rule).push(`[${finding.id}] ${path}:${finding.line}: ${finding.says}`);
+    }
+  }
+  for (const rule of [...grouped.keys()].sort()) console.info(`${rule}\n${grouped.get(rule).map((line) => `  ${line}`).join("\n")}`);
+  console.info(`${waiting} waiting, ${skipped} skipped, ${agreed} agreed`);
+  if (!waiting) console.info("No finding left to agree.");
+}
+
+const commands = { scan, record: recordResult, findings };
+if (!Object.hasOwn(commands, command ?? "")) refuse("usage: node smell.mjs scan|record|findings");
 else {
   try {
     readSettings();

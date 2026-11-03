@@ -20,6 +20,8 @@ Then: "The checks you ran by hand to prove the charter right are not yet cases c
 Then: "Write a refactor walk that checks the whole source code against the rules: the rules forbid touching lines a task does not concern, so the lines that were wrong in an existing repository are otherwise never fixed. Keep the quality pass as it is; make it /sdd-code-smell, run by hand: a snapshot of the files with a hash each, assessed file by file with a history kept, reported for review where findings can be skipped, then planned through /sdd-plan; a file whose hash is unchanged is not assessed again unless a rescan is asked for; /sdd-report shows the record."
 Then: "Ask each developer at /sdd-init which language to talk to them in, kept on their machine and ignored by git, loaded on every walk; with none chosen, the voice as it is. The documents the walks write follow a language of their own, a manifest answer: two languages, the chat's and the documents'."
 
+Then: "Make snapshot read-only; save assessment results only when explicitly recorded, with no saved exclusions."
+
 ## Overview
 
 This project was split from Cherry Works to build one charter for
@@ -113,11 +115,21 @@ the whole repository shares.
 - Q: Does a run assess a file again? → A: not while its hash is unchanged, a new charter included; a file assessed good stays skipped until the developer asks for a rescan in so many words when starting /sdd-code-smell, or its entry is deleted from the record.
 - Q: Does the roadmap report show the code smell record? → A: yes, /sdd-report reads and displays it.
 - Q: How do the agreed findings become stories? → A: one story per rule, gathering every file that breaks it; a rule with too many files for one reviewable change is split.
-- Q: Which files does the snapshot hold? → A: the agent judges which files to leave out, and notes each with why in the record; no fixed list decides it.
+- Q: Which files does the snapshot hold? → A: the agent judges which files to leave out and explains why without saving exclusions; no fixed list decides it (revised 2026-11-03).
 
 ### Session 2026-11-03
 
-- Q: Are the files the repository ignores files left out, each noted with why? → A: no: the snapshot holds the files the repository versions or would version, and only those the agent leaves out of it are noted ([CORE-FR-051](#core-fr-051)).
+- Q: Should agreement also select a finding by id and accept a reason? → A: "tương tự cho aggree" ([CORE-FR-058](#core-fr-058)).
+
+- Q: May a skipped finding carry a reason? → A: "findings <id> skip [reason] , nếu có reason thì ghi vô" ([CORE-FR-057](#core-fr-057)).
+
+- Q: How should the developer identify a finding to skip? → A: "cho mỗi finding 1 id, bỏ lệnh skip thay bằng findings [id] skip" ([CORE-FR-057](#core-fr-057)).
+
+- Q: How should listing files again use the previous assessment? → A: "hàm snapshot đổi thành scan. --rescan đổi thành --again; hàm này chỉ trả ra danh sách file chưa được scan; --again tức là bỏ qua thằng code smell cũ và đưa ra hết danh sách" ([CORE-FR-051](#core-fr-051), [CORE-FR-054](#core-fr-054)).
+
+- Q: Should exclusions remain saved when the snapshot becomes read-only? → A: "Chỉ lưu file đã đánh giá, bỏ leftOut" ([CORE-FR-051](#core-fr-051)).
+
+- Q: Are the files the repository ignores files left out, each noted with why? → A: no: the snapshot holds the files the repository versions or would version, and exclusions are explained without being saved (revised 2026-11-03) ([CORE-FR-051](#core-fr-051)).
 - Q: Does a rescan stopped halfway go on with only the others? → A: no: run again without a rescan, the files it did not reach keep their earlier entries; with one, every file is assessed again.
 - Q: Is the language the agent talks in set for the whole repository, or per developer? → A: per developer, kept on their machine and never shared; no language is set for the repository.
 - Q: When is a developer asked their language? → A: at /sdd-init; a developer who names none is talked to as the voice says today, in the language of their own words.
@@ -714,7 +726,7 @@ their hashes and names the broken rule, and a second run assesses neither.
 **Acceptance Scenarios**:
 
 1. **Given** a charter, **When** /sdd-code-smell starts, **Then** it lists the charter's rules and drops those that do not concern code, naming each one dropped ([CORE-FR-050](#core-fr-050)).
-2. **Given** a repository, **When** the snapshot is taken, **Then** it holds each file to assess with its hash, and each file left out is noted in the record with why ([CORE-FR-051](#core-fr-051)).
+2. **Given** a repository, **When** the snapshot is taken, **Then** it lists each file to assess with its hash without creating or modifying the record; only assessed files are saved, and exclusions are explained without being saved ([CORE-FR-051](#core-fr-051)).
 3. **Given** a snapshot, **When** a file has been assessed, **Then** the record holds its hash, when it was assessed, whether it is good, and each finding by rule and line, and no code has changed ([CORE-FR-052](#core-fr-052), [CORE-FR-053](#core-fr-053)).
 4. **Given** a record, **When** /sdd-code-smell runs again on files whose hash is unchanged, under the same charter or a new one, **Then** it does not assess them again, and it assesses each file that is new or changed ([CORE-FR-054](#core-fr-054)).
 5. **Given** a file skipped for an unchanged hash, **When** the developer asks for a rescan in so many words when starting the command, or deletes its entry from the record, **Then** it is assessed again ([CORE-FR-054](#core-fr-054)).
@@ -725,7 +737,7 @@ their hashes and names the broken rule, and a second run assesses neither.
 
 ### CORE Story 25 - Review the code smells and plan the refactoring (Priority: P2)
 
-**Status**: Todo
+**Status**: Done
 
 The assessment over, the developer reviews what was found, grouped by rule,
 and skips what they do not want fixed. What they agree to goes to /sdd-plan,
@@ -741,7 +753,7 @@ skipped findings do not come back on the next run.
 **Acceptance Scenarios**:
 
 1. **Given** an assessment over, **When** it is reported, **Then** the developer gets the findings grouped by rule with their files, and nothing is planned before the developer's yes ([CORE-FR-056](#core-fr-056)).
-2. **Given** the report, **When** the developer skips a finding, **Then** the record marks it skipped, it goes into no story, and it stays skipped while the file's hash is unchanged ([CORE-FR-057](#core-fr-057)).
+2. **Given** the report, **When** the developer skips a finding, **Then** the report identifies each finding with its own stable id, the developer selects exactly one by its id, the record marks it skipped, it goes into no story, and it stays skipped while the file's hash is unchanged ([CORE-FR-057](#core-fr-057)).
 3. **Given** findings agreed, **When** the plan step runs, **Then** /sdd-plan writes one story per rule gathering every file that breaks it, and splits a rule too big for one reviewable change ([CORE-FR-058](#core-fr-058)).
 4. **Given** a refactoring story so planned, **When** it is read, **Then** its scenarios hold that the product behaves as it did before ([CORE-FR-059](#core-fr-059)).
 5. **Given** an assessment with no finding left to agree, **When** it is reported, **Then** it says so and /sdd-plan is not run ([CORE-FR-056](#core-fr-056)).
@@ -753,7 +765,7 @@ skipped findings do not come back on the next run.
 **Status**: Todo
 
 A developer draws the roadmap and sees, beside the stories, what the code
-smell record holds: how many files were assessed, left out and good, and the
+smell record holds: how many files were assessed and good, and the
 findings by rule, agreed or skipped.
 
 **Why this priority**: useful once the record exists, and the record can be
@@ -813,6 +825,8 @@ agent talks in the developer's own.
 ---
 
 ### Edge Cases
+
+- An old code smell record cannot be read: an explicitly requested full scan still lists every assessable file without reading or modifying that record.
 
 - A story picked up again whose handoff note disagrees with the code — the code wins; the agent says where they differ before going on.
 - Handoff notes set to be ignored — a session on another machine finds none, and starts from the story and its branch ([CORE-FR-026](#core-fr-026)).
@@ -949,14 +963,14 @@ agent talks in the developer's own.
 **Code smell**
 
 - <a id="core-fr-050"></a>**CORE-FR-050**: /sdd-code-smell MUST assess the code against the charter's coding rules alone, first listing the rules and naming each one it drops for not concerning code.
-- <a id="core-fr-051"></a>**CORE-FR-051**: /sdd-code-smell MUST take a snapshot of the files the repository versions or would version, not those it ignores, with a hash of each; the agent judges which of them to leave out, and MUST note each with why in the code smell record.
+- <a id="core-fr-051"></a>**CORE-FR-051**: /sdd-code-smell MUST take a snapshot of the files the repository versions or would version, not those it ignores, with a hash of each, without creating or changing the code smell record; a successful listing MUST print only the file list and its hashes, and an explicitly requested full scan MUST ignore the old record entirely, even if it cannot be read; the agent judges which of them to leave out and MUST explain each with why without saving exclusions; the record MUST contain only assessed files.
 - <a id="core-fr-052"></a>**CORE-FR-052**: /sdd-code-smell MUST assess the snapshot file by file and write each file's result to the code smell record, kept in the spec folder, as soon as the file is assessed: the hash of what was assessed, the date, whether it is good, and each finding by rule and line.
 - <a id="core-fr-053"></a>**CORE-FR-053**: /sdd-code-smell MUST NOT change any code; fixing what it finds is the work of the stories planned from it.
-- <a id="core-fr-054"></a>**CORE-FR-054**: A run MUST NOT assess again a file whose hash matches its entry, whatever the charter, unless the developer asks for a rescan in so many words when starting the command or the entry was deleted; a file that is new or changed MUST be assessed, and the entry of a file that is gone MUST be dropped.
+- <a id="core-fr-054"></a>**CORE-FR-054**: A run MUST NOT assess again a file whose hash matches its entry, whatever the charter, unless the developer asks for a rescan in so many words when starting the command or the entry was deleted; a file that is new or changed MUST be assessed, and the entry of a file that is gone MUST be dropped on the next explicit update of the record, never by taking the snapshot.
 - <a id="core-fr-055"></a>**CORE-FR-055**: /sdd-code-smell MUST run only when the developer starts it; the agent MUST NOT invoke it on its own.
 - <a id="core-fr-056"></a>**CORE-FR-056**: /sdd-code-smell MUST report its findings grouped by rule with their files for the developer's review, and plan nothing before the yes; with no finding left to agree it MUST say so and not run /sdd-plan.
-- <a id="core-fr-057"></a>**CORE-FR-057**: The developer MUST be able to skip any finding at that review; a skipped finding MUST be marked in the code smell record, go into no story, and stay skipped while the file's hash is unchanged.
-- <a id="core-fr-058"></a>**CORE-FR-058**: The findings agreed MUST go to /sdd-plan as one story per rule, gathering every file that breaks it, and a rule too big for one reviewable change MUST be split.
+- <a id="core-fr-057"></a>**CORE-FR-057**: Every finding MUST have a unique, stable identifier for the same assessed content and location, included in the review report; the developer MUST be able to select and skip exactly one finding by that identifier at that review; a skipped finding MUST be marked in the code smell record with the developer's reason when supplied, go into no story, and stay skipped with its supplied reason while the file's hash is unchanged.
+- <a id="core-fr-058"></a>**CORE-FR-058**: The developer MUST be able to mark exactly one finding agreed by its identifier after accepting its planned story, with a reason saved when supplied and retained for unchanged assessed content; findings already skipped MUST NOT be overwritten by agreement. The findings agreed MUST go to /sdd-plan as one story per rule, gathering every file that breaks it, and a rule too big for one reviewable change MUST be split.
 - <a id="core-fr-059"></a>**CORE-FR-059**: A story planned from the findings MUST hold in its scenarios that the product behaves as it did before.
 - <a id="core-fr-060"></a>**CORE-FR-060**: /sdd-report MUST show the code smell record beside the roadmap: its files and its findings by rule, agreed or skipped; with no record, or one it cannot read, it MUST still draw the roadmap and say so.
 
@@ -967,7 +981,7 @@ agent talks in the developer's own.
 - **Quality document**: the checklist a quality pass checks the code and the specs against, written from its template and kept and edited by the project, followed by the report of the last pass.
 - **Quality report**: each item of the checklist passed or failed, with its violations, and the overall grade; the last section of the quality document, rewritten by each pass.
 - **Developer settings**: the answers of one developer alone — the language the agent talks to them in — kept on their machine, never versioned or shared.
-- **Code smell record**: what /sdd-code-smell has assessed, one entry per file — its hash, the date, whether it is good, its findings by rule and line and whether each was skipped — and the files left out with why; the history a run reads to know what it need not assess again.
+- **Code smell record**: what /sdd-code-smell has assessed, one entry per file — its hash, the date, whether it is good, its findings by rule and line and whether each was skipped; the history a run reads to know what it need not assess again.
 
 ## Success Criteria *(mandatory)*
 
