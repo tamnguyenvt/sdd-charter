@@ -116,7 +116,25 @@ test("where notes are committed, a story In Progress with no note fails", () => 
   assert.equal(check().status, 1);
 });
 
-const proof = { summary: "node --test: 30 pass, 0 fail; check of sdd-specs passed", date: "2026-10-27" };
+test("report draws every Done story left of every story not Done, the ready ones in one column, each waiting one right of what it waits on", () => {
+  specSetOf({ statuses: ["Done", "Done", "Done", "Todo", "In Progress", "Todo"] });
+  const dependsOn = [[], ["CORE Story 1"], ["CORE Story 2"], [], ["CORE Story 1"], ["CORE Story 4"]];
+  writeFileSync(
+    join(repositoryFolder, "specs", "plan.json"),
+    JSON.stringify({ stories: dependsOn.map((dependencies, index) => ({ id: `CORE Story ${index + 1}`, title: `Story ${index + 1}`, dependsOn: dependencies })) }),
+  );
+  spawnSync("node", [specsScript, "report"], { cwd: repositoryFolder, encoding: "utf8" });
+  const html = readFileSync(join(repositoryFolder, "specs", "report.html"), "utf8");
+  const columnById = Object.fromEntries(
+    [...html.matchAll(/class="story \w+" transform="translate\((\d+),\d+\)">\n  <title>(CORE Story \d+)/g)].map(([, x, id]) => [id, Number(x)]),
+  );
+  const columnOf = (number) => columnById[`CORE Story ${number}`];
+  for (const done of [1, 2, 3]) for (const notDone of [4, 5, 6]) assert.ok(columnOf(done) < columnOf(notDone), `${done} left of ${notDone}`);
+  assert.equal(columnOf(4), columnOf(5));
+  assert.ok(columnOf(4) > columnOf(3) && columnOf(6) > columnOf(4));
+});
+
+const proof ={ summary: "node --test: 30 pass, 0 fail; check of sdd-specs passed", date: "2026-10-27" };
 
 test("evidence on a Done story's roadmap entry passes", () => {
   specSetOf({ statuses: ["Done", "Todo"], evidence: [proof] });

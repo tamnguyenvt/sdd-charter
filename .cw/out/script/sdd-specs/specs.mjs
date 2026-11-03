@@ -316,7 +316,9 @@ function reportHtmlOf(plannedStories, storyById, targetById) {
     if (depthById.has(id)) return depthById.get(id);
     if (seen.has(id)) return 0;
     seen.add(id);
-    const dependencies = (plannedById.get(id)?.dependsOn ?? []).filter((dependency) => plannedById.has(dependency));
+    // Done stories are laid out among themselves, the rest among themselves.
+    const isDone = statusOf(id) === "Done";
+    const dependencies = (plannedById.get(id)?.dependsOn ?? []).filter((dependency) => plannedById.has(dependency) && (statusOf(dependency) === "Done") === isDone);
     const depth = dependencies.length === 0 ? 0 : 1 + Math.max(...dependencies.map((dependency) => depthOf(dependency, seen)));
     depthById.set(id, depth);
     return depth;
@@ -330,7 +332,9 @@ function reportHtmlOf(plannedStories, storyById, targetById) {
 
   const BOX_WIDTH = 170, BOX_HEIGHT = 54, COLUMN_GAP = 100, ROW_GAP = 22, MARGIN = 24;
   const idsByColumn = [];
-  for (const planned of plannedStories) (idsByColumn[depthOf(planned.id)] ??= []).push(planned.id);
+  // Every Done story left of every story not Done, the ready ones first.
+  const doneColumns = 1 + Math.max(-1, ...plannedStories.filter((planned) => statusOf(planned.id) === "Done").map((planned) => depthOf(planned.id)));
+  for (const planned of plannedStories) (idsByColumn[(statusOf(planned.id) === "Done" ? 0 : doneColumns) + depthOf(planned.id)] ??= []).push(planned.id);
   const positionById = new Map();
   idsByColumn.forEach((ids, column) =>
     ids.forEach((id, row) => positionById.set(id, { x: MARGIN + column * (BOX_WIDTH + COLUMN_GAP), y: MARGIN + row * (BOX_HEIGHT + ROW_GAP), row })),
