@@ -751,9 +751,9 @@ which writes the refactoring as stories on the roadmap.
 **Why this priority**: findings nobody decided on and nobody planned fix
 nothing; and the developer, not the agent, says what is worth the change.
 
-**Independent Test**: on a record with findings under two rules, skip one
-rule's at the gate; /sdd-plan writes one story, for the other rule, and the
-skipped findings do not come back on the next run.
+**Independent Test**: on a record with one finding under each of two rules,
+skip one finding by its id at the gate; /sdd-plan writes one story for the
+other rule, and the skipped finding does not come back on the next run.
 
 **Acceptance Scenarios**:
 
@@ -831,7 +831,7 @@ agent talks in the developer's own.
 
 ### CORE Story 28 - Fix what the second quality pass found (Priority: P2)
 
-**Status**: Todo
+**Status**: Done
 
 The second quality pass, run by [CORE Story 23](#core-story-23---quality-cross-check-of-core-stories-11-and-1922-priority-p3), failed five items of the
 checklist with six violations. This story fixes each, so that the next pass
@@ -857,7 +857,7 @@ the violations the pass of [CORE Story 23](#core-story-23---quality-cross-check-
 
 ### Edge Cases
 
-- An old code smell record cannot be read: an explicitly requested full scan still lists every assessable file without reading or modifying that record.
+- An old code smell record cannot be read: an explicitly requested rescan still lists every assessable file without reading or modifying that record.
 
 - A story picked up again whose handoff note disagrees with the code — the code wins; the agent says where they differ before going on.
 - Handoff notes set to be ignored — a session on another machine finds none, and starts from the story and its branch ([CORE-FR-026](#core-fr-026)).
@@ -994,7 +994,7 @@ the violations the pass of [CORE Story 23](#core-story-23---quality-cross-check-
 **Code smell**
 
 - <a id="core-fr-050"></a>**CORE-FR-050**: /sdd-code-smell MUST assess the code against the charter's coding rules alone, first listing the rules and naming each one it drops for not concerning code.
-- <a id="core-fr-051"></a>**CORE-FR-051**: /sdd-code-smell MUST take a snapshot of the files the repository versions or would version, not those it ignores, with a hash of each, without creating or changing the code smell record; a successful listing MUST print only the file list and its hashes, and an explicitly requested full scan MUST ignore the old record entirely, even if it cannot be read; the agent judges which of them to leave out and MUST explain each with why without saving exclusions; the record MUST contain only assessed files.
+- <a id="core-fr-051"></a>**CORE-FR-051**: /sdd-code-smell MUST take a snapshot of the files the repository versions or would version, not those it ignores, with a hash of each, without creating or changing the code smell record; a successful listing MUST print only the file list and its hashes, and an explicitly requested rescan MUST ignore the old record entirely, even if it cannot be read; the agent judges which of them to leave out and MUST explain each with why without saving exclusions; the record MUST contain only assessed files.
 - <a id="core-fr-052"></a>**CORE-FR-052**: /sdd-code-smell MUST assess the snapshot file by file and write each file's result to the code smell record, kept in the spec folder, as soon as the file is assessed: the hash of what was assessed, the date, whether it is good, and each finding by rule and line.
 - <a id="core-fr-053"></a>**CORE-FR-053**: /sdd-code-smell MUST NOT change any code; fixing what it finds is the work of the stories planned from it.
 - <a id="core-fr-054"></a>**CORE-FR-054**: A run MUST NOT assess again a file whose hash matches its entry, whatever the charter, unless the developer asks for a rescan in so many words when starting the command or the entry was deleted; a file that is new or changed MUST be assessed, and the entry of a file that is gone MUST be dropped on the next explicit update of the record, never by taking the snapshot.

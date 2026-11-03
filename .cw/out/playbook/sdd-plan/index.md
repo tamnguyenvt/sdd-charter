@@ -44,7 +44,12 @@ Pause for the user's acceptance after each step.
 6. **Roadmap** — add each new story to `plan.json` with its title and
    `dependsOn`: the stories, in any spec, that must be `Done` before it can be
    built. Depend only on what the story truly needs, so independent stories can
-   run side by side. Show the user which stories become ready together.
+   run side by side. Place the phase's new stories after every unfinished quality cross-check
+   already on the roadmap: add each such cross-check to their `dependsOn`,
+   so none can become ready before it is `Done`. Keep this boundary when
+   adding cross-checks within the phase too: the stories following one depend
+   on it. Do not add a dependency back from that cross-check to the stories
+   it gates. Show the user which stories become ready together.
    Then add the quality cross-checks: count the stories in `plan.json` after
    its last `Quality cross-check of …` story — where there is none, only the
    stories this phase adds. After every five, or the number `manifest.md`
@@ -65,7 +70,9 @@ Pause for the user's acceptance after each step.
 ## Iron laws
 
 - What and why only. A file name, class, library or endpoint in a spec is a
-  defect.
+  defect. The only exception is what a spec writes from the developer’s own review
+  of the code: it may name the command, flag or output that review names;
+  this does not permit other implementation details.
 - Ids are numbered once within a spec, under its prefix, and never reused.
 - Every story is in `plan.json`, and no story is written that its scenarios
   cannot prove.

@@ -119,7 +119,10 @@ is a new one that says which it replaces.
 
 ## Never in a spec
 
-File names, class names, libraries, endpoints, schemas, task lists. How a
+File names, class names, libraries, endpoints, schemas, task lists. The only
+exception is what a spec writes from the developer’s own review of the code:
+it may name the command, flag or output that review names, and no other
+implementation details. How a
 story is built is decided when it is implemented and lives in the code. At
 most three `[NEEDS CLARIFICATION: …]` markers at a time; the clarify step of /sdd-plan resolves
 them before the story they block is implemented.

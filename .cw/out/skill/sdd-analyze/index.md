@@ -23,7 +23,9 @@ are errors. Then report; change nothing. Each finding is one line:
 - Two statements that contradict each other — an FR against a clarification,
   a story against out of scope.
 - Implementation in the spec: a file, class, library, endpoint, schema or task
-  list.
+  list. Except what a spec writes from the developer’s own review of the
+  code: it may name the command, flag or output that review names, and no
+  other implementation details.
 - A `[NEEDS CLARIFICATION]` left in a story that is next to be implemented.
 
 **Warnings**

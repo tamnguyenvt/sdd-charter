@@ -62,3 +62,39 @@
 - Initial finish check blocked on six sdd-clean debug findings (resolved by console.info below): source and generated smell.mjs lines 201–203. Each is intentional findings CLI output, not debugging. User acceptance of these exact findings is required before commit/squash into 004-code-smell. Nothing staged or committed yet.
 
 - User requested console.info and finish on 2026-11-03; replaced the three official report output calls and rebuilt. Fresh generated tests100/100, charter6/6, doctor/spec landing/whitespace passed; sdd-clean reports nothing left behind. Manual documented workflow passed with unchanged stdout and empty stderr in `/var/folders/dw/m3kz69m95qqb641254ymnvgc0000gn/T/sdd-info-final-_hg7688g`. Independent review passed, findings none. Proceeding to commit and squash into 004-code-smell; remote has no story branch.
+
+## Story-local decisions moved from ADR.md
+
+Moved verbatim by CORE Story 28; retained here as implementation history.
+
+## ADR-003: Address a skipped finding by its id
+
+**Decision**: Each finding receives an automatic, stable id tied to its path,
+assessed content, rule, line and occurrence at that location. Review reports
+show the id. `findings <id> skip` replaces the standalone skip command and
+marks exactly one finding. Agreement retains its existing arguments.
+
+**Why**: The developer wants to choose a finding directly from the report.
+
+**Consequences**: Callers use ids for skipping. Legacy assessments receive
+ids on reads without writing; explicit updates persist them. Caller-provided
+ids do not override generated identities. Changed content gets new ids.
+
+Source: [CORE Story 25](spec-core.md#core-story-25---review-the-code-smells-and-plan-the-refactoring-priority-p2), [CORE-FR-057](spec-core.md#core-fr-057), revised on 2026-11-03.
+
+## ADR-004: Address agreement by finding id as well
+
+**Decision**: `findings <id> agree [reason]` replaces standalone agreement.
+Both review actions address exactly one id and accept an optional reason.
+A repeated action without a reason keeps its previous reason; a changed
+status clears a previous reason unless replaced. Agreement refuses skipped
+findings. Acceptance of the planned story still precedes agreement.
+
+**Why**: The developer requested the same interface and reason support for
+agreement as for skipping.
+
+**Consequences**: Callers stop using path/rule/line for agreement. Status and
+reason survive unchanged assessments; changed content clears both.
+This replaces ADR-003's decision to retain the old agreement arguments.
+
+Source: [CORE Story 25](spec-core.md#core-story-25---review-the-code-smells-and-plan-the-refactoring-priority-p2), [CORE-FR-057](spec-core.md#core-fr-057), [CORE-FR-058](spec-core.md#core-fr-058), revised on 2026-11-03.
