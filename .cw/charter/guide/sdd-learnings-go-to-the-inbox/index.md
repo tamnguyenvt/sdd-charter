@@ -8,4 +8,5 @@ rationale: sdd-why-learnings-go-to-the-inbox
 Never write to the agent's own memory (for Claude Code, the files under
 `~/.claude/projects/<project>/memory/` and their `MEMORY.md`). When something is
 worth keeping — a correction, a preference, a constraint — write it into a note
-under `learning/inbox/`, named `<yyyy-mm-dd>-<slug>.md`, as /sdd-learn does.
+under `learning/inbox/` at the repository's root, named
+`<yyyy-mm-dd>-<slug>.md`, as /sdd-learn does.

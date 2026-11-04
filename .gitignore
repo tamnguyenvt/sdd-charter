@@ -1,1 +1,10 @@
 .idea/
+
+# Written by `cw build`; run it after cloning.
+.cw/out/
+AGENTS.md
+CLAUDE.md
+.mcp.json
+.claude/
+.agents/
+.codex/
