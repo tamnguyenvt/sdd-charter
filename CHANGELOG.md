@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.15 — 2026-11-04
+
+- `sdd-review-agent` no longer asks as a question what the story, the guides or the repository already answer.
+- With no language chosen, commands answer in the language of your own words, even when every document is written in English.
+- `/sdd-learn` and every learning note go to `learning/inbox/` at the repository's root, never under the spec folder or `docs`.
+
 ## 0.1.14 — 2026-11-03
 
 - `/sdd-code-smell` assesses a repository's files one by one against the charter's coding rules and keeps what it finds in `code-smell.json` in the spec folder; it changes no code and runs only when you start it.
