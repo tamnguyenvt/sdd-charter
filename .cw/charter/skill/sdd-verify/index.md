@@ -26,7 +26,8 @@ disable-user-invocation: true
 
 Report what was run and what it showed, quoting the decisive output, and end
 on one line that sums it up — what was run, what it showed — the evidence a
-`Done` story keeps. Where **Conversation** is short and every step passed, the
+`Done` story keeps. Where several runs each prove a part of a scenario, the
+line names every one of them, never a pick the user is asked to make. Where **Conversation** is short and every step passed, the
 report and its line go to the review, and to the handoff note where the walk
 keeps one, not the chat. No claim of "works" or "passes" without that evidence
 from this turn. A failure of any step is reported, never fixed here: nothing
