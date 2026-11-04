@@ -23,8 +23,8 @@ the baseline, only when it fails or finds no check.
      <development branch>`, under the path the manifest names.
 
    Then write the fix's handoff note, `<spec folder>/handoff/fix-<slug>.md`,
-   from [[sdd-handoff]], and bring it up to date before every stop, as
-   /sdd-implement does a story's.
+   from [[sdd-handoff]], and bring it up to date after each step that passes
+   and before every stop, as /sdd-implement does a story's.
 2. **Understand** — restate the bug: what happens, what should happen
    instead, where, and the steps given to reproduce it, if any. Where the
    bug as told cannot be understood — what goes wrong, or where — ask the

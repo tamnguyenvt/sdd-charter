@@ -2,7 +2,7 @@
 
 **Created**: 2026-10-26
 
-**Updated**: 2026-11-03
+**Updated**: 2026-11-04
 
 **Input**: User description: "Phase 1 of the charter is done. Enhance it: a review by an agent other than the author, a baseline before the first change, a handoff for a story in progress, a clean state before finishing, the evidence kept with a Done story, the runtime read while verifying, a quality grade per part, and a health check of the setup."
 Then: "When planning, add a quality cross-check story after about every five stories, so the quality pass is sure to run instead of being skipped."
@@ -25,6 +25,7 @@ Then: "Make snapshot read-only; save assessment results only when explicitly rec
 Then: "Fix what the second quality pass found, as one story."
 Then: "A spec may name what the code does where it is the developer's own review of the code turned into a task."
 Then: "Make the reviewer ask only what needs asking; what is obvious is not asked."
+Then: "Keep the handoff note current, so the work switches between agent providers without losing its context."
 
 ## Overview
 
@@ -146,6 +147,11 @@ the whole repository shares.
 - Q: Does the chosen language reach what the walks write into the repository? → A: no: it governs only what the agent says to the developer; the language of the documents the walks write is the repository's, an answer of `manifest.md`.
 - Q: Which documents does the document language cover, and with no answer? → A: the specs, the roadmap, the handoff notes, the quality report and the learning notes; not the code, nor the commit messages, which **Message** governs; /sdd-init asks it, and a manifest with no answer means English.
 
+### Session 2026-11-04
+
+- Q: When is a handoff note brought up to date? → A: "việc handoff phải thường xuyên, làm sao để switch giữa các agent provider dễ dàng ko mất ngữ cảnh": after each step of the walk that passes, and before every stop, so an agent cut off by its quota loses one step at most ([CORE-FR-005](#core-fr-005)).
+- Q: Does one agent's quota limit block the story? → A: no: another available agent runs the tests, the manual run and the review, and the note names the agent behind each piece of evidence ([CORE-FR-006](#core-fr-006)).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### CORE Story 1 - Review by an agent that did not write the change (Priority: P1)
@@ -214,6 +220,7 @@ already decided.
 1. **Given** a story `In Progress`, **When** the session stops, **Then** the story's handoff note holds what is done, what remains, the decisions taken and what blocks it ([CORE-FR-005](#core-fr-005), [CORE-FR-006](#core-fr-006)).
 2. **Given** a story with a handoff note, **When** /sdd-implement picks it up, **Then** the note is read before anything else of the story is done ([CORE-FR-008](#core-fr-008), [CORE-SC-001](#core-sc-001)).
 3. **Given** /sdd-init, **When** it asks how work is carried out, **Then** it asks whether handoff notes are committed or ignored, and writes the answer to the manifest ([CORE-FR-007](#core-fr-007)).
+4. **Given** a story or a bug fix whose agent is cut off after a step passed, **When** another agent picks it up, **Then** the handoff note records every step that passed but, at most, the last one, naming the agent behind each piece of evidence, and the new agent goes on from where the code stands ([CORE-FR-005](#core-fr-005), [CORE-FR-006](#core-fr-006)).
 
 ---
 
@@ -898,8 +905,8 @@ the violations the pass of [CORE Story 23](#core-story-23---quality-cross-check-
 
 **Handoff**
 
-- <a id="core-fr-005"></a>**CORE-FR-005**: A story `In Progress`, and a bug fix not yet landed, MUST have a handoff note of its own in the spec folder whenever a session stops on it.
-- <a id="core-fr-006"></a>**CORE-FR-006**: A handoff note MUST say what is done, what remains, the decisions taken and what blocks the story, and nothing the spec already says.
+- <a id="core-fr-005"></a>**CORE-FR-005**: A story `In Progress`, and a bug fix not yet landed, MUST have a handoff note of its own in the spec folder, brought up to date after each step of the walk that passes — the baseline, the spec gate, each scenario's test and code, verify, review — and whenever a session stops on it.
+- <a id="core-fr-006"></a>**CORE-FR-006**: A handoff note MUST say what is done, what remains, the decisions taken and what blocks the story, and nothing the spec already says; each piece of evidence MUST name the agent that produced it, and one agent's quota limit MUST NOT be recorded as a blocker while another available agent can run the check.
 - <a id="core-fr-007"></a>**CORE-FR-007**: /sdd-init MUST ask whether handoff notes are committed or ignored, and record the answer in the manifest.
 - <a id="core-fr-008"></a>**CORE-FR-008**: /sdd-implement MUST read a story's handoff note before working on it again, and say where the note and the code differ, the code winning.
 - <a id="core-fr-009"></a>**CORE-FR-009**: A story's or a bug fix's handoff note MUST stay when the story is set to `Done` or the fix lands, committed or ignored as the manifest says; a note for a story still `Todo` MUST fail the check of the spec set.

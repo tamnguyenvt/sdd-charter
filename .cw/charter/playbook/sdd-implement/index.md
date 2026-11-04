@@ -69,13 +69,18 @@ with no pause.
 
 ## Handoff note
 
-Before every stop on a story `In Progress` — at a gate, mid-step, or because
-the session ends — bring `<spec folder>/handoff/<prefix>-<n>.md` up to date:
+After each step that passes — the baseline, the spec gate, each scenario's
+test and the code that passes it, verify, review — and before every stop on a
+story `In Progress`, bring `<spec folder>/handoff/<prefix>-<n>.md` up to date,
+its name in lower case (`core-3.md` for CORE Story 3):
 what is done — the baseline with each known failure, the spec gate once it
 passed — what remains, from the step to go on at, the decisions taken and what
-blocks it, and nothing the spec already says. `check` refuses a story
-`In Progress` without one — except where notes are ignored — and a note for a
-story `Todo`.
+blocks it, and nothing the spec already says. Each piece of evidence names
+the agent that produced it. One agent's quota limit blocks nothing another
+available agent can do — the tests, the manual run, a review by an agent of
+its own — and the note never claims a check that only the limited agent's
+harness runs. `check` refuses a story `In Progress` without one — except
+where notes are ignored — and a note for a story `Todo`.
 
 ## Going back
 
