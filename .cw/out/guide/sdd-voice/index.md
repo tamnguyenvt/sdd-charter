@@ -28,8 +28,9 @@ reports and learning notes in that language; keep the format's fixed headings,
 field names, ids and status tokens so the tools can read them. Leave existing
 documents as they are when the answer changes; newly written content follows
 the new answer. This choice does not govern code or commit messages: commits
-follow the manifest's **Message** answer. Conversation follows the local
-`language` independently of the documents. Never put a developer's personal
+follow the manifest's **Message** answer. Conversation never follows the
+document language: with no local `language`, it follows the user's own words,
+even where every document is in English. Never put a developer's personal
 language in the manifest or shared settings.
 
 - **The answer first** — then why, then what comes next. Never open by
