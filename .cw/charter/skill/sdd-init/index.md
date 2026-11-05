@@ -111,19 +111,28 @@ the user takes with "yes":
 11. **Conversation** — short or detailed. Short, the default: a gate says only
    what it asks, and what changed is never listed — the user reads the code
    and asks. Detailed: each step reports what it did and what it showed.
-12. **Review** — strict or quick. Strict, the default: every `nit` and `q`
-   the review leaves is put to the user at the hand-over. Quick: a `nit` is
-   not acted on but written to the handoff note; a `q` whose answer changes
-   no FR, scenario or out of scope and touches only the changed files is
-   settled by the agent and written there; neither is said in the chat, and
-   every other `q` is asked. Say that an existing manifest without the line
-   reads as strict.
-13. **Quality cross-check** — after how many stories /sdd-plan adds a
+12. **Review** — strict, quick or auto. Strict, the default: every `nit` and
+   `q` the review leaves is put to the user at the hand-over. Quick: a `nit`
+   is not acted on but written to the handoff note; a `q` whose answer
+   changes no FR, scenario or out of scope and touches only the changed files
+   is settled by the agent and written there; neither is said in the chat,
+   and every other `q` is asked. Auto: each `nit` is fixed and written to the
+   handoff note with its fix, the change verified and reviewed again, for
+   three rounds of fixing at most, each `nit` left after the third written
+   there unfixed; a `q` is handled as in quick. Say that an existing manifest
+   without the line reads as strict.
+13. **Reach of a `nit`'s fix** — asked only with auto chosen: whether a `nit`
+   is fixed only where its fix stays within the changed files, the others
+   written to the handoff note, or wherever its fix reaches. Write the answer
+   into **Review**: `auto, changed files only` or `auto`. Recommend wherever
+   its fix reaches, written `auto`, the default when the manifest names no
+   reach.
+14. **Quality cross-check** — after how many stories /sdd-plan adds a
    quality cross-check story, which runs /sdd-quality on them. Recommend 5,
    the default when the user names none, and say that an existing manifest
    without the line reads as 5.
 
-14. **Document language** — which language the specs, roadmap, handoff notes,
+15. **Document language** — which language the specs, roadmap, handoff notes,
     quality reports and learning notes are written in. Recommend English
     unless the repository supports another choice. An existing manifest with
     no answer means English. This does not govern code or commit messages;

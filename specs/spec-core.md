@@ -883,7 +883,7 @@ the violations the pass of [CORE Story 23](#core-story-23---quality-cross-check-
 
 ### CORE Story 29 - Fix each nit when the manifest says so (Priority: P2)
 
-**Status**: Todo
+**Status**: Done
 
 A third answer to **Review** in the manifest, `auto`: the agent fixes each
 `nit` the review leaves instead of putting it to the developer, and settles a

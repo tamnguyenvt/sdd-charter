@@ -24,7 +24,7 @@ Hand it nothing else: never the conversation, the plan, or the reasoning
 behind the change.
 
 Relay the guides it read, its findings and its verdict to the walk as it wrote
-them; each `nit` and `q` goes to the hand-over: written to the handoff note,
-settled, or put to the user as **Review** in the manifest says. Where
+them; each `nit` and `q` is fixed, written to the handoff note, settled, or
+put to the user at the hand-over, as **Review** in the manifest says. Where
 **Conversation** is short, a review that passes says nothing in the chat but
 each `nit` and `q` left for the user, at the hand-over.
