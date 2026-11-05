@@ -2,7 +2,7 @@
 
 **Created**: 2026-10-26
 
-**Updated**: 2026-11-04
+**Updated**: 2026-11-05
 
 **Input**: User description: "Phase 1 of the charter is done. Enhance it: a review by an agent other than the author, a baseline before the first change, a handoff for a story in progress, a clean state before finishing, the evidence kept with a Done story, the runtime read while verifying, a quality grade per part, and a health check of the setup."
 Then: "When planning, add a quality cross-check story after about every five stories, so the quality pass is sure to run instead of being skipped."
@@ -18,6 +18,8 @@ Then: "End the hand-over on `approve ?`."
 Then: "A bug fix is a task too: it keeps a handoff note."
 Then: "The checks you ran by hand to prove the charter right are not yet cases cw eval can run: write them."
 Then: "Write a refactor walk that checks the whole source code against the rules: the rules forbid touching lines a task does not concern, so the lines that were wrong in an existing repository are otherwise never fixed. Keep the quality pass as it is; make it /sdd-code-smell, run by hand: a snapshot of the files with a hash each, assessed file by file with a history kept, reported for review where findings can be skipped, then planned through /sdd-plan; a file whose hash is unchanged is not assessed again unless a rescan is asked for; /sdd-report shows the record."
+Then: "Let me fix each nit myself: a choice of the manifest, not something the walk does on its own."
+Then: "At the hand-over, show the rounds in order, as a timeline that reads clearly, not just bullet points."
 Then: "Ask each developer at /sdd-init which language to talk to them in, kept on their machine and ignored by git, loaded on every walk; with none chosen, the voice as it is. The documents the walks write follow a language of their own, a manifest answer: two languages, the chat's and the documents'."
 
 Then: "Make snapshot read-only; save assessment results only when explicitly recorded, with no saved exclusions."
@@ -151,6 +153,19 @@ the whole repository shares.
 
 - Q: When is a handoff note brought up to date? → A: "việc handoff phải thường xuyên, làm sao để switch giữa các agent provider dễ dàng ko mất ngữ cảnh": after each step of the walk that passes, and before every stop, so an agent cut off by its quota loses one step at most ([CORE-FR-005](#core-fr-005)).
 - Q: Does one agent's quota limit block the story? → A: no: another available agent runs the tests, the manual run and the review, and the note names the agent behind each piece of evidence ([CORE-FR-006](#core-fr-006)).
+
+### Session 2026-11-05
+
+- Q: In the review choice that fixes each `nit`, how is a `q` handled? → A: as in a quick review: a `q` whose answer changes no FR, scenario or out of scope and touches only the changed files is settled and written to the handoff note; every other `q` is asked.
+- Q: Does that review choice fix a `nit` whose fix reaches files the change did not touch? → A: the manifest says: /sdd-init asks whether a `nit` is fixed only where its fix stays within the changed files, the others written to the handoff note, or wherever its fix reaches; a manifest with no answer fixes it wherever its fix reaches.
+- Q: The review run again after the `nit` are fixed leaves new `nit`: are they fixed too? → A: yes, for at most three rounds of fixing; each `nit` left after the third is written to the handoff note.
+- Q: Where does the developer learn which `nit` were fixed? → A: each `nit` fixed is written to the handoff note with its fix; with **Conversation** short the chat does not say it, with it detailed the chat lists it among what changed.
+- Q: What does the manifest call that review choice? → A: `auto`, beside `strict` and `quick` ([CORE-FR-045](#core-fr-045), [CORE-FR-067](#core-fr-067)).
+- Q: How is the timeline of a handoff note shown? → A: as a table, one row per step or round in the order they ran: its number, the date and time, the step, the round, the agent and the result.
+- Q: Does the timeline repeat what the note's Done section says of each step? → A: no: the timeline holds each step and round, its agent and its result; Done keeps only what is built and checked, by file or scenario.
+- Q: Does a bug fix's note keep a timeline too? → A: yes, as a story's does ([CORE-FR-005](#core-fr-005)).
+- Q: What of a note written before notes kept a timeline? → A: it stays as it is; when its story or fix is taken up again, the timeline starts at the next step, its first row saying the steps before it are not in it, and no check fails a note for having no timeline.
+- Q: Which moments are rows of the timeline? → A: all of them: each step and round the agent runs, each time the developer is asked, with its result waiting on them, and each answer or change the developer asks for, said in short, the verify and review rounds after it numbered on.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -643,7 +658,7 @@ both, with what was chosen.
 
 **Acceptance Scenarios**:
 
-1. **Given** /sdd-init, **When** it asks how work is carried out, **Then** it asks whether the review is strict or quick, and writes the answer to the manifest ([CORE-FR-045](#core-fr-045)).
+1. **Given** /sdd-init, **When** it asks how work is carried out, **Then** it asks how strict the review is, strict and quick among the answers, and writes the answer to the manifest ([CORE-FR-045](#core-fr-045)).
 2. **Given** a quick review that leaves a `nit`, **When** the change is handed over, **Then** the `nit` is not acted on, is written to the handoff note, and is not said in the chat ([CORE-FR-046](#core-fr-046)).
 3. **Given** a quick review that leaves a `q` whose answer changes no FR, scenario or out of scope and touches only the files the story changed, **When** the change is handed over, **Then** the agent settles it, writes what it chose to the handoff note, and does not ask it ([CORE-FR-046](#core-fr-046)).
 4. **Given** a quick review that leaves any other `q`, **When** the change is handed over, **Then** it is asked ([CORE-FR-046](#core-fr-046)).
@@ -866,6 +881,71 @@ the violations the pass of [CORE Story 23](#core-story-23---quality-cross-check-
 
 ---
 
+### CORE Story 29 - Fix each nit when the manifest says so (Priority: P2)
+
+**Status**: Todo
+
+A third answer to **Review** in the manifest, `auto`: the agent fixes each
+`nit` the review leaves instead of putting it to the developer, and settles a
+small `q` as a quick review does. The change is verified and reviewed again
+after each round of fixing, for three rounds at most. Where a `nit`'s fix
+reaches files the change did not touch is the manifest's to say too. Nothing
+happens unless the manifest says `auto`.
+
+**Why this priority**: a developer who wants every small finding fixed is
+asked to say yes to each `nit` under strict, and finds them left in the
+handoff note under quick.
+
+**Independent Test**: with **Review** `auto`, finish a change whose review
+leaves a `nit`; the hand-over does not ask it, the code holds its fix, the
+change was verified and reviewed again, and the handoff note names the `nit`
+and its fix.
+
+**Acceptance Scenarios**:
+
+1. **Given** /sdd-init, **When** it asks how work is carried out, **Then** it offers strict, quick and auto for the review, and writes the answer to the manifest ([CORE-FR-045](#core-fr-045)).
+2. **Given** an auto review that leaves a `nit`, **When** the change is handed over, **Then** the `nit` is fixed, the change is verified and reviewed again, the handoff note names the `nit` and its fix, and the developer is not asked it ([CORE-FR-067](#core-fr-067)).
+3. **Given** an auto review that leaves a `q`, **When** the change is handed over, **Then** it is settled or asked exactly as a quick review would ([CORE-FR-046](#core-fr-046), [CORE-FR-067](#core-fr-067)).
+4. **Given** an auto review run again after a round of fixing that leaves new `nit`, **When** fewer than three rounds have run, **Then** they are fixed in another round; after the third, each `nit` left is written to the handoff note and not fixed ([CORE-FR-067](#core-fr-067)).
+5. **Given** /sdd-init with auto chosen, **When** it asks how work is carried out, **Then** it asks whether a `nit` is fixed only where its fix stays within the changed files or wherever its fix reaches, and writes the answer to the manifest ([CORE-FR-068](#core-fr-068)).
+6. **Given** an auto review whose `nit` needs a file the change did not touch, **When** the manifest fixes `nit` only within the changed files, **Then** the `nit` is not fixed and is written to the handoff note; **When** the manifest fixes them wherever their fix reaches, or gives no answer, **Then** it is fixed ([CORE-FR-068](#core-fr-068)).
+7. **Given** **Conversation** short, **When** an auto review's `nit` were fixed, **Then** the chat does not name them; with it detailed, it lists them among what changed ([CORE-FR-067](#core-fr-067)).
+8. **Given** a manifest whose **Review** is strict, quick or missing, **When** a change is handed over, **Then** no `nit` is fixed, as before ([CORE-FR-045](#core-fr-045), [CORE-FR-046](#core-fr-046)).
+
+---
+
+### CORE Story 30 - Read the rounds of a story as a timeline (Priority: P2)
+
+**Status**: Todo
+
+The handoff note of a story or a bug fix keeps a timeline: a table, one row
+per step or round in the order it ran — the baseline, the spec gate, each
+verify and review, each round of fixing `nit`, each time the developer is
+asked and each answer or change they give — with its number, date and time,
+round, agent and result. The note's Done section stops repeating the steps
+and keeps what is built and checked.
+
+**Why this priority**: a list of what is done does not show why a story took
+three reviews, nor which agent ran which round; the developer and the next
+session read that from the order alone.
+
+**Independent Test**: walk a story whose first review fails, then passes and
+leaves a `q` the developer answers; the note's timeline holds, in order, the
+baseline, the spec gate, review round 1 failed, review round 2 passed, the
+`q` asked, the developer's answer, and the rounds after it, each with its
+agent and time.
+
+**Acceptance Scenarios**:
+
+1. **Given** a story `In Progress`, **When** a step or a round of the walk ends, passing or failing, **Then** a row is added at the end of its note's timeline with its number, the date and time, the step, the round, the agent and the result ([CORE-FR-069](#core-fr-069)).
+2. **Given** a review or a verify run again, **When** its row is written, **Then** its round is numbered on from the last row of the same step ([CORE-FR-069](#core-fr-069)).
+3. **Given** the developer asked at a gate or at the hand-over, **When** they answer or ask for a change, **Then** the timeline holds one row for the question, its result waiting on them, and one for the answer, said in short ([CORE-FR-069](#core-fr-069)).
+4. **Given** a note with a timeline, **When** it is read, **Then** its Done section names what is built and checked, by file or scenario, and no step the timeline holds ([CORE-FR-006](#core-fr-006), [CORE-FR-069](#core-fr-069)).
+5. **Given** a bug fix not yet landed, **When** a step of /sdd-bug-fix ends, **Then** its note's timeline gets a row the same way ([CORE-FR-005](#core-fr-005), [CORE-FR-069](#core-fr-069)).
+6. **Given** a note written before notes kept a timeline, **When** its story or fix is taken up again, **Then** the note is left as it was, a timeline starts at the next step with a first row saying the steps before it are not in it, and no check fails the note for having none ([CORE-FR-069](#core-fr-069)).
+
+---
+
 ### Edge Cases
 
 - An old code smell record cannot be read: an explicitly requested rescan still lists every assessable file without reading or modifying that record.
@@ -884,6 +964,8 @@ the violations the pass of [CORE Story 23](#core-story-23---quality-cross-check-
 - A rescan stopped halfway — run again without a rescan, the files it did not reach keep their earlier entries; with one, every file is assessed again.
 - A file that a refactoring story changed — its hash no longer matches, so the next run assesses it again.
 - A developer's own settings that cannot be read — the agent talks as if no language were chosen, and says once that it could not read them ([CORE-FR-063](#core-fr-063)).
+- A fix of a `nit` that breaks a test or brings a `bug` or `risk` — the verify or review run again fails, and the change goes back to be fixed as any failed review does ([CORE-FR-067](#core-fr-067)).
+- Two agents writing to the same note one after the other — each adds its rows after the last, numbered on, and none rewrites a row already there ([CORE-FR-069](#core-fr-069)).
 - A document language changed after documents were written — the documents already written stay as they are; only what is written next follows the new answer ([CORE-FR-066](#core-fr-066)).
 
 ## Requirements *(mandatory)*
@@ -906,7 +988,8 @@ the violations the pass of [CORE Story 23](#core-story-23---quality-cross-check-
 **Handoff**
 
 - <a id="core-fr-005"></a>**CORE-FR-005**: A story `In Progress`, and a bug fix not yet landed, MUST have a handoff note of its own in the spec folder, brought up to date after each step of the walk that passes — the baseline, the spec gate, each scenario's test and code, verify, review — and whenever a session stops on it.
-- <a id="core-fr-006"></a>**CORE-FR-006**: A handoff note MUST say what is done, what remains, the decisions taken and what blocks the story, and nothing the spec already says; each piece of evidence MUST name the agent that produced it, and one agent's quota limit MUST NOT be recorded as a blocker while another available agent can run the check.
+- <a id="core-fr-006"></a>**CORE-FR-006**: A handoff note MUST say what is built and checked, what remains, the decisions taken and what blocks the story, and nothing the spec already says; each piece of evidence MUST name the agent that produced it, and one agent's quota limit MUST NOT be recorded as a blocker while another available agent can run the check.
+- <a id="core-fr-069"></a>**CORE-FR-069**: A handoff note MUST keep a timeline: a table with one row per step or round of the walk, added at its end as each ends, passing or failing — each time the developer is asked and each answer or change they give included — with its number, the date and time, the step, the round numbered on from the last row of the same step, the agent and the result. No row is rewritten once written. A note written before this keeps no timeline until its story or fix is taken up again; its timeline then starts at the next step, its first row saying the steps before it are not in it, and no check fails a note for having no timeline.
 - <a id="core-fr-007"></a>**CORE-FR-007**: /sdd-init MUST ask whether handoff notes are committed or ignored, and record the answer in the manifest.
 - <a id="core-fr-008"></a>**CORE-FR-008**: /sdd-implement MUST read a story's handoff note before working on it again, and say where the note and the code differ, the code winning.
 - <a id="core-fr-009"></a>**CORE-FR-009**: A story's or a bug fix's handoff note MUST stay when the story is set to `Done` or the fix lands, committed or ignored as the manifest says; a note for a story still `Todo` MUST fail the check of the spec set.
@@ -994,8 +1077,10 @@ the violations the pass of [CORE Story 23](#core-story-23---quality-cross-check-
 
 **Review mode**
 
-- <a id="core-fr-045"></a>**CORE-FR-045**: /sdd-init MUST ask whether the review of a change is strict or quick and record the answer in the manifest; a manifest with no answer reads as strict.
+- <a id="core-fr-045"></a>**CORE-FR-045**: /sdd-init MUST ask whether the review of a change is strict, quick or auto and record the answer in the manifest; a manifest with no answer reads as strict.
 - <a id="core-fr-046"></a>**CORE-FR-046**: In a quick review, a `nit` MUST NOT be acted on but written to the handoff note of the story or fix; a `q` whose answer changes no FR, scenario or out of scope and touches only the files the story or fix changed MUST be settled by the agent and written to the handoff note; neither is said in the chat, and every other `q` is asked. In a strict review every `nit` and `q` MUST be put to the developer.
+- <a id="core-fr-067"></a>**CORE-FR-067**: In an auto review, each `nit` MUST be fixed, within the reach [CORE-FR-068](#core-fr-068) sets, and the change verified and reviewed again; `nit` that review leaves are fixed the same way, for three rounds of fixing at most, and each `nit` left after the third is written to the handoff note. Each `nit` fixed MUST be written to the handoff note with its fix, and is said in the chat only where **Conversation** is detailed. A `q` is handled as in a quick review.
+- <a id="core-fr-068"></a>**CORE-FR-068**: Where the review is auto, /sdd-init MUST ask whether a `nit` is fixed only where its fix stays within the files the change touched, the others written to the handoff note, or wherever its fix reaches, and record the answer in the manifest; a manifest with no answer fixes it wherever its fix reaches.
 
 **Coverage**
 
@@ -1018,7 +1103,7 @@ the violations the pass of [CORE Story 23](#core-story-23---quality-cross-check-
 
 ### Key Entities
 
-- **Handoff note**: where a story in progress, or a bug fix not yet landed, stands — done, remaining, decisions, blockers. One per story or fix, written while the story is `In Progress` or the fix is not yet landed, and kept once it is `Done` or has landed.
+- **Handoff note**: where a story in progress, or a bug fix not yet landed, stands — its timeline of steps and rounds, what is built and checked, remaining, decisions, blockers. One per story or fix, written while the story is `In Progress` or the fix is not yet landed, and kept once it is `Done` or has landed.
 - **Evidence**: a one-line summary of what proved a `Done` story and when; part of the story's roadmap entry.
 - **Quality document**: the checklist a quality pass checks the code and the specs against, written from its template and kept and edited by the project, followed by the report of the last pass.
 - **Quality report**: each item of the checklist passed or failed, with its violations, and the overall grade; the last section of the quality document, rewritten by each pass.
@@ -1046,6 +1131,7 @@ the violations the pass of [CORE Story 23](#core-story-23---quality-cross-check-
 - The health check runs when the developer asks. The quality pass runs in each quality cross-check story, and whenever the developer asks.
 - A phase that adds fewer stories than the manifest's number — five where it names none — adds no quality cross-check story; its stories count toward the next.
 - The cases put to the real agent run on the last commit, on whatever the agent is signed in with, and the agent there runs no shell command.
+- An existing manifest whose review is auto but says nothing of how far a `nit`'s fix may reach is read as wherever it reaches.
 - An existing manifest without the document language is read as English; a developer with no settings of their own is talked to as before.
 - A new charter does not by itself bring unchanged files back to /sdd-code-smell: the developer asks for a rescan when that is wanted.
 
