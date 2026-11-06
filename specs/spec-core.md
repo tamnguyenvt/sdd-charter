@@ -2,7 +2,7 @@
 
 **Created**: 2026-10-26
 
-**Updated**: 2026-11-05
+**Updated**: 2026-11-06
 
 **Input**: User description: "Phase 1 of the charter is done. Enhance it: a review by an agent other than the author, a baseline before the first change, a handoff for a story in progress, a clean state before finishing, the evidence kept with a Done story, the runtime read while verifying, a quality grade per part, and a health check of the setup."
 Then: "When planning, add a quality cross-check story after about every five stories, so the quality pass is sure to run instead of being skipped."
@@ -28,6 +28,7 @@ Then: "Fix what the second quality pass found, as one story."
 Then: "A spec may name what the code does where it is the developer's own review of the code turned into a task."
 Then: "Make the reviewer ask only what needs asking; what is obvious is not asked."
 Then: "Keep the handoff note current, so the work switches between agent providers without losing its context."
+Then: "Group the `Done` stories on the left of the roadmap report into one, but for the last five, so it reads easily."
 
 ## Overview
 
@@ -166,6 +167,11 @@ the whole repository shares.
 - Q: Does a bug fix's note keep a timeline too? → A: yes, as a story's does ([CORE-FR-005](#core-fr-005)).
 - Q: What of a note written before notes kept a timeline? → A: it stays as it is; when its story or fix is taken up again, the timeline starts at the next step, its first row saying the steps before it are not in it, and no check fails a note for having no timeline.
 - Q: Which moments are rows of the timeline? → A: all of them: each step and round the agent runs, each time the developer is asked, with its result waiting on them, and each answer or change the developer asks for, said in short, the verify and review rounds after it numbered on.
+
+### Session 2026-11-06
+
+- Q: Which are the five last `Done` stories the roadmap report leaves out of the group? → A: the five with the latest evidence date; a `Done` story with no evidence date counts as the oldest, and between stories of the same date the one later in the roadmap is the later ([CORE-FR-070](#core-fr-070)).
+- Q: What does the group show, and how are its stories seen? → A: how many stories it holds; clicking it unfolds it into those stories, each drawn as before, and clicking again folds it ([CORE-FR-071](#core-fr-071)).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -946,6 +952,52 @@ agent and time.
 
 ---
 
+### CORE Story 31 - Fold the stories done long ago in the roadmap report (Priority: P3)
+
+**Status**: Done
+
+A developer opens the roadmap report and sees, in its leftmost column, one
+group holding every `Done` story but the five done last, with how many it
+holds; those five, and every story not `Done`, are drawn as before. Clicking
+the group unfolds it into its stories; clicking again folds it.
+
+**Why this priority**: the report works without it; with thirty `Done` stories
+drawn one by one, the work still to go is hard to find.
+
+**Independent Test**: with more than five `Done` stories, run /sdd-report;
+the report shows one group for all but the five with the latest evidence date,
+and clicking it shows each of them.
+
+**Acceptance Scenarios**:
+
+1. **Given** thirty `Done` stories, **When** /sdd-report runs, **Then** the five with the latest evidence date are drawn each in a box of its own, and the other twenty-five as one group in the leftmost column, saying it holds twenty-five ([CORE-FR-070](#core-fr-070), [CORE-SC-010](#core-sc-010)).
+2. **Given** `Done` stories with the same evidence date, or with none, **When** the five are chosen, **Then** a story with no evidence date counts as the oldest, and of two stories of the same date the one later in the roadmap counts as the later ([CORE-FR-070](#core-fr-070)).
+3. **Given** five `Done` stories or fewer, **When** /sdd-report runs, **Then** no group is drawn and every story is drawn as before ([CORE-FR-070](#core-fr-070)).
+4. **Given** the report open with its group folded, **When** the developer clicks the group, **Then** it unfolds into the stories it holds, each drawn as before with its arrows, and clicking again folds it ([CORE-FR-071](#core-fr-071)).
+5. **Given** the group folded, **When** the report is read, **Then** one arrow goes from the group to each story drawn that depends on a story it holds ([CORE-FR-071](#core-fr-071)).
+6. **Given** a group drawn, **When** the report is read, **Then** the stories not `Done` and the code smell section are drawn as before ([CORE-FR-035](#core-fr-035), [CORE-FR-060](#core-fr-060)).
+
+---
+
+### CORE Story 32 - Quality cross-check of CORE Stories 27–31 (Priority: P3)
+
+**Status**: Todo
+
+Once CORE Stories 27–31 are `Done`, /sdd-quality checks the code and every
+spec against the checklist of the quality document, and each violation it
+reports becomes a story.
+
+**Why this priority**: five stories have landed since the last quality pass.
+
+**Independent Test**: once its stories are `Done`, build this story; the
+quality document ends with the new report.
+
+**Acceptance Scenarios**:
+
+1. **Given** CORE Stories 27–31 `Done`, **When** this story is built, **Then** /sdd-quality checks the code and every spec against the checklist of the quality document, and each violation it reports becomes a story ([CORE-FR-014](#core-fr-014), [CORE-FR-020](#core-fr-020)).
+
+---
+
 ### Edge Cases
 
 - An old code smell record cannot be read: an explicitly requested rescan still lists every assessable file without reading or modifying that record.
@@ -967,6 +1019,8 @@ agent and time.
 - A fix of a `nit` that breaks a test or brings a `bug` or `risk` — the verify or review run again fails, and the change goes back to be fixed as any failed review does ([CORE-FR-067](#core-fr-067)).
 - Two agents writing to the same note one after the other — each adds its rows after the last, numbered on, and none rewrites a row already there ([CORE-FR-069](#core-fr-069)).
 - A document language changed after documents were written — the documents already written stay as they are; only what is written next follows the new answer ([CORE-FR-066](#core-fr-066)).
+- A roadmap with five `Done` stories or fewer — the report draws no group ([CORE-FR-070](#core-fr-070)).
+- A story drawn that depends on several stories of the group — one arrow goes to it from the group, not one per story ([CORE-FR-071](#core-fr-071)).
 
 ## Requirements *(mandatory)*
 
@@ -1100,6 +1154,8 @@ agent and time.
 - <a id="core-fr-058"></a>**CORE-FR-058**: The developer MUST be able to mark exactly one finding agreed by its identifier after accepting its planned story, with a reason saved when supplied and retained for unchanged assessed content; findings already skipped MUST NOT be overwritten by agreement. The findings agreed MUST go to /sdd-plan as one story per rule, gathering every file that breaks it, and a rule too big for one reviewable change MUST be split.
 - <a id="core-fr-059"></a>**CORE-FR-059**: A story planned from the findings MUST hold in its scenarios that the product behaves as it did before.
 - <a id="core-fr-060"></a>**CORE-FR-060**: /sdd-report MUST show the code smell record beside the roadmap: its files and its findings by rule, agreed or skipped; with no record, or one it cannot read, it MUST still draw the roadmap and say so.
+- <a id="core-fr-070"></a>**CORE-FR-070**: The roadmap report MUST draw every `Done` story but the five with the latest evidence date as one group in its leftmost column, saying how many stories it holds; a `Done` story with no evidence date counts as the oldest, and of two stories of the same date the one later in the roadmap counts as the later; with five `Done` stories or fewer, it MUST draw no group.
+- <a id="core-fr-071"></a>**CORE-FR-071**: The group MUST be folded when the report opens; clicking it MUST unfold it into the stories it holds, each drawn as before, and clicking again MUST fold it; folded, one arrow MUST go from it to each story drawn that depends on a story it holds.
 
 ### Key Entities
 
@@ -1123,6 +1179,7 @@ agent and time.
 - <a id="core-sc-007"></a>**CORE-SC-007**: A second run of /sdd-code-smell on an unchanged repository assesses 0 files.
 - <a id="core-sc-008"></a>**CORE-SC-008**: Every finding of a finished assessment ends either in a story on the roadmap or marked skipped: 0 are left undecided.
 - <a id="core-sc-009"></a>**CORE-SC-009**: In the cases put to the real agent, 100% of the answers to a developer who chose a language are in it, whatever language the request is written in.
+- <a id="core-sc-010"></a>**CORE-SC-010**: With the group folded, the roadmap report draws at most six boxes for the `Done` stories, however many there are.
 
 ## Assumptions
 

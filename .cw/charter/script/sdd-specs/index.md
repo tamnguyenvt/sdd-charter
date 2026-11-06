@@ -76,13 +76,19 @@ node --test .cw/out/script/sdd-specs/specs.test.mjs
 no script, light and dark. A column per depth of dependency, a box per story —
 `Done` grey with green text, `In Progress` pink with a green dot, ready with a
 solid border, waiting dashed — and an arrow from each story to every story
-waiting on it. A box links to its story in its spec; hovering it shows the
-full title, status and dependencies. Below it, the code smell record,
-`code-smell.json` in the spec folder: how many files were assessed and good,
-then each finding by rule, waiting, skipped or agreed, with its reason; with no
-record, or one it cannot read, it says so and the roadmap is drawn as before.
-The record is only read. The file is generated, so `report` adds
-`report.html` to the spec folder's `.gitignore` when it is not there.
+waiting on it. With more than five `Done` stories, all but the five with the
+latest evidence date — a story with no evidence date counting as the oldest,
+and of one date the later in `plan.json` the later — are one group alone in the
+leftmost column, saying how many it holds: folded when the page opens, one
+arrow from it to each story depending on any of them; clicking it unfolds
+them, clicking again folds them.
+A box links to its story in its spec; hovering it shows the full title, status
+and dependencies. Below it, the code smell record, `code-smell.json` in the
+spec folder: how many files were assessed and good, then each finding by rule,
+waiting, skipped or agreed, with its reason; with no record, or one it cannot
+read, it says so and the roadmap is drawn as before. The record is only read.
+The file is generated, so `report` adds `report.html` to the spec folder's
+`.gitignore` when it is not there.
 
 ## Report labels
 
@@ -100,7 +106,7 @@ answer, English is used. Existing story titles and findings are kept.
   "messages": {
     "roadmap": "Roadmap", "smells": "Code smells", "todo": "Todo", "done": "Done", "active": "In Progress",
     "ready": "Ready", "blocked": "Waiting", "waiting": "waiting", "skipped": "skipped", "agreed": "agreed",
-    "missingStory": "not in the specs", "after": "after {stories}", "aria": "Roadmap of {count} stories",
+    "missingStory": "not in the specs", "after": "after {stories}", "group": "{count} done", "aria": "Roadmap of {count} stories",
     "noSmells": "No code smell has been assessed: there is no {path}.",
     "unreadableSmells": "The code smell record {path} could not be read: {why}.",
     "smellCounts": "{files} files assessed, {good} good; findings: {waiting} waiting, {skipped} skipped, {agreed} agreed."

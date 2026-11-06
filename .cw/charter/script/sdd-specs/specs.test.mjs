@@ -134,6 +134,108 @@ test("report draws every Done story left of every story not Done, the ready ones
   assert.ok(columnOf(4) > columnOf(3) && columnOf(6) > columnOf(4));
 });
 
+// The report of a spec set of the stories given, each { status, dependsOn,
+// date }, the date its evidence's; its folded and unfolded drawings, and the
+// boxes and arrows of each.
+function roadmapOf(stories) {
+  specSetOf({ statuses: stories.map((story) => story.status) });
+  writeFileSync(
+    join(repositoryFolder, "specs", "plan.json"),
+    JSON.stringify({
+      stories: stories.map((story, index) => ({
+        id: `CORE Story ${index + 1}`, title: `Story ${index + 1}`, dependsOn: (story.dependsOn ?? []).map((number) => `CORE Story ${number}`),
+        ...(story.date && { evidence: { summary: "tests pass", date: story.date } }),
+      })),
+    }),
+  );
+  const run = spawnSync("node", [specsScript, "report"], { cwd: repositoryFolder, encoding: "utf8" });
+  assert.equal(run.status, 0, run.stderr);
+  const html = readFileSync(join(repositoryFolder, "specs", "report.html"), "utf8");
+  const drawingOf = (id) => {
+    const svg = new RegExp(`<svg id="${id}"[\\s\\S]*?</svg>`).exec(html)?.[0];
+    if (svg === undefined) return undefined;
+    const boxes = [...svg.matchAll(/<a href="([^"]*)"><g class="story (\w+)" transform="translate\((\d+),(\d+)\)">\n  <title>([^\n<]*)/g)].map(
+      ([, href, state, x, y, title]) => ({ href, state, x: Number(x), y: Number(y), title, id: /^CORE Story \d+/.exec(title)?.[0] }),
+    );
+    const edges = [...svg.matchAll(/<path class="edge[^"]*" d="M(\d+),(\d+) H[-\d.]+ V(\d+) H(\d+)"/g)].map(([, x, y, endY, endX]) => ({ x: Number(x), y: Number(y), endX: Number(endX), endY: Number(endY) }));
+    return { boxes, edges };
+  };
+  return { html, folded: drawingOf("folded"), unfolded: drawingOf("unfolded") };
+}
+
+const BOX = { width: 170, height: 54 };
+const groupOf = (drawing) => drawing.boxes.filter((box) => box.state === "group");
+const startsAt = (edge, box) => edge.x === box.x + BOX.width && edge.y === box.y + BOX.height / 2;
+const endsAt = (edge, box) => edge.endX === box.x - 4 && edge.endY === box.y + BOX.height / 2;
+
+test("report folds every Done story but the five with the latest evidence date into one group in its leftmost column, saying how many it holds", () => {
+  const latest = [3, 8, 12, 20, 27];
+  const stories = Array.from({ length: 30 }, (_, index) => ({
+    status: "Done", date: latest.includes(index + 1) ? `2026-11-0${latest.indexOf(index + 1) + 5}` : `2026-10-${String(index % 28 + 1).padStart(2, "0")}`,
+  }));
+  const { folded } = roadmapOf([...stories, { status: "Todo", dependsOn: [30] }]);
+  const done = folded.boxes.filter((box) => box.state === "done");
+  assert.deepEqual(done.map((box) => box.id).sort(), latest.map((number) => `CORE Story ${number}`).sort());
+  const [group, ...others] = groupOf(folded);
+  assert.equal(others.length, 0);
+  assert.match(group.title, /^25 /);
+  assert.ok(folded.boxes.filter((box) => box !== group).every((box) => box.x > group.x), "the group alone in the leftmost column");
+  assert.ok(done.length + 1 <= 6, "at most six boxes for the Done stories");
+});
+
+test("report counts a Done story with no evidence date as the oldest, and of one date the later in the roadmap as the later", () => {
+  const stories = [1, 2, 3, 4, 5, 6].map(() => ({ status: "Done", date: "2026-11-01" }));
+  const { folded } = roadmapOf([...stories, { status: "Done" }]);
+  const done = folded.boxes.filter((box) => box.state === "done").map((box) => box.id);
+  assert.deepEqual(done.sort(), [2, 3, 4, 5, 6].map((number) => `CORE Story ${number}`).sort());
+  assert.match(groupOf(folded)[0].title, /^2 /);
+});
+
+test("report with five Done stories or fewer draws no group, every story as before", () => {
+  const { html, folded, unfolded } = roadmapOf([...[1, 2, 3, 4, 5].map(() => ({ status: "Done", date: "2026-11-01" })), { status: "Todo", dependsOn: [5] }]);
+  assert.equal(unfolded, undefined);
+  assert.equal(groupOf(folded).length, 0);
+  assert.equal(folded.boxes.length, 6);
+  assert.doesNotMatch(html, /story group/);
+});
+
+test("report opens folded; the group unfolds into its stories, each drawn with its arrows, and folds again", () => {
+  const stories = Array.from({ length: 8 }, (_, index) => ({ status: "Done", date: `2026-11-0${index + 1}`, dependsOn: index === 1 ? [1] : [] }));
+  const { html, folded, unfolded } = roadmapOf(stories);
+  assert.match(html, /\.roadmap\.unfolded \{ display: none; \}/);
+  assert.match(html, /\.roadmap\.unfolded:target \{ display: block; \}/);
+  assert.match(html, /\.roadmap\.unfolded:target ~ \.roadmap\.folded \{ display: none; \}/);
+  assert.equal(groupOf(folded)[0].href, "#unfolded");
+  const [group] = groupOf(unfolded);
+  assert.equal(group.href, "#folded");
+  assert.ok(unfolded.boxes.every((box) => box === group || box.x > group.x));
+  assert.deepEqual(unfolded.boxes.filter((box) => box.state === "done").map((box) => box.id).sort(), stories.map((_, index) => `CORE Story ${index + 1}`).sort());
+  for (const box of unfolded.boxes.filter((one) => one.state === "done")) assert.match(box.href, /^spec-core\.md#core-story-\d+/);
+  const [first, second] = ["CORE Story 1", "CORE Story 2"].map((id) => unfolded.boxes.find((box) => box.id === id));
+  assert.equal(unfolded.edges.filter((edge) => startsAt(edge, first) && endsAt(edge, second)).length, 1);
+});
+
+test("report draws one arrow from the folded group to each story drawn that depends on a story it holds", () => {
+  const stories = Array.from({ length: 8 }, (_, index) => ({ status: "Done", date: `2026-11-0${index + 1}` }));
+  const { folded } = roadmapOf([...stories, { status: "Todo", dependsOn: [1, 2] }, { status: "Todo", dependsOn: [3, 9] }, { status: "Todo", dependsOn: [8] }]);
+  const [group] = groupOf(folded);
+  const fromGroup = folded.edges.filter((edge) => startsAt(edge, group));
+  const boxOf = (number) => folded.boxes.find((box) => box.id === `CORE Story ${number}`);
+  assert.equal(fromGroup.length, 2);
+  for (const number of [9, 10]) assert.equal(fromGroup.filter((edge) => endsAt(edge, boxOf(number))).length, 1);
+  assert.equal(folded.edges.filter((edge) => endsAt(edge, boxOf(10))).length, 2);
+  assert.equal(fromGroup.filter((edge) => endsAt(edge, boxOf(11))).length, 0);
+});
+
+test("report with a group draws the stories not Done and the code smell section as before", () => {
+  const stories = Array.from({ length: 7 }, (_, index) => ({ status: "Done", date: `2026-11-0${index + 1}` }));
+  const { html, folded, unfolded } = roadmapOf([...stories, { status: "In Progress", dependsOn: [1] }, { status: "Todo" }, { status: "Todo", dependsOn: [9] }]);
+  const notDone = (drawing) => drawing.boxes.filter((box) => !["done", "group"].includes(box.state)).map(({ href, state, title }) => ({ href, state, title }));
+  assert.deepEqual(notDone(folded), notDone(unfolded));
+  assert.deepEqual(notDone(folded).map((box) => box.state), ["active", "ready", "blocked"]);
+  assert.match(html, /No code smell has been assessed/);
+});
+
 // The report of a two-story spec set, with the code smell record written as
 // given beside it; none where none is given.
 function reportWith(codeSmellRecord) {
@@ -445,7 +547,7 @@ test("roadmap translates generated prose, escapes labels and keeps story ids and
   const labels = { language: "Tiếng Việt", lang: "vi", messages: {
     roadmap: "Lộ trình <dự án>", smells: "Mùi mã", todo: "Chưa làm", done: "Đã xong", active: "Đang làm",
     ready: "Sẵn sàng", blocked: "Đang chờ", waiting: "chờ", skipped: "bỏ qua", agreed: "đồng ý",
-    missingStory: "không có trong đặc tả", after: "sau {stories}", aria: "Lộ trình của {count} story",
+    missingStory: "không có trong đặc tả", after: "sau {stories}", group: "{count} story đã xong", aria: "Lộ trình của {count} story",
     noSmells: "Chưa đánh giá mùi mã: không có {path}.",
     unreadableSmells: "Không đọc được {path}: {why}.",
     smellCounts: "{files} tệp đã đánh giá, {good} tốt; {waiting} chờ, {skipped} bỏ qua, {agreed} đồng ý.",

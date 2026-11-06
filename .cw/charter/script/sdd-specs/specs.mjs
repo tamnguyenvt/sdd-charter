@@ -398,12 +398,13 @@ function codeSmellOf(file) {
 
 // The roadmap as one self-contained page: a column per depth of dependency, a
 // box per story coloured by where it stands, an arrow from each story to every
-// story waiting on it; then the code smell record, its findings by rule.
+// story waiting on it, the Done stories but the last five in a group that
+// clicking unfolds; then the code smell record, its findings by rule.
 function reportHtmlOf(plannedStories, storyById, targetById, codeSmell) {
   const english = {
     roadmap: "Roadmap", smells: "Code smells", todo: "Todo", done: "Done", active: "In Progress",
     ready: "Ready", blocked: "Waiting", waiting: "waiting", skipped: "skipped", agreed: "agreed",
-    missingStory: "not in the specs", after: "after {stories}",
+    missingStory: "not in the specs", after: "after {stories}", group: "{count} done",
     aria: "Roadmap of {count} stories",
     noSmells: "No code smell has been assessed: there is no {path}.",
     unreadableSmells: "The code smell record {path} could not be read: {why}.",
@@ -432,18 +433,6 @@ function reportHtmlOf(plannedStories, storyById, targetById, codeSmell) {
   const escapeHtml = (text) => String(text).replace(/[&<>"']/g, (character) => `&#${character.charCodeAt(0)};`);
   const plannedById = new Map(plannedStories.map((one) => [one.id, one]));
   const statusOf = (id) => storyById.get(id)?.status ?? "Todo";
-  const depthById = new Map();
-  const depthOf = (id, seen = new Set()) => {
-    if (depthById.has(id)) return depthById.get(id);
-    if (seen.has(id)) return 0;
-    seen.add(id);
-    // Done stories are laid out among themselves, the rest among themselves.
-    const isDone = statusOf(id) === "Done";
-    const dependencies = (plannedById.get(id)?.dependsOn ?? []).filter((dependency) => plannedById.has(dependency) && (statusOf(dependency) === "Done") === isDone);
-    const depth = dependencies.length === 0 ? 0 : 1 + Math.max(...dependencies.map((dependency) => depthOf(dependency, seen)));
-    depthById.set(id, depth);
-    return depth;
-  };
   const stateOf = (id) => {
     const status = statusOf(id);
     if (status === "Done") return "done";
@@ -451,45 +440,95 @@ function reportHtmlOf(plannedStories, storyById, targetById, codeSmell) {
     return (plannedById.get(id)?.dependsOn ?? []).every((dependency) => statusOf(dependency) === "Done") ? "ready" : "blocked";
   };
 
-  const BOX_WIDTH = 170, BOX_HEIGHT = 54, COLUMN_GAP = 100, ROW_GAP = 22, MARGIN = 24;
-  const idsByColumn = [];
-  // Every Done story left of every story not Done, the ready ones first.
-  const doneColumns = 1 + Math.max(-1, ...plannedStories.filter((planned) => statusOf(planned.id) === "Done").map((planned) => depthOf(planned.id)));
-  for (const planned of plannedStories) (idsByColumn[(statusOf(planned.id) === "Done" ? 0 : doneColumns) + depthOf(planned.id)] ??= []).push(planned.id);
-  const positionById = new Map();
-  idsByColumn.forEach((ids, column) =>
-    ids.forEach((id, row) => positionById.set(id, { x: MARGIN + column * (BOX_WIDTH + COLUMN_GAP), y: MARGIN + row * (BOX_HEIGHT + ROW_GAP), row })),
-  );
-  const width = MARGIN * 2 + Math.max(1, idsByColumn.length) * (BOX_WIDTH + COLUMN_GAP) - COLUMN_GAP;
-  const height = MARGIN * 2 + Math.max(1, ...idsByColumn.map((ids) => ids?.length ?? 0)) * (BOX_HEIGHT + ROW_GAP) - ROW_GAP;
+  // Every Done story but the five done last is held in one group: by evidence
+  // date, a story with none the oldest, of one date the later in the roadmap
+  // the later.
+  const GROUP = "group";
+  const doneIds = plannedStories.filter((planned) => statusOf(planned.id) === "Done").map((planned) => planned.id);
+  const dateOf = (id) => (typeof plannedById.get(id).evidence?.date === "string" ? plannedById.get(id).evidence.date : "");
+  const landed = doneIds.map((id, index) => ({ id, index })).sort((one, other) => dateOf(one.id).localeCompare(dateOf(other.id)) || one.index - other.index);
+  const heldIds = new Set(doneIds.length > 5 ? landed.slice(0, -5).map(({ id }) => id) : []);
 
-  const edges = plannedStories.flatMap((planned) =>
-    (planned.dependsOn ?? []).filter((dependency) => positionById.has(dependency)).map((dependency) => {
-      const from = positionById.get(dependency), to = positionById.get(planned.id);
-      const startX = from.x + BOX_WIDTH, startY = from.y + BOX_HEIGHT / 2, endX = to.x - 4, endY = to.y + BOX_HEIGHT / 2;
-      // Each story's arrows turn down at a line of their own, so arrows from
-      // two stories into one column are not drawn as one.
-      const elbowX = to.x - COLUMN_GAP / 2 + ((from.row % 7) - 3) * 9;
-      const isBlocked = stateOf(planned.id) === "blocked";
-      return `<path class="edge${isBlocked ? " blocked" : ""}" d="M${startX},${startY} H${elbowX} V${endY} H${endX}" marker-end="url(#${isBlocked ? "arrow-blocked" : "arrow"})"/>`;
-    }),
-  );
-  const boxes = plannedStories.map((planned) => {
-    const { x, y } = positionById.get(planned.id);
-    const story = storyById.get(planned.id);
-    const state = stateOf(planned.id);
-    const [, prefix, number] = /^([A-Z][A-Z0-9]*) Story (\d+)$/.exec(planned.id) ?? [, planned.id, ""];
-    const title = story?.title ?? planned.title ?? "";
-    const target = targetById.get(planned.id);
-    const href = target ? `${relative(specFolder, target.file)}#${target.fragment}` : "";
-    const shortTitle = title.length > 26 ? `${title.slice(0, 25)}…` : title;
-    return `<a href="${escapeHtml(href)}"><g class="story ${state}" transform="translate(${x},${y})">
+  const BOX_WIDTH = 170, BOX_HEIGHT = 54, COLUMN_GAP = 100, ROW_GAP = 22, MARGIN = 24;
+  // One drawing of the roadmap; with a group, the group alone in its leftmost
+  // column. Folded, the stories it holds are drawn as the group, one arrow
+  // from it to each story depending on any of them; unfolded, each as before.
+  const drawingOf = (folded) => {
+    const shown = plannedStories.filter((planned) => !(folded && heldIds.has(planned.id)));
+    const dependenciesOf = (id) =>
+      (plannedById.get(id)?.dependsOn ?? [])
+        .filter((dependency) => plannedById.has(dependency))
+        .map((dependency) => (folded && heldIds.has(dependency) ? GROUP : dependency))
+        .filter((dependency, index, dependencies) => dependency !== GROUP || dependencies.indexOf(GROUP) === index);
+    const depthById = new Map();
+    const depthOf = (id, seen = new Set()) => {
+      if (depthById.has(id)) return depthById.get(id);
+      if (seen.has(id)) return 0;
+      seen.add(id);
+      // Done stories are laid out among themselves, the rest among themselves.
+      const isDone = statusOf(id) === "Done";
+      const dependencies = dependenciesOf(id).filter((dependency) => dependency !== GROUP && (statusOf(dependency) === "Done") === isDone);
+      const depth = dependencies.length === 0 ? 0 : 1 + Math.max(...dependencies.map((dependency) => depthOf(dependency, seen)));
+      depthById.set(id, depth);
+      return depth;
+    };
+
+    const firstColumn = heldIds.size > 0 ? 1 : 0;
+    const idsByColumn = firstColumn ? [[GROUP]] : [];
+    // Every Done story left of every story not Done, the ready ones first.
+    const doneColumns = 1 + Math.max(-1, ...shown.filter((planned) => statusOf(planned.id) === "Done").map((planned) => depthOf(planned.id)));
+    for (const planned of shown) (idsByColumn[firstColumn + (statusOf(planned.id) === "Done" ? 0 : doneColumns) + depthOf(planned.id)] ??= []).push(planned.id);
+    const positionById = new Map();
+    idsByColumn.forEach((ids, column) =>
+      ids.forEach((id, row) => positionById.set(id, { x: MARGIN + column * (BOX_WIDTH + COLUMN_GAP), y: MARGIN + row * (BOX_HEIGHT + ROW_GAP), row })),
+    );
+    const width = MARGIN * 2 + Math.max(1, idsByColumn.length) * (BOX_WIDTH + COLUMN_GAP) - COLUMN_GAP;
+    const height = MARGIN * 2 + Math.max(1, ...idsByColumn.map((ids) => ids?.length ?? 0)) * (BOX_HEIGHT + ROW_GAP) - ROW_GAP;
+
+    const edges = shown.flatMap((planned) =>
+      dependenciesOf(planned.id).filter((dependency) => positionById.has(dependency)).map((dependency) => {
+        const from = positionById.get(dependency), to = positionById.get(planned.id);
+        const startX = from.x + BOX_WIDTH, startY = from.y + BOX_HEIGHT / 2, endX = to.x - 4, endY = to.y + BOX_HEIGHT / 2;
+        // Each story's arrows turn down at a line of their own, so arrows from
+        // two stories into one column are not drawn as one.
+        const elbowX = to.x - COLUMN_GAP / 2 + ((from.row % 7) - 3) * 9;
+        const isBlocked = stateOf(planned.id) === "blocked";
+        return `<path class="edge${isBlocked ? " blocked" : ""}" d="M${startX},${startY} H${elbowX} V${endY} H${endX}" marker-end="url(#${isBlocked ? "arrow-blocked" : "arrow"})"/>`;
+      }),
+    );
+    const boxes = shown.map((planned) => {
+      const { x, y } = positionById.get(planned.id);
+      const story = storyById.get(planned.id);
+      const state = stateOf(planned.id);
+      const [, prefix, number] = /^([A-Z][A-Z0-9]*) Story (\d+)$/.exec(planned.id) ?? [, planned.id, ""];
+      const title = story?.title ?? planned.title ?? "";
+      const target = targetById.get(planned.id);
+      const href = target ? `${relative(specFolder, target.file)}#${target.fragment}` : "";
+      const shortTitle = title.length > 26 ? `${title.slice(0, 25)}…` : title;
+      return `<a href="${escapeHtml(href)}"><g class="story ${state}" transform="translate(${x},${y})">
   <title>${escapeHtml(`${planned.id} — ${title}\n${story ? t(story.status === "Done" ? "done" : story.status === "In Progress" ? "active" : "todo") : t("missingStory")}${planned.dependsOn?.length ? `\n${t("after", { stories: planned.dependsOn.join(", ") })}` : ""}`)}</title>
   <rect width="${BOX_WIDTH}" height="${BOX_HEIGHT}" rx="10"/>
   <text class="label" x="14" y="23">${escapeHtml(prefix)} ${escapeHtml(number)}</text>${state === "active" ? `\n  <circle class="dot" cx="${BOX_WIDTH - 16}" cy="18" r="4.5"/>` : ""}
   <text class="title" x="14" y="41">${escapeHtml(shortTitle)}</text>
 </g></a>`;
-  });
+    });
+    // Clicking the group shows the other drawing.
+    if (firstColumn) {
+      const label = t("group", { count: heldIds.size });
+      boxes.unshift(`<a href="#${folded ? "unfolded" : "folded"}"><g class="story group" transform="translate(${MARGIN},${MARGIN})">
+  <title>${escapeHtml(`${label}\n${doneIds.filter((id) => heldIds.has(id)).join(", ")}`)}</title>
+  <rect class="pile" x="5" y="-5" width="${BOX_WIDTH}" height="${BOX_HEIGHT}" rx="10"/>
+  <rect width="${BOX_WIDTH}" height="${BOX_HEIGHT}" rx="10"/>
+  <text class="label" x="14" y="33">${escapeHtml(label)}</text>
+</g></a>`);
+    }
+    const name = folded ? "folded" : "unfolded";
+    return `<svg id="${name}" class="roadmap ${name}" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(t("aria", { count: plannedStories.length }))}">
+      ${edges.join("\n      ")}
+      ${boxes.join("\n      ")}
+    </svg>`;
+  };
+  const drawings = heldIds.size > 0 ? [drawingOf(false), drawingOf(true)] : [drawingOf(true)];
 
   const counts = { done: 0, active: 0, ready: 0, blocked: 0 };
   for (const planned of plannedStories) counts[stateOf(planned.id)]++;
@@ -534,6 +573,10 @@ function reportHtmlOf(plannedStories, storyById, targetById, codeSmell) {
   .legend .ready::before { background: var(--bg); } .legend .blocked::before { border-style: dashed; }
   .scroll { overflow-x: auto; }
   svg { display: block; }
+  .defs { position: absolute; }
+  .roadmap.unfolded { display: none; }
+  .roadmap.unfolded:target { display: block; }
+  .roadmap.unfolded:target ~ .roadmap.folded { display: none; }
   a { text-decoration: none; }
   .edge { fill: none; stroke: var(--edge); stroke-width: 2; }
   .edge.blocked { stroke: var(--line); stroke-dasharray: 5 5; }
@@ -543,6 +586,7 @@ function reportHtmlOf(plannedStories, storyById, targetById, codeSmell) {
   .story.done rect { fill: var(--done-bg); } .story.done .label { fill: var(--done-text); }
   .story.active rect { fill: var(--active-bg); stroke: var(--active-line); } .story.active .label { fill: var(--active-text); }
   .story.blocked rect { fill: none; stroke-dasharray: 6 5; } .story.blocked .label, .story.blocked .title { fill: var(--muted); }
+  .story.group rect { fill: var(--done-bg); } .story.group .label { fill: var(--done-text); }
   .dot { fill: var(--dot); }
   a:hover .story rect { stroke: var(--edge); }
   .smells { margin-top: 16px; }
@@ -562,14 +606,13 @@ function reportHtmlOf(plannedStories, storyById, targetById, codeSmell) {
     <span class="ready">${escapeHtml(t("ready"))} · ${counts.ready}</span><span class="blocked">${escapeHtml(t("blocked"))} · ${counts.blocked}</span>
   </div>
   <div class="scroll">
-    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(t("aria", { count: plannedStories.length }))}">
+    <svg class="defs" width="0" height="0" aria-hidden="true">
       <defs>
         <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="var(--edge)" stroke-width="1.8"/></marker>
         <marker id="arrow-blocked" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="var(--line)" stroke-width="1.8"/></marker>
       </defs>
-      ${edges.join("\n      ")}
-      ${boxes.join("\n      ")}
     </svg>
+    ${drawings.join("\n    ")}
   </div>
 </div>
 <div class="panel smells">
