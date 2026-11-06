@@ -981,7 +981,7 @@ and clicking it shows each of them.
 
 ### CORE Story 32 - Quality cross-check of CORE Stories 27–31 (Priority: P3)
 
-**Status**: Todo
+**Status**: Done
 
 Once CORE Stories 27–31 are `Done`, /sdd-quality checks the code and every
 spec against the checklist of the quality document, and each violation it

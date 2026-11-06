@@ -56,6 +56,7 @@
       "evidence": { "summary": "Node suites 118 + 118 passed; cw test 6; cw doctor, spec check clean; real Opus walks runA, runB, runC proved scenarios 1-6", "date": "2026-11-06" } },
     { "id": "CORE Story 31", "title": "Fold the stories done long ago in the roadmap report", "dependsOn": ["CORE Story 26"],
       "evidence": { "summary": "Node suites 65 + 65 passed; cw test 6; cw doctor, spec check, git diff --check clean; real report in headless Chromium folded 8 boxes, unfolded 33, folded again", "date": "2026-11-06" } },
-    { "id": "CORE Story 32", "title": "Quality cross-check of CORE Stories 27–31", "dependsOn": ["CORE Story 27", "CORE Story 28", "CORE Story 29", "CORE Story 30", "CORE Story 31"] }
+    { "id": "CORE Story 32", "title": "Quality cross-check of CORE Stories 27–31", "dependsOn": ["CORE Story 27", "CORE Story 28", "CORE Story 29", "CORE Story 30", "CORE Story 31"],
+      "evidence": { "summary": "quality pass graded B, no violation, six warnings, so no story to plan; source and generated Node suites 124 each, twice in a row, 0 fail, 0 skipped; cw test 6; cw doctor nothing to fix; spec check and doctor passed; cw eval --agent claude: 21 cases, 20 passed, 1 failed (voice.json chosen-language case, no read of .sdd/settings.local.json, answered in Vietnamese)", "date": "2026-11-06" } }
   ]
 }
