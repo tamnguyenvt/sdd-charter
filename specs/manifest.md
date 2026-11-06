@@ -20,7 +20,7 @@ by asking the user.
 ## Talking
 
 - **Conversation**: short — a gate says only what it asks; what changed is never listed, the user reads the code and asks
-- **Review**: strict — every `nit` and `q` the review leaves is put to the user at the hand-over
+- **Review**: auto — each `nit` is fixed wherever its fix reaches and written to the handoff note with its fix, the change verified and reviewed again, for three rounds of fixing at most, each `nit` left after the third written there unfixed; a `q` is handled as in quick
 
 ## Committing
 
