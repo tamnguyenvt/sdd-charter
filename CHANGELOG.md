@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.17 — 2026-11-06
+
+- `/sdd-report` folds every `Done` story but the five done last into one group in the roadmap's leftmost column; clicking it unfolds those stories, and clicking again folds them.
+
 ## 0.1.16 — 2026-11-06
 
 - `/sdd-init` offers an auto review: each `nit` is fixed and the change reviewed again, for three rounds at most.
