@@ -16,6 +16,7 @@ node .cw/out/script/sdd-specs/specs.mjs check --landing "CORE Story 3"   # and o
 node .cw/out/script/sdd-specs/specs.mjs ready   # stories not Done whose dependencies are all Done
 node .cw/out/script/sdd-specs/specs.mjs report [--labels <file>]  # write <spec folder>/report.html, the roadmap drawn
 node .cw/out/script/sdd-specs/specs.mjs doctor  # whether settings, spec folder and manifest are set up; change nothing; exit 1 on any fault
+node .cw/out/script/sdd-specs/specs.mjs row specs/handoff/core-3.md "review" "sdd-review-agent" "failed: one risk"  # add a row to a note's timeline
 ```
 
 `--if-changed` makes `link` and `check` do nothing when `git status` reports
@@ -50,6 +51,17 @@ the folder exists; `manifest.md` answers every `- **<Field>**:` line of the
 as the template's text or keeping one of its `[placeholders]` a line of its
 own, fix the /sdd-init question on it. It checks the spec set alone; the
 engine's health is `cw doctor`'s.
+
+**row** adds a row at the end of a handoff note's timeline, from the step,
+the agent and the result given: its number on from the last row, the date and
+time it runs, and its round on from the last row of the same step, the step
+matched whatever its case. A row already there is never changed, but the
+template's `[placeholder]` row gives way to the first. A note with no
+timeline gets one at its end, its row 1 saying the steps before it are not in
+it, and a `## Timeline` heading with no table gets its header; nothing else of
+the note changes. A `|` or a line break in a cell is kept
+from breaking the table. With no note there, a file outside `<spec folder>/handoff/`, or a cell
+left out, it changes nothing and exits 1. A note's line endings are kept.
 
 Its tests, beside it:
 

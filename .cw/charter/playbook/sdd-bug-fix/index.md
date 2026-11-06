@@ -24,7 +24,10 @@ the baseline, only when it fails or finds no check.
 
    Then write the fix's handoff note, `<spec folder>/handoff/fix-<slug>.md`,
    from [[sdd-handoff]], and bring it up to date after each step that passes
-   and before every stop, as /sdd-implement does a story's.
+   and before every stop, its Done and its timeline kept as the Handoff note
+   section of /sdd-implement says, read before the note is first written: its
+   Done names the test and the fix, never the reproduction, the verify or the
+   review, which are rows.
 2. **Understand** — restate the bug: what happens, what should happen
    instead, where, and the steps given to reproduce it, if any. Where the
    bug as told cannot be understood — what goes wrong, or where — ask the
@@ -70,8 +73,9 @@ the baseline, only when it fails or finds no check.
    instead of a story; its /sdd-verify runs with the known failures of the
    baseline, and the reproduction of step 4 run again among it, now showing
    the bug gone. A failure of either goes back to step 6.
-   **Gate:** only now hand the fix to the user, ending on this line alone,
-   word for word whatever the user's language, and at no other gate:
+   **Gate:** only now, the note brought up to date and its `asked` row
+   written, hand the fix to the user, ending on this line alone, word for
+   word whatever the user's language, and at no other gate:
    `approve ?`
 8. **Learn** *(only if something surprising came up)* — run /sdd-learn.
 9. **Finish** — bring the fix's handoff note up to date, then run /sdd-finish

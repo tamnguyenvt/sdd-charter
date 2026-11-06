@@ -9,6 +9,7 @@
 //   node specs.mjs ready                  the stories whose dependencies are Done
 //   node specs.mjs report                 write <spec folder>/report.html, the roadmap drawn
 //   node specs.mjs doctor                 whether the settings, spec folder and manifest are set up; exit 1 on any fault
+//   node specs.mjs row <note> <step> <agent> <result>   add a row at the end of a handoff note's timeline
 //
 // The spec folder is read from .sdd/settings.json ("specFolder"), from the
 // repository's root; "specs" when there is none.
@@ -25,8 +26,68 @@ if (command === "doctor") {
   process.exit();
 }
 const specFolder = existsSync(settingsFile) ? JSON.parse(readFileSync(settingsFile, "utf8")).specFolder ?? "specs" : "specs";
+if (command === "row") process.exit(row(...flags));
 const planFile = join(specFolder, "plan.json");
 const STATUSES = ["Todo", "In Progress", "Done"];
+
+// A row at the end of the note's timeline: numbered on from its last row,
+// timed now, its round numbered on from the last row of the same step. A note
+// with no timeline gets one at its end, its row 1 saying the steps before it
+// are not in it; the template's own row gives way to row 1. Nothing else of the
+// note changes.
+function row(note, ...cells) {
+  if (cells.length !== 3 || cells.some((cell) => cell.trim() === "")) {
+    console.error("usage: specs.mjs row <note> <step> <agent> <result>");
+    return 1;
+  }
+  if (!note || !existsSync(note)) {
+    console.error(`no note at ${note}`);
+    return 1;
+  }
+  if (relative(join(specFolder, "handoff"), dirname(note)) !== "") {
+    console.error(`${note} is not a note of ${join(specFolder, "handoff")}`);
+    return 1;
+  }
+  const [step, agent, result] = cells.map((cell) => cell.replace(/\s*\n\s*/g, " ").replace(/\|/g, "\\|").trim());
+  const pad = (number) => String(number).padStart(2, "0");
+  const now = new Date();
+  const when = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const text = readFileSync(note, "utf8");
+  const newline = text.includes("\r\n") ? "\r\n" : "\n";
+  let lines = text.replace(/\r\n/g, "\n").replace(/\n*$/, "").split("\n");
+  let heading = lines.indexOf("## Timeline");
+  const rows = [];
+  if (heading === -1) {
+    lines.push("", "## Timeline", "", "| # | When | Step | Round | Agent | Result |", "|---|------|------|-------|-------|--------|");
+    lines.push(`| 1 | ${when} | note | 1 | ${agent} | the steps before this row are not in it |`);
+    heading = lines.indexOf("## Timeline");
+  }
+  let end = lines.findIndex((line, index) => index > heading && line.startsWith("## "));
+  if (end === -1) end = lines.length;
+  lines = lines.filter((line, index) => !(index > heading && index < end && /^\| \[/.test(line)));
+  end = lines.findIndex((line, index) => index > heading && line.startsWith("## "));
+  if (end === -1) end = lines.length;
+  for (let index = heading; index < end; index++) {
+    const cells = /^\| (\d+) \| [^|]* \| (.*?) \| (\d+) \|/.exec(lines[index]);
+    if (cells) rows.push({ step: cells[2].toLowerCase(), round: Number(cells[3]) });
+  }
+  if (!lines.some((text, index) => index > heading && index < end && /^\|-/.test(text))) {
+    const header = lines.findIndex((text, index) => index > heading && index < end && /^\| # \|/.test(text));
+    const added = header === -1 ? ["| # | When | Step | Round | Agent | Result |", "|---|------|------|-------|-------|--------|"] : ["|---|------|------|-------|-------|--------|"];
+    if (header === -1 && lines[heading + 1] !== "") added.unshift("");
+    lines.splice(header === -1 ? heading + 1 + (lines[heading + 1] === "" ? 1 : 0) : header + 1, 0, ...added);
+    end += added.length;
+  }
+  const sameStep = rows.filter((earlier) => earlier.step === step.toLowerCase()).at(-1);
+  const number = Math.max(0, ...lines.slice(heading, end).map((text) => Number(/^\| (\d+) \|/.exec(text)?.[1] ?? 0))) + 1;
+  const line = `| ${number} | ${when} | ${step} | ${(sameStep?.round ?? 0) + 1} | ${agent} | ${result} |`;
+  let tableEnd = heading + 1;
+  for (let index = heading + 1; index < end; index++) if (lines[index].startsWith("|")) tableEnd = index + 1;
+  lines.splice(tableEnd, 0, line);
+  writeFileSync(note, `${lines.join(newline)}${newline}`);
+  console.info(line);
+  return 0;
+}
 
 // Whether the spec set is set up — settings, spec folder, manifest — one line
 // per item: pass or fail, its reason, and for a fault its fix. Reads only;

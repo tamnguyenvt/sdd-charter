@@ -10,10 +10,8 @@ description: The skeleton of a handoff note, <spec folder>/handoff/<prefix>-<n>.
 
 ## Done
 
-- [the baseline: passed, or each known failure as the check printed it; the agent that ran it]
-- [the spec gate: passed on yyyy-mm-dd]
-- [what is built and checked, by file or scenario; the agent that ran each check]
-- [the verification: what was run, by which agent, and what it showed]
+- [each known failure the baseline recorded, as the check printed it; with none, leave this line out]
+- [a file or a scenario built, and what proves it; the agent that ran that check, by its name and model — never a step, such as the branch, the baseline, finding the cause, a verify or a review, which is a row of the timeline]
 
 ## Remaining
 
@@ -26,3 +24,9 @@ description: The skeleton of a handoff note, <spec folder>/handoff/<prefix>-<n>.
 ## Blockers
 
 - [what stops the story, and who or what it waits on; none — one agent's quota limit is none while another available agent can run the check]
+
+## Timeline
+
+| # | When | Step | Round | Agent | Result |
+|---|------|------|-------|-------|--------|
+| [1] | [yyyy-mm-dd hh:mm] | [each step of the walk as it ends: branch, baseline, spec gate, scenario, finding the cause, fix, verify, review, fixing nit; a question to the user is `asked`, its answer `answer`] | [1] | [the agent that ran it, by its name and model, such as claude-opus-5 or sdd-review-agent; `user` for an answer] | [passed, failed and why, waiting on the user, or the answer in short] |

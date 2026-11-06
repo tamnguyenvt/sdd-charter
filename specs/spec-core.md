@@ -916,7 +916,7 @@ and its fix.
 
 ### CORE Story 30 - Read the rounds of a story as a timeline (Priority: P2)
 
-**Status**: Todo
+**Status**: Done
 
 The handoff note of a story or a bug fix keeps a timeline: a table, one row
 per step or round in the order it ran — the baseline, the spec gate, each

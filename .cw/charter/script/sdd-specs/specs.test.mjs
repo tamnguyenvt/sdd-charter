@@ -465,3 +465,99 @@ test("roadmap translates generated prose, escapes labels and keeps story ids and
   assert.equal(run().status, 1);
   assert.equal(readFileSync(join(repositoryFolder, "specs", "report.html"), "utf8"), html);
 });
+
+// `row`: each row added at the end of a note's timeline, numbered, timed and
+// its round numbered on by the tool.
+const TEMPLATE_TIMELINE = "## Timeline\n\n| # | When | Step | Round | Agent | Result |\n|---|------|------|-------|-------|--------|\n| [1] | [yyyy-mm-dd hh:mm] | [step] | [1] | [agent] | [result] |\n";
+
+function row(note, ...cells) {
+  const run = spawnSync("node", [specsScript, "row", note, ...cells], { cwd: repositoryFolder, encoding: "utf8" });
+  return { status: run.status, output: run.stdout + run.stderr };
+}
+const noteText = () => readFileSync(join(repositoryFolder, "specs", "handoff", "core-1.md"), "utf8");
+const rowsOf = (text) => text.split("\n").filter((line) => /^\| \d+ \|/.test(line)).map((line) => line.slice(2, -2).split(" | "));
+const NOW = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/;
+
+test("row replaces the template's row with row 1, timed now, round 1", () => {
+  specSetOf({ statuses: ["In Progress", "Todo"], notes: [["core-1.md", `# CORE Story 1 — handoff\n\n## Done\n\n- x\n\n${TEMPLATE_TIMELINE}`]] });
+  const run = row("specs/handoff/core-1.md", "baseline", "claude-opus-5", "passed");
+  assert.equal(run.status, 0, run.output);
+  const rows = rowsOf(noteText());
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0][0], "1");
+  assert.match(rows[0][1], NOW);
+  const minutes = Math.abs(new Date(rows[0][1].replace(" ", "T")) - Date.now()) / 60000;
+  assert.ok(minutes < 2, `${rows[0][1]} is not now`);
+  assert.deepEqual(rows[0].slice(2), ["baseline", "1", "claude-opus-5", "passed"]);
+  assert.doesNotMatch(noteText(), /\[yyyy-mm-dd/);
+});
+
+test("row numbers on, and numbers a step's round on from its last row", () => {
+  specSetOf({ statuses: ["In Progress", "Todo"], notes: [["core-1.md", `# CORE Story 1 — handoff\n\n${TEMPLATE_TIMELINE}\n`]] });
+  row("specs/handoff/core-1.md", "review", "sdd-review-agent", "failed");
+  row("specs/handoff/core-1.md", "verify", "claude-opus-5", "passed");
+  const before = noteText();
+  row("specs/handoff/core-1.md", "Review", "sdd-review-agent", "passed");
+  const rows = rowsOf(noteText());
+  assert.deepEqual(rows.map((cells) => [cells[0], cells[2], cells[3]]), [["1", "review", "1"], ["2", "verify", "1"], ["3", "Review", "2"]]);
+  assert.ok(noteText().startsWith(before.trimEnd()), "a row already there was rewritten");
+});
+
+test("row starts a timeline at the end of a note that has none, its row 1 saying the steps before are not in it", () => {
+  const old = "# CORE Story 1 — handoff\n\n## Done\n\n- Baseline passed.\n\n## Blockers\n\n- None.\n";
+  specSetOf({ statuses: ["In Progress", "Todo"], notes: [["core-1.md", old]] });
+  assert.equal(row("specs/handoff/core-1.md", "verify", "claude-opus-5", "passed").status, 0);
+  assert.ok(noteText().startsWith(old), "the note's own lines changed");
+  const rows = rowsOf(noteText());
+  assert.deepEqual(rows.map((cells) => [cells[0], cells[2]]), [["1", "note"], ["2", "verify"]]);
+  assert.match(rows[0][5], /the steps before this row are not in it/);
+});
+
+test("row keeps a cell's bar and line break from breaking the table", () => {
+  specSetOf({ statuses: ["In Progress", "Todo"], notes: [["core-1.md", TEMPLATE_TIMELINE]] });
+  row("specs/handoff/core-1.md", "answer", "user", "keep a | b\nas it is");
+  assert.match(noteText(), /\| answer \| 1 \| user \| keep a \\\| b as it is \|/);
+});
+
+test("row refuses a note that is not there, or a cell left out", () => {
+  specSetOf({ statuses: ["In Progress", "Todo"] });
+  const missing = row("specs/handoff/core-1.md", "baseline", "claude-opus-5", "passed");
+  assert.equal(missing.status, 1);
+  assert.match(missing.output, /no note at specs\/handoff\/core-1\.md/);
+  writeFileSync(join(repositoryFolder, "specs", "handoff", "core-1.md"), TEMPLATE_TIMELINE);
+  assert.equal(row("specs/handoff/core-1.md", "baseline", "claude-opus-5").status, 1);
+});
+
+test("row writes the table under a Timeline heading that has none, and after every line of a table it cannot read", () => {
+  specSetOf({ statuses: ["In Progress", "Todo"], notes: [["core-1.md", "# CORE Story 1 — handoff\n\n## Timeline\n"]] });
+  row("specs/handoff/core-1.md", "baseline", "claude-opus-5", "passed");
+  assert.ok(noteText().startsWith("# CORE Story 1 — handoff\n"), "a row went above the note's heading");
+  assert.match(noteText(), /## Timeline\n\n\| # \| When \| Step \| Round \| Agent \| Result \|\n\|---\|.*\n\| 1 \| [^|]* \| baseline \| 1 \|/);
+  writeFileSync(join(repositoryFolder, "specs", "handoff", "core-1.md"), `${noteText()}| 2 | 2026-11-06 10:00 | verify | first | claude-opus-5 | passed |\n`);
+  row("specs/handoff/core-1.md", "review", "sdd-review-agent", "passed");
+  assert.match(noteText().trimEnd().split("\n").at(-1), /^\| 3 \| [^|]* \| review \| 1 \| sdd-review-agent \| passed \|$/);
+});
+
+test("row keeps one blank line under a bare heading, adds only the separator a header lacks, and reads a CRLF note", () => {
+  specSetOf({ statuses: ["In Progress", "Todo"], notes: [["core-1.md", "# CORE Story 1 — handoff\n\n## Timeline\n\n"]] });
+  row("specs/handoff/core-1.md", "baseline", "claude-opus-5", "passed");
+  assert.match(noteText(), /## Timeline\n\n\| # \|/);
+  writeFileSync(join(repositoryFolder, "specs", "handoff", "core-1.md"), "## Timeline\n\n| # | When | Step | Round | Agent | Result |\n");
+  row("specs/handoff/core-1.md", "baseline", "claude-opus-5", "passed");
+  assert.equal(noteText().match(/\| # \| When/g).length, 1);
+  assert.match(noteText(), /\| # \| When \| Step \| Round \| Agent \| Result \|\n\|---\|.*\n\| 1 \|/);
+  writeFileSync(join(repositoryFolder, "specs", "handoff", "core-1.md"), "# CORE Story 1 — handoff\r\n\r\n" + TEMPLATE_TIMELINE.replace(/\n/g, "\r\n"));
+  row("specs/handoff/core-1.md", "baseline", "claude-opus-5", "passed");
+  row("specs/handoff/core-1.md", "verify", "claude-opus-5", "passed");
+  assert.equal(noteText().match(/## Timeline/g).length, 1);
+  assert.deepEqual(rowsOf(noteText()).map((cells) => cells[0]), ["1", "2"]);
+});
+
+test("row refuses a file outside the spec folder's handoff folder", () => {
+  specSetOf({ statuses: ["In Progress", "Todo"] });
+  writeFileSync(join(repositoryFolder, "README.md"), "# Read me\n");
+  const run = row("README.md", "baseline", "claude-opus-5", "passed");
+  assert.equal(run.status, 1);
+  assert.match(run.output, /not a note of specs\/handoff/);
+  assert.equal(readFileSync(join(repositoryFolder, "README.md"), "utf8"), "# Read me\n");
+});
