@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.16 — 2026-11-06
+
+- `/sdd-init` offers an auto review: each `nit` is fixed and the change reviewed again, for three rounds at most.
+- A handoff note keeps a timeline of every step, question and answer, written by `specs.mjs row`.
+- The handoff note is updated after every step and names the agent behind each piece of evidence.
+
 ## 0.1.15 — 2026-11-04
 
 - `sdd-review-agent` no longer asks as a question what the story, the guides or the repository already answer.
